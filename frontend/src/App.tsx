@@ -13,6 +13,7 @@ import RestaurantPage from '@/pages/restaurant/RestaurantPage';
 import MenuPage from '@/pages/menu/MenuPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import CustomerMenuPage from '@/pages/customer/CustomerMenuPage';
 
 // Import components (we'll create these next)
 import Layout from '@/components/layout/Layout';
@@ -101,6 +102,9 @@ function App() {
             <Route path="/register" element={
               isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />
             } />
+            
+            {/* Customer-facing routes (public) */}
+            <Route path="/menu/:restaurantId" element={<CustomerMenuPage />} />
 
             {/* Protected routes */}
             <Route path="/" element={

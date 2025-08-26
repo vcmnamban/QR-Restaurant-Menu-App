@@ -26,6 +26,7 @@ const Layout: React.FC = () => {
     { name: 'Restaurant', href: '/restaurant', icon: Restaurant },
     { name: 'Menu', href: '/menu', icon: Menu },
     { name: 'QR Codes', href: '/qr', icon: QrCode },
+    { name: 'Settings', href: '/settings', icon: Settings },
     { name: 'Profile', href: '/profile', icon: User },
   ];
 
@@ -136,7 +137,7 @@ const Layout: React.FC = () => {
             
             <div className="mt-3 space-y-1">
               <Link
-                to="/profile"
+                to="/settings"
                 className="flex items-center px-2 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
               >
                 <Settings className="mr-2 h-4 w-4" />

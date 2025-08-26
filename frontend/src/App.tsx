@@ -14,6 +14,7 @@ import MenuPage from '@/pages/menu/MenuPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import CustomerMenuPage from '@/pages/customer/CustomerMenuPage';
+import QRGenerationPage from '@/pages/qr/QRGenerationPage';
 
 // Import components (we'll create these next)
 import Layout from '@/components/layout/Layout';
@@ -116,6 +117,7 @@ function App() {
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="restaurant" element={<RestaurantPage />} />
               <Route path="menu" element={<MenuPage />} />
+              <Route path="qr" element={<QRGenerationPage />} />
               <Route path="profile" element={<ProfilePage />} />
             </Route>
 

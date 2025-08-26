@@ -9,7 +9,8 @@ import {
   LogOut, 
   Menu as MenuIcon,
   X,
-  Settings
+  Settings,
+  QrCode
 } from 'lucide-react';
 import { cn } from '@/utils';
 
@@ -24,6 +25,7 @@ const Layout: React.FC = () => {
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'Restaurant', href: '/restaurant', icon: Restaurant },
     { name: 'Menu', href: '/menu', icon: Menu },
+    { name: 'QR Codes', href: '/qr', icon: QrCode },
     { name: 'Profile', href: '/profile', icon: User },
   ];
 

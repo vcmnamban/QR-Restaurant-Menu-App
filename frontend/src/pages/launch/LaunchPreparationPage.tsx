@@ -26,6 +26,8 @@ import {
   Terminal
 } from 'lucide-react';
 import { cn } from '@/utils';
+import PerformanceMonitoring from '@/components/launch/PerformanceMonitoring';
+import UserAcceptanceTesting from '@/components/launch/UserAcceptanceTesting';
 
 interface LaunchTask {
   id: string;
@@ -52,7 +54,7 @@ interface LaunchMetrics {
 
 const LaunchPreparationPage: React.FC = () => {
   const [tasks, setTasks] = useState<LaunchTask[]>([]);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live' | 'monitoring' | 'uat'>('dashboard');
   const [selectedTask, setSelectedTask] = useState<string>('');
   const [isRunningChecks, setIsRunningChecks] = useState(false);
 
@@ -449,7 +451,9 @@ const LaunchPreparationPage: React.FC = () => {
                 { id: 'performance', name: 'Performance', icon: Zap },
                 { id: 'testing', name: 'Testing', icon: Users },
                 { id: 'documentation', name: 'Documentation', icon: FileText },
-                { id: 'go-live', name: 'Go-Live', icon: Rocket }
+                { id: 'go-live', name: 'Go-Live', icon: Rocket },
+                { id: 'monitoring', name: 'Performance', icon: Zap },
+                { id: 'uat', name: 'UAT', icon: Users }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -629,8 +633,22 @@ const LaunchPreparationPage: React.FC = () => {
           </div>
         )}
 
+        {/* Performance Monitoring Tab */}
+        {activeTab === 'monitoring' && (
+          <div className="space-y-6">
+            <PerformanceMonitoring />
+          </div>
+        )}
+
+        {/* User Acceptance Testing Tab */}
+        {activeTab === 'uat' && (
+          <div className="space-y-6">
+            <UserAcceptanceTesting />
+          </div>
+        )}
+
         {/* Category Tabs */}
-        {activeTab !== 'dashboard' && (
+        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && (
           <div className="space-y-4">
             {filteredTasks.map((task) => (
               <div key={task.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">

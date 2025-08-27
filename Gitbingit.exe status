@@ -1,0 +1,5 @@
+[33m7d25e29[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mphase3-core-features[m[33m)[m feat: Implement comprehensive Settings and Configuration system - Settings page with restaurant, profile, branding, notifications, security, and payment tabs - Business hours, contact info, delivery settings, payment methods - User profile, preferences, security settings - Branding customization with colors, logo, custom CSS - Notification preferences and security configurations - Integration with existing navigation and routing
+[33ma7d086a[m docs: Update PROJECT_SUMMARY.md for QR Code Generation Interface completion
+[33m51ca117[m feat: Implement comprehensive QR code generation interface - Generation page, form, generator, list, and service
+[33me7c306c[m feat: Implement customer-facing menu interface - Menu page, item cards, category filter, search, and cart drawer
+[33m973201f[m docs: Update PROJECT_SUMMARY.md - Mark order management system as completed

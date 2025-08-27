@@ -10,7 +10,8 @@ import {
   Menu as MenuIcon,
   X,
   Settings,
-  QrCode
+  QrCode,
+  TestTube
 } from 'lucide-react';
 import { cn } from '@/utils';
 
@@ -26,6 +27,7 @@ const Layout: React.FC = () => {
     { name: 'Restaurant', href: '/restaurant', icon: Restaurant },
     { name: 'Menu', href: '/menu', icon: Menu },
     { name: 'QR Codes', href: '/qr', icon: QrCode },
+    { name: 'Testing', href: '/testing', icon: TestTube },
     { name: 'Settings', href: '/settings', icon: Settings },
     { name: 'Profile', href: '/profile', icon: User },
   ];

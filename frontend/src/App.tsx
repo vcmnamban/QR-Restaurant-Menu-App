@@ -16,6 +16,7 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import CustomerMenuPage from '@/pages/customer/CustomerMenuPage';
 import QRGenerationPage from '@/pages/qr/QRGenerationPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
+import PaymentTestingPage from '@/pages/testing/PaymentTestingPage';
 
 // Import components (we'll create these next)
 import Layout from '@/components/layout/Layout';
@@ -118,9 +119,10 @@ function App() {
               <Route path="dashboard" element={<DashboardPage />} />
                                           <Route path="restaurant" element={<RestaurantPage />} />
                             <Route path="menu" element={<MenuPage />} />
-                            <Route path="qr" element={<QRGenerationPage />} />
-                            <Route path="settings" element={<SettingsPage />} />
-                            <Route path="profile" element={<ProfilePage />} />
+                                                         <Route path="qr" element={<QRGenerationPage />} />
+                             <Route path="settings" element={<SettingsPage />} />
+                             <Route path="testing" element={<PaymentTestingPage />} />
+                             <Route path="profile" element={<ProfilePage />} />
             </Route>
 
             {/* 404 page */}

@@ -32,6 +32,8 @@ import DocumentationGenerator from '@/components/launch/DocumentationGenerator';
 import GoLiveProcedures from '@/components/launch/GoLiveProcedures';
 import SupportTrainingSystem from '@/components/launch/SupportTrainingSystem';
 import ProductionDeployment from '@/components/launch/ProductionDeployment';
+import FinalIntegrationTesting from '@/components/launch/FinalIntegrationTesting';
+import ProductionEnvironmentSetup from '@/components/launch/ProductionEnvironmentSetup';
 
 interface LaunchTask {
   id: string;
@@ -58,7 +60,7 @@ interface LaunchMetrics {
 
 const LaunchPreparationPage: React.FC = () => {
   const [tasks, setTasks] = useState<LaunchTask[]>([]);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live' | 'monitoring' | 'uat'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live' | 'monitoring' | 'uat' | 'integration' | 'env-setup'>('dashboard');
   const [selectedTask, setSelectedTask] = useState<string>('');
   const [isRunningChecks, setIsRunningChecks] = useState(false);
 
@@ -458,8 +460,10 @@ const LaunchPreparationPage: React.FC = () => {
                 { id: 'go-live', name: 'Go-Live', icon: Rocket },
                 { id: 'monitoring', name: 'Performance', icon: Zap },
                 { id: 'uat', name: 'UAT', icon: Users },
-                { id: 'training', name: 'Training', icon: GraduationCap },
-                { id: 'deployment', name: 'Deployment', icon: Server }
+                                 { id: 'training', name: 'Training', icon: GraduationCap },
+                 { id: 'deployment', name: 'Deployment', icon: Server },
+                 { id: 'integration', name: 'Integration', icon: GitBranch },
+                 { id: 'env-setup', name: 'Environment Setup', icon: Database }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -681,8 +685,22 @@ const LaunchPreparationPage: React.FC = () => {
           </div>
         )}
 
+        {/* Final Integration Testing Tab */}
+        {activeTab === 'integration' && (
+          <div className="space-y-6">
+            <FinalIntegrationTesting />
+          </div>
+        )}
+
+        {/* Production Environment Setup Tab */}
+        {activeTab === 'env-setup' && (
+          <div className="space-y-6">
+            <ProductionEnvironmentSetup />
+          </div>
+        )}
+
         {/* Category Tabs */}
-        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && activeTab !== 'documentation' && activeTab !== 'go-live' && activeTab !== 'training' && activeTab !== 'deployment' && (
+        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && activeTab !== 'documentation' && activeTab !== 'go-live' && activeTab !== 'training' && activeTab !== 'deployment' && activeTab !== 'integration' && activeTab !== 'env-setup' && (
           <div className="space-y-4">
             {filteredTasks.map((task) => (
               <div key={task.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">

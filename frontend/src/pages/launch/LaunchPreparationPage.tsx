@@ -28,6 +28,9 @@ import {
 import { cn } from '@/utils';
 import PerformanceMonitoring from '@/components/launch/PerformanceMonitoring';
 import UserAcceptanceTesting from '@/components/launch/UserAcceptanceTesting';
+import DocumentationGenerator from '@/components/launch/DocumentationGenerator';
+import GoLiveProcedures from '@/components/launch/GoLiveProcedures';
+import SupportTrainingSystem from '@/components/launch/SupportTrainingSystem';
 
 interface LaunchTask {
   id: string;
@@ -453,7 +456,8 @@ const LaunchPreparationPage: React.FC = () => {
                 { id: 'documentation', name: 'Documentation', icon: FileText },
                 { id: 'go-live', name: 'Go-Live', icon: Rocket },
                 { id: 'monitoring', name: 'Performance', icon: Zap },
-                { id: 'uat', name: 'UAT', icon: Users }
+                { id: 'uat', name: 'UAT', icon: Users },
+                { id: 'training', name: 'Training', icon: GraduationCap }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -647,8 +651,29 @@ const LaunchPreparationPage: React.FC = () => {
           </div>
         )}
 
+        {/* Documentation Generator Tab */}
+        {activeTab === 'documentation' && (
+          <div className="space-y-6">
+            <DocumentationGenerator />
+          </div>
+        )}
+
+        {/* Go-Live Procedures Tab */}
+        {activeTab === 'go-live' && (
+          <div className="space-y-6">
+            <GoLiveProcedures />
+          </div>
+        )}
+
+        {/* Support Training System Tab */}
+        {activeTab === 'training' && (
+          <div className="space-y-6">
+            <SupportTrainingSystem />
+          </div>
+        )}
+
         {/* Category Tabs */}
-        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && (
+        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && activeTab !== 'documentation' && activeTab !== 'go-live' && activeTab !== 'training' && (
           <div className="space-y-4">
             {filteredTasks.map((task) => (
               <div key={task.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">

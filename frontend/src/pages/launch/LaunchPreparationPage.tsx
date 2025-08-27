@@ -31,6 +31,7 @@ import UserAcceptanceTesting from '@/components/launch/UserAcceptanceTesting';
 import DocumentationGenerator from '@/components/launch/DocumentationGenerator';
 import GoLiveProcedures from '@/components/launch/GoLiveProcedures';
 import SupportTrainingSystem from '@/components/launch/SupportTrainingSystem';
+import ProductionDeployment from '@/components/launch/ProductionDeployment';
 
 interface LaunchTask {
   id: string;
@@ -457,7 +458,8 @@ const LaunchPreparationPage: React.FC = () => {
                 { id: 'go-live', name: 'Go-Live', icon: Rocket },
                 { id: 'monitoring', name: 'Performance', icon: Zap },
                 { id: 'uat', name: 'UAT', icon: Users },
-                { id: 'training', name: 'Training', icon: GraduationCap }
+                { id: 'training', name: 'Training', icon: GraduationCap },
+                { id: 'deployment', name: 'Deployment', icon: Server }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -672,8 +674,15 @@ const LaunchPreparationPage: React.FC = () => {
           </div>
         )}
 
+        {/* Production Deployment Tab */}
+        {activeTab === 'deployment' && (
+          <div className="space-y-6">
+            <ProductionDeployment />
+          </div>
+        )}
+
         {/* Category Tabs */}
-        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && activeTab !== 'documentation' && activeTab !== 'go-live' && activeTab !== 'training' && (
+        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && activeTab !== 'documentation' && activeTab !== 'go-live' && activeTab !== 'training' && activeTab !== 'deployment' && (
           <div className="space-y-4">
             {filteredTasks.map((task) => (
               <div key={task.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">

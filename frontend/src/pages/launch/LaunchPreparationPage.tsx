@@ -34,6 +34,7 @@ import SupportTrainingSystem from '@/components/launch/SupportTrainingSystem';
 import ProductionDeployment from '@/components/launch/ProductionDeployment';
 import FinalIntegrationTesting from '@/components/launch/FinalIntegrationTesting';
 import ProductionEnvironmentSetup from '@/components/launch/ProductionEnvironmentSetup';
+import GoLiveExecution from '@/components/launch/GoLiveExecution';
 
 interface LaunchTask {
   id: string;
@@ -60,7 +61,7 @@ interface LaunchMetrics {
 
 const LaunchPreparationPage: React.FC = () => {
   const [tasks, setTasks] = useState<LaunchTask[]>([]);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live' | 'monitoring' | 'uat' | 'integration' | 'env-setup'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live' | 'monitoring' | 'uat' | 'integration' | 'env-setup' | 'go-live-execution'>('dashboard');
   const [selectedTask, setSelectedTask] = useState<string>('');
   const [isRunningChecks, setIsRunningChecks] = useState(false);
 
@@ -463,7 +464,8 @@ const LaunchPreparationPage: React.FC = () => {
                                  { id: 'training', name: 'Training', icon: GraduationCap },
                  { id: 'deployment', name: 'Deployment', icon: Server },
                  { id: 'integration', name: 'Integration', icon: GitBranch },
-                 { id: 'env-setup', name: 'Environment Setup', icon: Database }
+                 { id: 'env-setup', name: 'Environment Setup', icon: Database },
+                 { id: 'go-live-execution', name: 'Go-Live Execution', icon: Rocket }
               ].map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -699,8 +701,15 @@ const LaunchPreparationPage: React.FC = () => {
           </div>
         )}
 
+        {/* Go-Live Execution Tab */}
+        {activeTab === 'go-live-execution' && (
+          <div className="space-y-6">
+            <GoLiveExecution />
+          </div>
+        )}
+
         {/* Category Tabs */}
-        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && activeTab !== 'documentation' && activeTab !== 'go-live' && activeTab !== 'training' && activeTab !== 'deployment' && activeTab !== 'integration' && activeTab !== 'env-setup' && (
+        {activeTab !== 'dashboard' && activeTab !== 'monitoring' && activeTab !== 'uat' && activeTab !== 'documentation' && activeTab !== 'go-live' && activeTab !== 'training' && activeTab !== 'deployment' && activeTab !== 'integration' && activeTab !== 'env-setup' && activeTab !== 'go-live-execution' && (
           <div className="space-y-4">
             {filteredTasks.map((task) => (
               <div key={task.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">

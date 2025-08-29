@@ -26,11 +26,7 @@
     "noUncheckedIndexedAccess": false,
     "allowUnusedLabels": true,
     "allowUnreachableCode": true,
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*", "src/*"]
-    }
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*"
@@ -40,9 +36,5 @@
     "dist",
     "**/*.test.ts",
     "**/*.spec.ts"
-  ],
-  "ts-node": {
-    "esm": false,
-    "experimentalSpecifierResolution": "node"
-  }
+  ]
 }

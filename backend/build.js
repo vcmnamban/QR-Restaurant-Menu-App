@@ -1,9 +1,13 @@
+// VERSION 2.0 - NEW BUILD SYSTEM
+// This script compiles TypeScript to JavaScript for production deployment
+// Railway should use this new version instead of the old file copy approach
+
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// Simple and reliable TypeScript build script
-console.log('🚀 Starting TypeScript build...');
+// NEW BUILD SCRIPT - TypeScript compilation with proper error handling
+console.log('🚀 NEW BUILD: Starting TypeScript compilation...');
 
 const srcDir = path.join(__dirname, 'src');
 const distDir = path.join(__dirname, 'dist');
@@ -18,9 +22,9 @@ try {
   fs.mkdirSync(distDir, { recursive: true });
   console.log('📁 Created dist directory');
 
-  // Try TypeScript compilation
-  console.log('🔨 Compiling TypeScript...');
-  execSync('npx tsc --project .', { 
+  // Use TypeScript compiler with explicit project file
+  console.log('🔨 Compiling TypeScript with tsc...');
+  execSync('npx tsc --project tsconfig.json', { 
     stdio: 'inherit', 
     cwd: __dirname,
     env: { ...process.env, NODE_ENV: 'production' }
@@ -29,10 +33,17 @@ try {
   console.log('✅ TypeScript compilation successful!');
   console.log('📁 JavaScript files generated in dist/ directory');
   
+  // Verify the compiled files exist
+  const serverJsPath = path.join(distDir, 'server.js');
+  if (fs.existsSync(serverJsPath)) {
+    console.log('✅ server.js compiled successfully');
+  } else {
+    throw new Error('server.js was not generated');
+  }
+  
 } catch (error) {
   console.error('❌ Build failed:', error.message);
   
-  // If TypeScript compilation fails, provide helpful error message
   if (error.status !== 0) {
     console.error('\n💡 Troubleshooting tips:');
     console.error('1. Check that all TypeScript files have valid syntax');

@@ -373,7 +373,7 @@ router.get('/:id/items', asyncHandler(async (req, res) => {
 
   const menu = await Menu.findById(req.params.id);
   if (!menu || !menu.isActive) {
-    throw createError('Menu not found or inactive', 404);
+    throw createError('Menu not found or inactive', 400);
   }
 
   let items = [...menu.items];

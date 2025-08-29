@@ -56,7 +56,7 @@ const changePasswordSchema = Joi.object({
 // Generate JWT token
 const generateToken = (userId: string, role: string): string => {
   const secret = process.env.JWT_SECRET || 'fallback-secret';
-  const options = { expiresIn: process.env.JWT_EXPIRES_IN || '7d' };
+  const options = { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as string };
   
   return jwt.sign(
     { userId, role },
@@ -194,7 +194,7 @@ router.post('/forgot-password', asyncHandler(async (req, res) => {
   const resetToken = jwt.sign(
     { userId: user._id, type: 'password-reset' },
     secret,
-    { expiresIn: '1h' }
+    { expiresIn: '1h' as string }
   );
 
   // TODO: Send email with reset link

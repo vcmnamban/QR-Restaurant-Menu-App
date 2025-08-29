@@ -63,7 +63,8 @@ const createMenuSchema = Joi.object({
   })).min(1).required(),
   currency: Joi.string().valid('SAR', 'USD', 'EUR').default('SAR'),
   taxRate: Joi.number().min(0).max(100).default(15),
-  serviceCharge: Joi.number().min(0).max(100).default(0)
+  serviceCharge: Joi.number().min(0).max(100).default(0),
+  isActive: Joi.boolean().default(true)
 });
 
 const updateMenuSchema = Joi.object({

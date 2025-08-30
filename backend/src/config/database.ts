@@ -77,9 +77,12 @@ export const connectDatabase = async (): Promise<void> => {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
-      bufferMaxEntries: 0,
       bufferCommands: false,
       retryWrites: true,
+      w: 'majority',
+      readPreference: 'primary',
+      maxIdleTimeMS: 30000,
+      minPoolSize: 2,
     };
 
     console.log('🔄 Connecting to MongoDB...');

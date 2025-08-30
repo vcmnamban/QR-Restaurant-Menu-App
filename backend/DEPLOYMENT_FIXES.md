@@ -22,10 +22,15 @@
 ### 4. **MongoDB Connection Options**
 - **Problem**: Basic connection options without production optimizations
 - **Solution**: Added production-ready MongoDB options:
-  - `w: 'majority'` - Write concern for data durability
-  - `readPreference: 'primary'` - Read from primary node
+  - `w: 'majority' as const` - Write concern for data durability
+  - `readPreference: 'primary' as const` - Read from primary node
   - `maxIdleTimeMS: 30000` - Connection pool management
   - `minPoolSize: 2` - Minimum connection pool size
+
+### 5. **TypeScript Type Issues**
+- **Problem**: MongoDB connection options had incorrect types causing build failures
+- **Solution**: Added proper type assertions with `as const` for string literals
+- **File**: `src/config/database.ts` - Lines 81-82
 
 ## 🔧 **Files Modified**
 
@@ -48,10 +53,10 @@ const options = {
   socketTimeoutMS: 45000,
   bufferCommands: false,
   retryWrites: true,
-  w: 'majority',              // ✅ ADDED - Write concern
-  readPreference: 'primary',  // ✅ ADDED - Read preference
-  maxIdleTimeMS: 30000,       // ✅ ADDED - Connection management
-  minPoolSize: 2,             // ✅ ADDED - Pool management
+  w: 'majority' as const,              // ✅ ADDED - Write concern
+  readPreference: 'primary' as const,  // ✅ ADDED - Read preference
+  maxIdleTimeMS: 30000,                // ✅ ADDED - Connection management
+  minPoolSize: 2,                      // ✅ ADDED - Pool management
 };
 ```
 

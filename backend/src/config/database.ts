@@ -79,8 +79,8 @@ export const connectDatabase = async (): Promise<void> => {
       socketTimeoutMS: 45000,
       bufferCommands: false,
       retryWrites: true,
-      w: 'majority',
-      readPreference: 'primary',
+      w: 'majority' as const,
+      readPreference: 'primary' as const,
       maxIdleTimeMS: 30000,
       minPoolSize: 2,
     };

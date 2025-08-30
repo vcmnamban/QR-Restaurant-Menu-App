@@ -80,7 +80,6 @@ export const connectDatabase = async (): Promise<void> => {
       bufferMaxEntries: 0,
       bufferCommands: false,
       retryWrites: true,
-      w: 'majority',
     };
 
     console.log('🔄 Connecting to MongoDB...');

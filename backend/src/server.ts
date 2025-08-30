@@ -13,6 +13,7 @@ import restaurantRoutes from './routes/restaurants';
 import menuRoutes from './routes/menus';
 import orderRoutes from './routes/orders';
 import userRoutes from './routes/users';
+import mongoose from 'mongoose';
 
 // Load environment variables
 dotenv.config();
@@ -20,6 +21,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Security middleware
 app.use(helmet());
@@ -82,34 +84,76 @@ app.use(notFound);
 // Error handling middleware
 app.use(errorHandler);
 
-// Start server
-const startServer = async () => {
+const startServer = async (): Promise<void> => {
   try {
-    // Connect to database
-    await connectDatabase();
+    // Connect to database with retry logic
+    let retryCount = 0;
+    const maxRetries = 3;
     
-    // Start listening
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://${HOST}:${PORT}`);
-      console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-      console.log(`🔗 Health check: http://${HOST}:${PORT}/health`);
+    while (retryCount < maxRetries) {
+      try {
+        console.log(`🔄 Database connection attempt ${retryCount + 1}/${maxRetries}`);
+        await connectDatabase();
+        break; // Success, exit retry loop
+      } catch (error) {
+        retryCount++;
+        console.error(`❌ Database connection attempt ${retryCount} failed:`, error.message);
+        
+        if (retryCount >= maxRetries) {
+          console.error('💥 Maximum database connection retries reached. Exiting...');
+          process.exit(1);
+        }
+        
+        // Wait before retrying (exponential backoff)
+        const waitTime = Math.min(1000 * Math.pow(2, retryCount), 10000);
+        console.log(`⏳ Waiting ${waitTime}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+      }
+    }
+
+    // Start the server
+    const server = app.listen(PORT, () => {
+      console.log(`🚀 Server is running on port ${PORT}`);
+      console.log(`🌍 Environment: ${NODE_ENV}`);
+      console.log(`📊 Database: ${mongoose.connection.name || 'Connecting...'}`);
+      console.log(`🔗 Health check: http://localhost:${PORT}/health`);
     });
+
+    // Graceful shutdown
+    const gracefulShutdown = async (signal: string) => {
+      console.log(`\n🛑 Received ${signal}. Starting graceful shutdown...`);
+      
+      server.close(async () => {
+        console.log('🔄 HTTP server closed');
+        
+        try {
+          if (mongoose.connection.readyState === 1) {
+            await mongoose.connection.close();
+            console.log('🔄 MongoDB connection closed');
+          }
+          console.log('✅ Graceful shutdown completed');
+          process.exit(0);
+        } catch (error) {
+          console.error('❌ Error during graceful shutdown:', error);
+          process.exit(1);
+        }
+      });
+      
+      // Force shutdown after 30 seconds
+      setTimeout(() => {
+        console.error('💥 Forced shutdown after timeout');
+        process.exit(1);
+      }, 30000);
+    };
+
+    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+    process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 };
-
-// Handle graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('🔄 SIGTERM received, shutting down gracefully');
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  console.log('🔄 SIGINT received, shutting down gracefully');
-  process.exit(0);
-});
 
 // Start the server
 startServer();

@@ -402,7 +402,7 @@ const MenuPage: React.FC = () => {
                     <div>
                       <h3 className="font-medium text-gray-900">Category</h3>
                       <p className="text-gray-600">
-                        {getCategoryName(selectedItem.categoryId)}
+                        {getCategoryName(selectedItem.categoryId || '')}
                       </p>
                     </div>
                     <div>

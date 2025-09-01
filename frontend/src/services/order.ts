@@ -214,7 +214,7 @@ export class OrderService {
   static validateOrderData(data: Partial<Order>): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    if (!data.customerId || data.customerId.trim().length === 0) {
+    if (!data.customer || (typeof data.customer === 'string' && data.customer.trim().length === 0)) {
       errors.push('Customer is required');
     }
 
@@ -252,13 +252,13 @@ export class OrderService {
       formatted.items = formatted.items.map(item => ({
         ...item,
         quantity: parseInt(item.quantity.toString()) || 1,
-        price: parseFloat(item.price.toString()) || 0
+        price: parseFloat((item.price || 0).toString()) || 0
       }));
     }
 
     // Ensure total is calculated
     if (formatted.items) {
-      formatted.total = formatted.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      formatted.total = formatted.items.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
     }
 
     return formatted;
@@ -292,7 +292,7 @@ export class OrderService {
 
   // Calculate order total
   static calculateOrderTotal(items: OrderItem[]): number {
-    return items.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return items.reduce((total, item) => total + ((item.price || 0) * item.quantity), 0);
   }
 
   // Get estimated delivery time
@@ -311,6 +311,16 @@ export class OrderService {
     }
     
     return 'Not set';
+  },
+
+  // Delete order
+  deleteOrder: async (orderId: string): Promise<void> => {
+    try {
+      await api.delete(`/orders/${orderId}`);
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      throw error;
+    }
   }
 }
 

@@ -245,13 +245,13 @@ class QRService {
   // Check if QR code has reached max scans
   static hasQRCodeReachedMaxScans(qrCode: QRCode): boolean {
     if (!qrCode.settings?.maxScans || qrCode.settings.maxScans === 0) return false;
-    return (qrCode.stats?.totalScans || 0) >= qrCode.settings.maxScans;
+    return (qrCode.stats?.scans || 0) >= qrCode.settings.maxScans;
   }
 
   // Get QR code usage percentage
   static getQRCodeUsagePercentage(qrCode: QRCode): number {
     if (!qrCode.settings?.maxScans || qrCode.settings.maxScans === 0) return 0;
-    const percentage = ((qrCode.stats?.totalScans || 0) / qrCode.settings.maxScans) * 100;
+    const percentage = ((qrCode.stats?.scans || 0) / qrCode.settings.maxScans) * 100;
     return Math.min(percentage, 100);
   }
 }

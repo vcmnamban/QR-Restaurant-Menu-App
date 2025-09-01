@@ -239,9 +239,9 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                 <div className="absolute top-2 right-2">
                   <span className={cn(
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                    getStatusColor(item.isActive)
+                    getStatusColor(item.isActive ?? true)
                   )}>
-                    {getStatusText(item.isActive)}
+                    {getStatusText(item.isActive ?? true)}
                   </span>
                 </div>
 
@@ -267,7 +267,7 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                       </p>
                     )}
                     <p className="text-sm text-primary-600">
-                      {getCategoryName(item.categoryId)}
+                      {getCategoryName(item.categoryId || '')}
                     </p>
                   </div>
 
@@ -299,10 +299,10 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                       <Clock className="h-4 w-4 mr-1" />
                       <span>{item.preparationTime || 15} min</span>
                     </div>
-                    {item.calories > 0 && (
+                    {item.calories && item.calories > 0 && (
                       <div className="flex items-center">
                         <Star className="h-4 w-4 mr-1" />
-                        <span>{item.calories} cal</span>
+                        <span>{item.calories || 0} cal</span>
                       </div>
                     )}
                   </div>
@@ -401,7 +401,7 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                           </p>
                         )}
                         <p className="text-sm text-primary-600">
-                          {getCategoryName(item.categoryId)}
+                          {getCategoryName(item.categoryId || '')}
                         </p>
                         {item.description && (
                           <p className="text-sm text-gray-500 mt-1 line-clamp-2">
@@ -417,9 +417,9 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                         </div>
                         <span className={cn(
                           'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1',
-                          getStatusColor(item.isActive)
+                          getStatusColor(item.isActive ?? true)
                         )}>
-                          {getStatusText(item.isActive)}
+                          {getStatusText(item.isActive ?? true)}
                         </span>
                       </div>
                     </div>
@@ -445,10 +445,10 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                           <Clock className="h-4 w-4 mr-1" />
                           <span>{item.preparationTime || 15} min</span>
                         </div>
-                        {item.calories > 0 && (
+                        {item.calories && item.calories > 0 && (
                           <div className="flex items-center">
                             <Star className="h-4 w-4 mr-1" />
-                            <span>{item.calories} cal</span>
+                            <span>{item.calories || 0} cal</span>
                           </div>
                         )}
                       </div>

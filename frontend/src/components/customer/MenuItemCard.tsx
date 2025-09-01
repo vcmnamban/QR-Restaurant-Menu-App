@@ -47,7 +47,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     if (!item.spiceLevel) return null;
     const levels = ['Mild', 'Medium', 'Hot', 'Very Hot'];
     const colors = ['bg-green-100 text-green-800', 'bg-yellow-100 text-yellow-800', 'bg-orange-100 text-orange-800', 'bg-red-100 text-red-800'];
-    return { text: levels[item.spiceLevel - 1], color: colors[item.spiceLevel - 1] };
+    return { text: levels[item.spiceLevel - 1] || 'Mild', color: colors[item.spiceLevel - 1] || colors[0] };
   };
 
   return (
@@ -147,7 +147,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
                 <span>{item.preparationTime} min</span>
               </div>
             )}
-            {item.calories > 0 && (
+            {item.calories && item.calories > 0 && (
               <div className="flex items-center">
                 <Star className="h-4 w-4 mr-1" />
                 <span>{item.calories} cal</span>

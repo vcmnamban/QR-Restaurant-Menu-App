@@ -173,9 +173,9 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                           <span className="text-sm text-gray-400">
                             {formatTime(status.timestamp)}
                           </span>
-                          {status.notes && (
+                          {status.note && (
                             <span className="text-sm text-gray-500">
-                              - {status.notes}
+                              - {status.note}
                             </span>
                           )}
                         </div>
@@ -220,10 +220,10 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({
                         </div>
                         <div className="text-right">
                           <div className="text-lg font-semibold text-gray-900">
-                            {formatCurrency(item.price * item.quantity)}
+                            {formatCurrency((item.price || 0) * item.quantity)}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {formatCurrency(item.price)} each
+                            {formatCurrency(item.price || 0)} each
                           </div>
                         </div>
                       </div>

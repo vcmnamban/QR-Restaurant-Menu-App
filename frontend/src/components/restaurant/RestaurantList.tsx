@@ -46,7 +46,7 @@ const RestaurantList: React.FC<RestaurantListProps> = ({
     if (!hours) return false;
     
     const now = new Date();
-    const day = now.toLocaleDateString('en-US', { weekday: 'lowercase' });
+    const day = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
     const currentTime = now.toLocaleTimeString('en-US', { hour12: false });
     
     const dayHours = hours[day];

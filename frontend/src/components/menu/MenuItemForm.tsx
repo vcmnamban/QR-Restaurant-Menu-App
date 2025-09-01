@@ -108,7 +108,9 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
       name: '',
       nameAr: '',
       options: [],
+      required: false,
       isRequired: false,
+      multiple: false,
       maxSelections: 1,
       minSelections: 0
     };
@@ -130,8 +132,7 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
     updated[customizationIndex].options.push({
       name: '',
       nameAr: '',
-      price: 0,
-      isAvailable: true
+      price: 0
     });
     setCustomizations(updated);
   };

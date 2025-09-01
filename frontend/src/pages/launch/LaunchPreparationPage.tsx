@@ -62,7 +62,7 @@ interface LaunchMetrics {
 
 const LaunchPreparationPage: React.FC = () => {
   const [tasks, setTasks] = useState<LaunchTask[]>([]);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live' | 'monitoring' | 'uat' | 'integration' | 'env-setup' | 'go-live-execution'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'deployment' | 'performance' | 'testing' | 'documentation' | 'go-live' | 'monitoring' | 'uat' | 'integration' | 'env-setup' | 'go-live-execution' | 'training'>('dashboard');
   const [selectedTask, setSelectedTask] = useState<string>('');
   const [isRunningChecks, setIsRunningChecks] = useState(false);
 

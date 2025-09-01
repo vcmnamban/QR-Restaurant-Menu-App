@@ -409,7 +409,7 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
-                      {...register(`hours.${day}.isOpen`)}
+                      {...register(`hours.${day}.isOpen` as any)}
                       className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                     />
                     <span className="text-sm text-gray-600">Open</span>
@@ -418,13 +418,13 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
                   <div className="flex items-center space-x-2">
                     <input
                       type="time"
-                      {...register(`hours.${day}.open`)}
+                      {...register(`hours.${day}.open` as any)}
                       className="input w-32"
                     />
                     <span className="text-gray-500">to</span>
                     <input
                       type="time"
-                      {...register(`hours.${day}.close`)}
+                      {...register(`hours.${day}.close` as any)}
                       className="input w-32"
                     />
                   </div>

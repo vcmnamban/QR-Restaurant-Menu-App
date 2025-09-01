@@ -287,7 +287,7 @@ const OrderList: React.FC<OrderListProps> = ({
                                 <span>
                                   {item.quantity}x {item.menuItemName || 'Unknown Item'}
                                 </span>
-                                <span>{formatCurrency(item.price * item.quantity)}</span>
+                                <span>{formatCurrency((item.price || 0) * item.quantity)}</span>
                               </div>
                             ))}
                             {order.items.length > 3 && (
@@ -385,7 +385,7 @@ const OrderList: React.FC<OrderListProps> = ({
                               onClick={() => {
                                 const notes = prompt('Add notes (optional):');
                                 if (notes !== null) {
-                                  handleStatusUpdate(order._id, order.status, notes);
+                                  handleStatusUpdate(order._id, order.status);
                                 }
                               }}
                               className="btn-outline text-sm"

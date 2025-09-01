@@ -84,7 +84,7 @@ const CustomerMenuPage: React.FC = () => {
         MenuService.getPublicMenu(restaurantId!),
         MenuService.getCategories(restaurantId!)
       ]);
-      setMenuItems(menuData.items);
+      setMenuItems(menuData.categories.flatMap(cat => cat.items));
       setCategories(categoriesData);
     } catch (error: any) {
       toast.error(error.message || 'Failed to fetch menu data');
@@ -106,7 +106,7 @@ const CustomerMenuPage: React.FC = () => {
       filtered = filtered.filter(item =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        (item.tags || []).some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -232,7 +232,7 @@ const CustomerMenuPage: React.FC = () => {
               <div>
                 <h1 className="text-xl font-bold text-gray-900">{restaurant.name}</h1>
                 <p className="text-sm text-gray-500">
-                  {restaurant.cuisineType} • {restaurant.location?.city}
+                  {restaurant.cuisineType} • {restaurant.location}
                 </p>
               </div>
             </div>
@@ -260,13 +260,12 @@ const CustomerMenuPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Clock className="h-4 w-4" />
               <span>
-                {restaurant.operatingHours?.isOpen ? 'Open Now' : 'Closed'} • 
-                {restaurant.operatingHours?.hours}
+                {restaurant.operatingHours ? 'Open Now' : 'Closed'}
               </span>
             </div>
             <div className="flex items-center space-x-2">
               <MapPin className="h-4 w-4" />
-              <span>{restaurant.location?.address}</span>
+              <span>{restaurant.location}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Phone className="h-4 w-4" />

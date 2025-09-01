@@ -177,7 +177,7 @@ const PerformanceTesting: React.FC = () => {
       for (let i = 1; i <= 5; i++) {
         const currentUsers = i * 5; // 5, 10, 15, 20, 25 users
         
-        toast.info(`Stress test phase ${i}: ${currentUsers} concurrent users`);
+        toast(`Stress test phase ${i}: ${currentUsers} concurrent users`);
         
         const promises = [];
         for (let j = 0; j < currentUsers; j++) {
@@ -216,7 +216,7 @@ const PerformanceTesting: React.FC = () => {
     setTests(prev => prev.map(test => 
       test.status === 'running' ? { ...test, status: 'pending' } : test
     ));
-    toast.info('Tests stopped');
+    toast('Tests stopped');
   };
 
   const clearTests = () => {

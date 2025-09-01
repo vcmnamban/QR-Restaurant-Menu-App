@@ -27,20 +27,20 @@ import QRService from '@/services/qr';
 import RestaurantService from '@/services/restaurant';
 
 // Import types
-import { QRCode as QRCodeType, Restaurant } from '@/types';
+import { QRCode, Restaurant } from '@/types';
 import { cn } from '@/utils';
 
 type ViewMode = 'list' | 'generate' | 'edit' | 'view';
-type QRCodeType = 'table' | 'menu' | 'restaurant' | 'custom';
+type QRCodeTypeEnum = 'table' | 'menu' | 'restaurant' | 'custom';
 
 const QRGenerationPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [selectedQR, setSelectedQR] = useState<QRCodeType | null>(null);
+  const [selectedQR, setSelectedQR] = useState<QRCode | null>(null);
 
   // Data states
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
-  const [qrCodes, setQrCodes] = useState<QRCodeType[]>([]);
+  const [qrCodes, setQrCodes] = useState<QRCode[]>([]);
 
   // Loading states
   const [isLoading, setIsLoading] = useState(false);
@@ -113,13 +113,13 @@ const QRGenerationPage: React.FC = () => {
     }
   };
 
-  const handleSubmitQR = async (data: Partial<QRCodeType>) => {
+  const handleSubmitQR = async (data: Partial<QRCode>) => {
     if (!selectedRestaurant) return;
 
     setIsSubmitting(true);
     try {
       if (viewMode === 'generate') {
-        await QRService.generateQRCode(selectedRestaurant._id, data);
+        await QRService.generateQRCode(selectedRestaurant._id, data as any);
         toast.success('QR code generated successfully');
       } else if (viewMode === 'edit' && selectedQR) {
         await QRService.updateQRCode(selectedQR._id, data);
@@ -154,10 +154,11 @@ const QRGenerationPage: React.FC = () => {
               </button>
             </div>
             <QRCodeForm
+              qrCode={selectedQR}
               onSubmit={handleSubmitQR}
               onCancel={handleCancel}
               isLoading={isSubmitting}
-              restaurant={selectedRestaurant}
+              restaurant={selectedRestaurant!}
             />
           </div>
         );
@@ -179,7 +180,7 @@ const QRGenerationPage: React.FC = () => {
               onSubmit={handleSubmitQR}
               onCancel={handleCancel}
               isLoading={isSubmitting}
-              restaurant={selectedRestaurant}
+              restaurant={selectedRestaurant!}
             />
           </div>
         );
@@ -255,9 +256,9 @@ const QRGenerationPage: React.FC = () => {
             {/* QR Codes List */}
             <QRCodeList
               qrCodes={qrCodes}
-              onViewQR={handleViewQR}
-              onEditQR={handleEditQR}
-              onDeleteQR={handleDeleteQR}
+              onViewQR={(qrCode: QRCode) => handleViewQR(qrCode)}
+              onEditQR={(qrCode: QRCode) => handleEditQR(qrCode)}
+              onDeleteQR={(qrCode: QRCode) => handleDeleteQR(qrCode._id)}
               isLoading={isLoading}
             />
           </div>

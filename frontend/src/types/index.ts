@@ -383,16 +383,41 @@ export interface QRCodeData {
 
 export interface QRCode {
   _id: string;
+  name: string;
+  description?: string;
   restaurant: string | Restaurant;
-  type: 'menu' | 'table' | 'payment';
+  type: 'menu' | 'table' | 'restaurant' | 'custom';
+  targetUrl: string;
+  tableNumber?: string;
+  menuCategory?: string;
+  customData?: any;
   data: QRCodeData;
   qrCodeImage: string;
+  design: {
+    foregroundColor: string;
+    backgroundColor: string;
+    size: number;
+    logo?: string;
+    logoSize: number;
+    cornerRadius: number;
+  };
+  settings: {
+    isActive: boolean;
+    expiresAt?: string;
+    maxScans?: number;
+    password?: string;
+  };
+  stats: {
+    scans: number;
+    lastScanned?: Date;
+    uniqueScans: number;
+  };
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export type QRCodeType = 'menu' | 'table' | 'payment';
+export type QRCodeType = 'menu' | 'table' | 'restaurant' | 'custom';
 
 export interface GenerateQRCodeData {
   restaurantId: string;

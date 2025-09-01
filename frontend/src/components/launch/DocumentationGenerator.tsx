@@ -282,7 +282,7 @@ const DocumentationGenerator: React.FC = () => {
   };
 
   const getTypeColor = (type: string) => {
-    const colors = {
+    const colors: Record<string, string> = {
       'user-manual': 'bg-blue-100 text-blue-800',
       'admin-guide': 'bg-purple-100 text-purple-800',
       'api-docs': 'bg-green-100 text-green-800',

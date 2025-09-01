@@ -91,8 +91,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
         notes: item.notes,
         customizations: item.customizations
       })) || [],
-      deliveryMethod: order?.deliveryMethod || 'delivery',
-      paymentMethod: order?.paymentMethod || 'cash',
+      deliveryMethod: (order?.deliveryMethod as 'delivery' | 'pickup') || 'delivery',
+      paymentMethod: (order?.paymentMethod as 'card' | 'cash' | 'online') || 'cash',
       specialInstructions: order?.specialInstructions || ''
     },
     mode: 'onChange'
@@ -207,7 +207,23 @@ const OrderForm: React.FC<OrderFormProps> = ({
     }
 
     try {
-      await onSubmit(data);
+      // Convert OrderFormData to Order format
+      const orderData: Partial<Order> = {
+        customerName: data.customerName,
+        customerPhone: data.customerPhone,
+        customerEmail: data.customerEmail,
+        items: data.items.map(item => ({
+          menuItemId: item.menuItemId,
+          quantity: item.quantity,
+          price: item.price,
+          notes: item.notes,
+          customizations: item.customizations
+        })),
+        deliveryMethod: data.deliveryMethod,
+        paymentMethod: data.paymentMethod,
+        specialInstructions: data.specialInstructions
+      };
+      await onSubmit(orderData);
     } catch (error) {
       console.error('Failed to submit order:', error);
     }
@@ -438,7 +454,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
                 {filteredMenuItems.map((item) => (
                   <div
-                    key={item._id}
+                    key={item._id || item.id}
                     className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 cursor-pointer transition-colors"
                     onClick={() => addItemToOrder(item)}
                   >

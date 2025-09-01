@@ -12,6 +12,7 @@ export interface User {
   profileImage?: string;
   address?: Address;
   preferences?: UserPreferences;
+  restaurantId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,6 +22,7 @@ export interface Address {
   city: string;
   state: string;
   zipCode: string;
+  postalCode?: string;
   country: string;
   coordinates?: {
     latitude: number;
@@ -50,11 +52,17 @@ export interface Restaurant {
   images: string[];
   category: string[];
   cuisine: string[];
+  cuisineType?: string;
   rating: number;
   totalReviews: number;
   address: Address;
   contact: ContactInfo;
+  phone?: string;
+  email?: string;
+  website?: string;
   hours: OperatingHours;
+  operatingHours?: OperatingHours;
+  location?: string;
   features: string[];
   paymentMethods: string[];
   deliveryOptions: DeliveryOptions;
@@ -123,31 +131,42 @@ export interface Menu {
 }
 
 export interface MenuCategory {
+  _id: string;
   name: string;
   nameAr?: string;
   description?: string;
   descriptionAr?: string;
   image?: string;
+  color?: string;
   isActive: boolean;
   sortOrder: number;
+  itemCount?: number;
 }
 
 export interface MenuItem {
+  _id: string;
   name: string;
   nameAr?: string;
   description: string;
   descriptionAr?: string;
   price: number;
   originalPrice?: number;
+  comparePrice?: number;
   image?: string;
   category: string;
+  categoryId?: string;
   isAvailable: boolean;
   isPopular: boolean;
   isVegetarian: boolean;
   isVegan: boolean;
   isGlutenFree: boolean;
   isHalal: boolean;
+  isActive?: boolean;
   allergens: string[];
+  tags?: string[];
+  calories?: number;
+  rating?: number;
+  popularity?: number;
   nutritionalInfo?: NutritionalInfo;
   preparationTime: number;
   spiceLevel?: 'mild' | 'medium' | 'hot' | 'extra-hot';
@@ -158,26 +177,36 @@ export interface NutritionalInfo {
   calories: number;
   protein: number;
   carbs: number;
+  carbohydrates?: number;
   fat: number;
   fiber: number;
   sugar: number;
+  sodium?: number;
 }
 
 export interface CustomizationOption {
   name: string;
+  nameAr?: string;
   options: {
     name: string;
+    nameAr?: string;
     price: number;
   }[];
   required: boolean;
+  isRequired?: boolean;
   multiple: boolean;
+  minSelections?: number;
   maxSelections?: number;
 }
 
 // Order Types
 export interface Order {
   _id: string;
+  orderNumber?: string;
   customer: string | User;
+  customerName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
   restaurant: string | Restaurant;
   items: OrderItem[];
   totalAmount: number;
@@ -185,10 +214,14 @@ export interface Order {
   serviceCharge: number;
   deliveryFee?: number;
   status: OrderStatus;
+  statusHistory?: Array<{ status: OrderStatus; timestamp: Date; note?: string }>;
   paymentStatus: PaymentStatus;
   paymentMethod: string;
+  deliveryMethod?: string;
   deliveryAddress?: Address;
   deliveryInstructions?: string;
+  specialInstructions?: string;
+  notes?: string[];
   estimatedDeliveryTime?: Date;
   actualDeliveryTime?: Date;
   createdAt: Date;
@@ -197,9 +230,14 @@ export interface Order {
 
 export interface OrderItem {
   menuItem: string | MenuItem;
+  menuItemId?: string;
+  menuItemName?: string;
   quantity: number;
   unitPrice: number;
   totalPrice: number;
+  price?: number;
+  notes?: string;
+  customizations?: Array<{ name: string; value: string; price: number }>;
   customizationOptions?: {
     name: string;
     selectedOptions: string[];
@@ -211,16 +249,19 @@ export interface OrderItem {
 export type OrderStatus = 
   | 'pending'
   | 'confirmed'
+  | 'accepted'
   | 'preparing'
   | 'ready'
   | 'out_for_delivery'
   | 'delivered'
-  | 'cancelled';
+  | 'cancelled'
+  | 'failed';
 
 export type PaymentStatus = 
   | 'pending'
   | 'processing'
   | 'completed'
+  | 'paid'
   | 'failed'
   | 'refunded';
 
@@ -338,4 +379,31 @@ export interface QRCodeData {
   tableNumber?: string;
   type: 'menu' | 'table' | 'payment';
   metadata?: Record<string, any>;
+}
+
+export interface QRCode {
+  _id: string;
+  restaurant: string | Restaurant;
+  type: 'menu' | 'table' | 'payment';
+  data: QRCodeData;
+  qrCodeImage: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type QRCodeType = 'menu' | 'table' | 'payment';
+
+export interface GenerateQRCodeData {
+  restaurantId: string;
+  type: QRCodeType;
+  tableNumber?: string;
+  menuId?: string;
+}
+
+export interface UpdateQRCodeData {
+  type?: QRCodeType;
+  tableNumber?: string;
+  menuId?: string;
+  isActive?: boolean;
 }

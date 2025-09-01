@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 import { 
   Zap, 
   Play, 
-  Stop, 
+  Square, 
   BarChart3, 
   Clock, 
   TrendingUp, 
@@ -353,7 +353,7 @@ const PerformanceTesting: React.FC = () => {
             disabled={!isRunning}
             className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
           >
-            <Stop className="w-4 h-4" />
+            <Square className="w-4 h-4" />
             Stop Tests
           </button>
         </div>

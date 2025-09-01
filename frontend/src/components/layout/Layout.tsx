@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUser, useAuthActions } from '@/store/auth';
 import { 
   Home, 
-  Restaurant, 
+  Building2, 
   Menu, 
   User, 
   LogOut, 
@@ -24,7 +24,7 @@ const Layout: React.FC = () => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
-    { name: 'Restaurant', href: '/restaurant', icon: Restaurant },
+    { name: 'Restaurant', href: '/restaurant', icon: Building2 },
     { name: 'Menu', href: '/menu', icon: Menu },
     { name: 'QR Codes', href: '/qr', icon: QrCode },
     { name: 'Testing', href: '/testing', icon: TestTube },

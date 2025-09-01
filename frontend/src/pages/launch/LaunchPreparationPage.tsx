@@ -23,7 +23,8 @@ import {
   GitBranch,
   Package,
   Cloud,
-  Terminal
+  Terminal,
+  GraduationCap
 } from 'lucide-react';
 import { cn } from '@/utils';
 import PerformanceMonitoring from '@/components/launch/PerformanceMonitoring';

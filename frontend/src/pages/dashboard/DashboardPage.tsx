@@ -1,7 +1,7 @@
 import React from 'react';
 import { useUser } from '@/store/auth';
 import { 
-  Restaurant, 
+  Building2, 
   Menu, 
   Users, 
   TrendingUp, 
@@ -23,7 +23,7 @@ const DashboardPage: React.FC = () => {
       value: '12',
       change: '+2.5%',
       changeType: 'positive',
-      icon: Restaurant,
+      icon: Building2,
     },
     {
       name: 'Active Menus',
@@ -82,7 +82,7 @@ const DashboardPage: React.FC = () => {
   const getActivityIcon = (type: string) => {
     switch (type) {
       case 'restaurant_created':
-        return <Restaurant className="h-5 w-5 text-success-600" />;
+        return <Building2 className="h-5 w-5 text-success-600" />;
       case 'menu_updated':
         return <Menu className="h-5 w-5 text-primary-600" />;
       case 'order_placed':
@@ -198,7 +198,7 @@ const DashboardPage: React.FC = () => {
           <div className="card-body">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <button className="btn-outline w-full justify-center">
-                <Restaurant className="mr-2 h-5 w-5" />
+                <Building2 className="mr-2 h-5 w-5" />
                 Add Restaurant
               </button>
               <button className="btn-outline w-full justify-center">

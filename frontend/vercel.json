@@ -37,6 +37,6 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "@vite_api_url"
+    "REACT_APP_API_URL": "https://restaurant-menu-app-production.up.railway.app"
   }
 }

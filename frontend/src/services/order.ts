@@ -314,7 +314,7 @@ export class OrderService {
   },
 
   // Delete order
-  deleteOrder: async (orderId: string): Promise<void> => {
+  static async deleteOrder(orderId: string): Promise<void> {
     try {
       await api.delete(`/orders/${orderId}`);
     } catch (error) {

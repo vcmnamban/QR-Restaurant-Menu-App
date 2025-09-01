@@ -45,7 +45,7 @@ export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
+  let timeout: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -183,10 +183,10 @@ export const storage = {
 };
 
 // Session storage utilities
-export const sessionStorage = {
+export const sessionStorageUtils = {
   get: (key: string): any => {
     try {
-      const item = sessionStorage.getItem(key);
+      const item = window.sessionStorage.getItem(key);
       return item ? JSON.parse(item) : null;
     } catch {
       return null;
@@ -194,21 +194,21 @@ export const sessionStorage = {
   },
   set: (key: string, value: any): void => {
     try {
-      sessionStorage.setItem(key, JSON.stringify(value));
+      window.sessionStorage.setItem(key, JSON.stringify(value));
     } catch {
       // Handle error silently
     }
   },
   remove: (key: string): void => {
     try {
-      sessionStorage.removeItem(key);
+      window.sessionStorage.removeItem(key);
     } catch {
       // Handle error silently
     }
   },
   clear: (): void => {
     try {
-      sessionStorage.clear();
+      window.sessionStorage.clear();
     } catch {
       // Handle error silently
     }

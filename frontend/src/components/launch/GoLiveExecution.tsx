@@ -609,7 +609,7 @@ const GoLiveExecution: React.FC = () => {
                       Completed
                     </span>
                   )}
-                  {step.status === 'failed' && (
+                  {step.status === 'failed' as const && (
                     <span className="text-sm text-red-600 flex items-center gap-1">
                       <XCircle className="w-4 h-4" />
                       Failed

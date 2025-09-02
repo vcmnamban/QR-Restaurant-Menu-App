@@ -311,7 +311,7 @@ export class OrderService {
     }
     
     return 'Not set';
-  },
+  }
 
   // Delete order
   static async deleteOrder(orderId: string): Promise<void> {

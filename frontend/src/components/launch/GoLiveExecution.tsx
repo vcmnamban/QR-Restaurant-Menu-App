@@ -269,7 +269,7 @@ const GoLiveExecution: React.FC = () => {
       if (step.status === 'pending') {
         setLaunchStatus(prev => ({ ...prev, currentStep: step.name }));
         await executeStep(step);
-        if (step.status === 'failed' as const) {
+        if ((step.status as string) === 'failed') {
           setLaunchStatus(prev => ({ ...prev, overallStatus: 'failed' }));
           setIsLaunching(false);
           return;
@@ -284,7 +284,7 @@ const GoLiveExecution: React.FC = () => {
       if (step.status === 'pending') {
         setLaunchStatus(prev => ({ ...prev, currentStep: step.name }));
         await executeStep(step);
-        if (step.status === 'failed' as const) {
+        if ((step.status as string) === 'failed') {
           setLaunchStatus(prev => ({ ...prev, overallStatus: 'failed' }));
           setIsLaunching(false);
           return;
@@ -299,7 +299,7 @@ const GoLiveExecution: React.FC = () => {
       if (step.status === 'pending') {
         setLaunchStatus(prev => ({ ...prev, currentStep: step.name }));
         await executeStep(step);
-        if (step.status === 'failed' as const) {
+        if ((step.status as string) === 'failed') {
           setLaunchStatus(prev => ({ ...prev, overallStatus: 'failed' }));
           setIsLaunching(false);
           return;
@@ -609,7 +609,7 @@ const GoLiveExecution: React.FC = () => {
                       Completed
                     </span>
                   )}
-                  {step.status === 'failed' as const && (
+                  {(step.status as string) === 'failed' && (
                     <span className="text-sm text-red-600 flex items-center gap-1">
                       <XCircle className="w-4 h-4" />
                       Failed

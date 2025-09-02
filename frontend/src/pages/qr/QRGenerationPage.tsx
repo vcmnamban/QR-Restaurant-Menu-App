@@ -89,12 +89,12 @@ const QRGenerationPage: React.FC = () => {
     setViewMode('generate');
   };
 
-  const handleEditQR = (qrCode: QRCodeType) => {
+  const handleEditQR = (qrCode: QRCode) => {
     setSelectedQR(qrCode);
     setViewMode('edit');
   };
 
-  const handleViewQR = (qrCode: QRCodeType) => {
+  const handleViewQR = (qrCode: QRCode) => {
     setSelectedQR(qrCode);
     setViewMode('view');
   };
@@ -154,7 +154,7 @@ const QRGenerationPage: React.FC = () => {
               </button>
             </div>
             <QRCodeForm
-              qrCode={selectedQR}
+              qrCode={selectedQR || undefined}
               onSubmit={handleSubmitQR}
               onCancel={handleCancel}
               isLoading={isSubmitting}
@@ -258,7 +258,7 @@ const QRGenerationPage: React.FC = () => {
               qrCodes={qrCodes}
               onViewQR={(qrCode: QRCode) => handleViewQR(qrCode)}
               onEditQR={(qrCode: QRCode) => handleEditQR(qrCode)}
-              onDeleteQR={(qrCode: QRCode) => handleDeleteQR(qrCode._id)}
+              onDeleteQR={handleDeleteQR}
               isLoading={isLoading}
             />
           </div>

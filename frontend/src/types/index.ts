@@ -406,9 +406,11 @@ export interface QRCode {
     expiresAt?: string;
     maxScans?: number;
     password?: string;
+    redirectType: 'direct' | 'landing';
   };
   stats: {
     scans: number;
+    totalScans: number;
     lastScanned?: Date;
     uniqueScans: number;
   };

@@ -213,8 +213,11 @@ const OrderForm: React.FC<OrderFormProps> = ({
         customerPhone: data.customerPhone,
         customerEmail: data.customerEmail,
         items: data.items.map(item => ({
+          menuItem: item.menuItemId,
           menuItemId: item.menuItemId,
           quantity: item.quantity,
+          unitPrice: item.price,
+          totalPrice: item.price * item.quantity,
           price: item.price,
           notes: item.notes,
           customizations: item.customizations
@@ -454,7 +457,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
                 {filteredMenuItems.map((item) => (
                   <div
-                    key={item._id || item.id}
+                    key={item._id}
                     className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 cursor-pointer transition-colors"
                     onClick={() => addItemToOrder(item)}
                   >
@@ -466,7 +469,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                         <h4 className="font-medium text-gray-900 truncate">{item.name}</h4>
                         <p className="text-sm text-gray-500 truncate">{item.description}</p>
                         <p className="text-sm text-primary-600 font-medium">
-                          {formatCurrency(item.price)}
+                          {formatCurrency(item.price || 0)}
                         </p>
                         <p className="text-xs text-gray-400">
                           {getCategoryName(item.categoryId)}

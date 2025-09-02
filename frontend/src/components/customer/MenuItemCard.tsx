@@ -47,7 +47,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     if (!item.spiceLevel) return null;
     const levels = ['Mild', 'Medium', 'Hot', 'Very Hot'];
     const colors = ['bg-green-100 text-green-800', 'bg-yellow-100 text-yellow-800', 'bg-orange-100 text-orange-800', 'bg-red-100 text-red-800'];
-    return { text: levels[item.spiceLevel - 1] || 'Mild', color: colors[item.spiceLevel - 1] || colors[0] };
+    return { text: levels[(item.spiceLevel || 1) - 1] || 'Mild', color: colors[(item.spiceLevel || 1) - 1] || colors[0] };
   };
 
   return (

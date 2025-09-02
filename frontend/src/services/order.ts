@@ -258,7 +258,7 @@ export class OrderService {
 
     // Ensure total is calculated
     if (formatted.items) {
-      formatted.total = formatted.items.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
+      formatted.totalAmount = formatted.items.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
     }
 
     return formatted;
@@ -316,7 +316,7 @@ export class OrderService {
   // Delete order
   static async deleteOrder(orderId: string): Promise<void> {
     try {
-      await api.delete(`/orders/${orderId}`);
+      await http.delete(`/orders/${orderId}`);
     } catch (error) {
       console.error('Error deleting order:', error);
       throw error;

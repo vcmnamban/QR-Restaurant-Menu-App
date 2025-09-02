@@ -20,7 +20,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const HOST = process.env.HOST || 'localhost';
+const HOST = process.env.HOST || '0.0.0.0';
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Security middleware
@@ -60,6 +60,23 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Logging middleware
 app.use(morgan('combined'));
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'QR Restaurant Menu API',
+    version: '1.0.0',
+    status: 'OK',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      restaurants: '/api/restaurants',
+      menus: '/api/menus',
+      orders: '/api/orders',
+      users: '/api/users'
+    }
+  });
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -112,7 +129,7 @@ const startServer = async (): Promise<void> => {
     }
 
     // Start the server
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, HOST, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`🌍 Environment: ${NODE_ENV}`);
       console.log(`📊 Database: ${mongoose.connection.name || 'Connecting...'}`);

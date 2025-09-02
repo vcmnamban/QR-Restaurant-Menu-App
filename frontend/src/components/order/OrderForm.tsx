@@ -472,7 +472,7 @@ const OrderForm: React.FC<OrderFormProps> = ({
                           {formatCurrency(item.price || 0)}
                         </p>
                         <p className="text-xs text-gray-400">
-                          {getCategoryName(item.categoryId)}
+                          {getCategoryName(item.categoryId || '')}
                         </p>
                       </div>
                       <button

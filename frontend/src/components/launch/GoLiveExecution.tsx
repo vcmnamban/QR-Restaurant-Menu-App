@@ -269,7 +269,7 @@ const GoLiveExecution: React.FC = () => {
       if (step.status === 'pending') {
         setLaunchStatus(prev => ({ ...prev, currentStep: step.name }));
         await executeStep(step);
-        if (step.status === 'failed') {
+        if (step.status === 'failed' as const) {
           setLaunchStatus(prev => ({ ...prev, overallStatus: 'failed' }));
           setIsLaunching(false);
           return;
@@ -284,7 +284,7 @@ const GoLiveExecution: React.FC = () => {
       if (step.status === 'pending') {
         setLaunchStatus(prev => ({ ...prev, currentStep: step.name }));
         await executeStep(step);
-        if (step.status === 'failed') {
+        if (step.status === 'failed' as const) {
           setLaunchStatus(prev => ({ ...prev, overallStatus: 'failed' }));
           setIsLaunching(false);
           return;
@@ -299,7 +299,7 @@ const GoLiveExecution: React.FC = () => {
       if (step.status === 'pending') {
         setLaunchStatus(prev => ({ ...prev, currentStep: step.name }));
         await executeStep(step);
-        if (step.status === 'failed') {
+        if (step.status === 'failed' as const) {
           setLaunchStatus(prev => ({ ...prev, overallStatus: 'failed' }));
           setIsLaunching(false);
           return;

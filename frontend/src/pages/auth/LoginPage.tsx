@@ -36,13 +36,28 @@ const LoginPage: React.FC = () => {
       toast.success('Login successful!');
       navigate(from, { replace: true });
     } catch (error: any) {
+      let errorMessage = 'Login failed. Please try again.';
+
+      // Extract proper error message
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        errorMessage = JSON.stringify(error);
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+
       // Handle specific error cases
-      if (error.message?.includes('401') || error.message?.includes('Invalid email or password')) {
+      if (errorMessage.includes('401') || errorMessage.includes('Invalid email or password')) {
         toast.error('Invalid email or password. Please check your credentials or create an account.');
-      } else if (error.message?.includes('Network Error')) {
+      } else if (errorMessage.includes('Network Error')) {
         toast.error('Unable to connect to server. Please try again later.');
       } else {
-        toast.error(error.message || 'Login failed. Please try again.');
+        toast.error(errorMessage);
       }
     } finally {
       setIsSubmitting(false);

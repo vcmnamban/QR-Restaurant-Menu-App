@@ -292,6 +292,53 @@ router.post('/change-password', asyncHandler(async (req, res) => {
   });
 }));
 
+// @route   POST /api/auth/create-test-user
+// @desc    Create a test user for development
+// @access  Public (only for development)
+router.post('/create-test-user', asyncHandler(async (req, res) => {
+  // Only allow in development
+  if (process.env.NODE_ENV === 'production') {
+    throw createError('This endpoint is only available in development', 403);
+  }
+
+  // Check if test user already exists
+  const existingUser = await User.findOne({ email: 'test@example.com' });
+  if (existingUser) {
+    return res.json({
+      success: true,
+      message: 'Test user already exists',
+      data: {
+        email: 'test@example.com',
+        password: 'password123'
+      }
+    });
+  }
+
+  // Create test user
+  const testUser = new User({
+    email: 'test@example.com',
+    password: 'password123',
+    firstName: 'Test',
+    lastName: 'User',
+    phone: '0501234567',
+    role: 'customer',
+    isVerified: true,
+    isActive: true
+  });
+
+  await testUser.save();
+
+  res.status(201).json({
+    success: true,
+    message: 'Test user created successfully',
+    data: {
+      email: 'test@example.com',
+      password: 'password123',
+      role: 'customer'
+    }
+  });
+}));
+
 // @route   GET /api/auth/me
 // @desc    Get current user profile
 // @access  Private

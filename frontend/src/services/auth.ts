@@ -18,7 +18,15 @@ export class AuthService {
       return { user, token };
     }
     
-    throw new Error(response.error || 'Login failed');
+    // Extract proper error message
+    let errorMessage = 'Login failed';
+    if (response.error) {
+      errorMessage = response.error;
+    } else if (response.message) {
+      errorMessage = response.message;
+    }
+    
+    throw new Error(errorMessage);
   }
 
   // Register user

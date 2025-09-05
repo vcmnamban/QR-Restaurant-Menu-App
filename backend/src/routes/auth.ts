@@ -294,12 +294,8 @@ router.post('/change-password', asyncHandler(async (req, res) => {
 
 // @route   POST /api/auth/create-test-user
 // @desc    Create a test user for development
-// @access  Public (only for development)
+// @access  Public
 router.post('/create-test-user', asyncHandler(async (req, res) => {
-  // Only allow in development
-  if (process.env.NODE_ENV === 'production') {
-    throw createError('This endpoint is only available in development', 403);
-  }
 
   // Check if test user already exists
   const existingUser = await User.findOne({ email: 'test@example.com' });

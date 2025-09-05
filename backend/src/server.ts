@@ -33,7 +33,10 @@ app.use(compression());
 // CORS configuration
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:3000',
-  'http://localhost:3001'
+  'http://localhost:3001',
+  'https://qr-restaurant-menu-app-01.vercel.app',
+  'https://qr-restaurant-menu-app-01-git-ph-b80017-vaseem-nambans-projects.vercel.app',
+  'https://qr-restaurant-menu-app-01-ks2gcm4wd-vaseem-nambans-projects.vercel.app'
 ];
 
 app.use(cors({

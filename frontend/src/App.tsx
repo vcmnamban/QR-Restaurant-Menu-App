@@ -10,7 +10,11 @@ import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import DashboardPage from '@/pages/dashboard/DashboardPage';
 import RestaurantPage from '@/pages/restaurant/RestaurantPage';
+import NewRestaurantPage from '@/pages/restaurants/NewRestaurantPage';
 import MenuPage from '@/pages/menu/MenuPage';
+import NewMenuPage from '@/pages/menus/NewMenuPage';
+import UsersPage from '@/pages/users/UsersPage';
+import AnalyticsPage from '@/pages/analytics/AnalyticsPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import CustomerMenuPage from '@/pages/customer/CustomerMenuPage';
@@ -118,7 +122,11 @@ function App() {
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="restaurant" element={<RestaurantPage />} />
+              <Route path="restaurants/new" element={<NewRestaurantPage />} />
               <Route path="menu" element={<MenuPage />} />
+              <Route path="menus/new" element={<NewMenuPage />} />
+              <Route path="users" element={<UsersPage />} />
+              <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="qr" element={<QRGenerationPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="testing" element={<PaymentTestingPage />} />

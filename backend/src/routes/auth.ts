@@ -153,6 +153,11 @@ router.post('/login', asyncHandler(async (req, res) => {
 
   // Generate token
   const token = generateToken(user._id.toString(), user.role);
+  
+  // Debug logging
+  console.log('Login successful for user:', user.email);
+  console.log('JWT Secret available:', !!process.env.JWT_SECRET);
+  console.log('Token generated:', !!token);
 
   // Remove password from response
   const userResponse = user.toObject();
@@ -299,6 +304,22 @@ router.get('/test', asyncHandler(async (req, res) => {
   res.json({
     success: true,
     message: 'Auth API is working!',
+    timestamp: new Date().toISOString(),
+    jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT SET'
+  });
+}));
+
+// @route   GET /api/auth/debug
+// @desc    Debug endpoint to check authentication
+// @access  Public
+router.get('/debug', asyncHandler(async (req, res) => {
+  const authHeader = req.headers.authorization;
+  res.json({
+    success: true,
+    message: 'Debug info',
+    hasAuthHeader: !!authHeader,
+    authHeader: authHeader ? authHeader.substring(0, 20) + '...' : 'None',
+    jwtSecret: process.env.JWT_SECRET ? 'SET' : 'NOT SET',
     timestamp: new Date().toISOString()
   });
 }));

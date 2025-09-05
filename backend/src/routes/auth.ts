@@ -292,10 +292,21 @@ router.post('/change-password', asyncHandler(async (req, res) => {
   });
 }));
 
-// @route   POST /api/auth/create-test-user
+// @route   GET /api/auth/test
+// @desc    Test endpoint to verify API is working
+// @access  Public
+router.get('/test', asyncHandler(async (req, res) => {
+  res.json({
+    success: true,
+    message: 'Auth API is working!',
+    timestamp: new Date().toISOString()
+  });
+}));
+
+// @route   GET /api/auth/create-test-user
 // @desc    Create a test user for development
 // @access  Public
-router.post('/create-test-user', asyncHandler(async (req, res) => {
+router.get('/create-test-user', asyncHandler(async (req, res) => {
 
   // Check if test user already exists
   const existingUser = await User.findOne({ email: 'test@example.com' });

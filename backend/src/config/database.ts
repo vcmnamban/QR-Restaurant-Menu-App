@@ -93,6 +93,9 @@ export const connectDatabase = async (): Promise<void> => {
     console.log(`🔗 Host: ${mongoose.connection.host}`);
     console.log(`🚪 Port: ${mongoose.connection.port}`);
 
+    // Create test user if it doesn't exist
+    await createTestUserIfNotExists();
+
     // Set up connection event handlers
     mongoose.connection.on('error', (error) => {
       console.error('❌ MongoDB connection error:', error);
@@ -174,6 +177,42 @@ export const disconnectDatabase = async (): Promise<void> => {
   } catch (error) {
     console.error('❌ Error closing MongoDB connection:', error);
     throw error;
+  }
+};
+
+// Create test user if it doesn't exist
+const createTestUserIfNotExists = async (): Promise<void> => {
+  try {
+    // Import User model dynamically to avoid circular dependency
+    const { User } = await import('../models/User');
+    
+    // Check if test user already exists
+    const existingUser = await User.findOne({ email: 'test@example.com' });
+    if (existingUser) {
+      console.log('✅ Test user already exists');
+      return;
+    }
+
+    // Create test user
+    const testUser = new User({
+      email: 'test@example.com',
+      password: 'password123',
+      firstName: 'Test',
+      lastName: 'User',
+      phone: '0501234567',
+      role: 'customer',
+      isVerified: true,
+      isActive: true
+    });
+
+    await testUser.save();
+    console.log('✅ Test user created successfully!');
+    console.log('   Email: test@example.com');
+    console.log('   Password: password123');
+    console.log('   Role: customer');
+  } catch (error) {
+    console.error('❌ Error creating test user:', error.message);
+    // Don't throw error - this is not critical for app startup
   }
 };
 

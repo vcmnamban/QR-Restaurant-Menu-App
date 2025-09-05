@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/store/auth';
 import { 
   Building2, 
@@ -15,6 +16,7 @@ import { cn } from '@/utils';
 
 const DashboardPage: React.FC = () => {
   const user = useUser();
+  const navigate = useNavigate();
 
   // Mock data - replace with real data from API
   const stats = [
@@ -91,6 +93,26 @@ const DashboardPage: React.FC = () => {
         return <Users className="h-5 w-5 text-info-600" />;
       default:
         return <Clock className="h-5 w-5 text-gray-600" />;
+    }
+  };
+
+  // Quick action handlers
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'add-restaurant':
+        navigate('/restaurants/new');
+        break;
+      case 'create-menu':
+        navigate('/menus/new');
+        break;
+      case 'manage-users':
+        navigate('/users');
+        break;
+      case 'view-analytics':
+        navigate('/analytics');
+        break;
+      default:
+        console.log('Unknown action:', action);
     }
   };
 
@@ -197,19 +219,31 @@ const DashboardPage: React.FC = () => {
           </div>
           <div className="card-body">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <button className="btn-outline w-full justify-center">
+              <button 
+                onClick={() => handleQuickAction('add-restaurant')}
+                className="btn-outline w-full justify-center hover:bg-primary-50 hover:border-primary-300 transition-colors"
+              >
                 <Building2 className="mr-2 h-5 w-5" />
                 Add Restaurant
               </button>
-              <button className="btn-outline w-full justify-center">
+              <button 
+                onClick={() => handleQuickAction('create-menu')}
+                className="btn-outline w-full justify-center hover:bg-primary-50 hover:border-primary-300 transition-colors"
+              >
                 <Menu className="mr-2 h-5 w-5" />
                 Create Menu
               </button>
-              <button className="btn-outline w-full justify-center">
+              <button 
+                onClick={() => handleQuickAction('manage-users')}
+                className="btn-outline w-full justify-center hover:bg-primary-50 hover:border-primary-300 transition-colors"
+              >
                 <Users className="mr-2 h-5 w-5" />
                 Manage Users
               </button>
-              <button className="btn-outline w-full justify-center">
+              <button 
+                onClick={() => handleQuickAction('view-analytics')}
+                className="btn-outline w-full justify-center hover:bg-primary-50 hover:border-primary-300 transition-colors"
+              >
                 <TrendingUp className="mr-2 h-5 w-5" />
                 View Analytics
               </button>

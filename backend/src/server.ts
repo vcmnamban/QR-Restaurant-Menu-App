@@ -36,16 +36,31 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:3001',
   'https://qr-restaurant-menu-app-01.vercel.app',
   'https://qr-restaurant-menu-app-01-git-ph-b80017-vaseem-nambans-projects.vercel.app',
-  'https://qr-restaurant-menu-app-01-ks2gcm4wd-vaseem-nambans-projects.vercel.app'
+  'https://qr-restaurant-menu-app-01-ks2gcm4wd-vaseem-nambans-projects.vercel.app',
+  'https://qr-restaurant-menu-app-01-ffrod815p-vaseem-nambans-projects.vercel.app'
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow localhost for development
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return callback(null, true);
     }
+    
+    // Allow all Vercel domains
+    if (origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow specific domains from environment variable
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));

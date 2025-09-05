@@ -36,7 +36,14 @@ const LoginPage: React.FC = () => {
       toast.success('Login successful!');
       navigate(from, { replace: true });
     } catch (error: any) {
-      toast.error(error.message || 'Login failed');
+      // Handle specific error cases
+      if (error.message?.includes('401') || error.message?.includes('Invalid email or password')) {
+        toast.error('Invalid email or password. Please check your credentials or create an account.');
+      } else if (error.message?.includes('Network Error')) {
+        toast.error('Unable to connect to server. Please try again later.');
+      } else {
+        toast.error(error.message || 'Login failed. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -51,6 +58,11 @@ const LoginPage: React.FC = () => {
           <p className="mt-2 text-sm text-gray-600">
             Sign in to your account to continue
           </p>
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="text-sm text-blue-800">
+              <strong>New user?</strong> Create an account first using the "Sign up" link below.
+            </p>
+          </div>
         </div>
 
         {/* Login Form */}

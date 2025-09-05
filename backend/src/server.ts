@@ -13,6 +13,7 @@ import restaurantRoutes from './routes/restaurants';
 import menuRoutes from './routes/menus';
 import orderRoutes from './routes/orders';
 import userRoutes from './routes/users';
+import paymentRoutes from './routes/payments';
 import mongoose from 'mongoose';
 
 // Load environment variables
@@ -115,6 +116,7 @@ app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/menus', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // 404 handler
 app.use(notFound);

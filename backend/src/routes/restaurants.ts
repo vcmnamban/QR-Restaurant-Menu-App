@@ -186,6 +186,22 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
   });
 }));
 
+// @route   GET /api/restaurants/my
+// @desc    Get current user's restaurants
+// @access  Private
+router.get('/my', authenticate, asyncHandler(async (req, res) => {
+  const restaurants = await Restaurant.find({ owner: req.user!.id })
+    .populate('owner', 'firstName lastName email')
+    .sort({ createdAt: -1 });
+
+  res.json({
+    success: true,
+    data: {
+      restaurants
+    }
+  });
+}));
+
 // @route   GET /api/restaurants
 // @desc    Get all restaurants (with filtering and pagination)
 // @access  Public

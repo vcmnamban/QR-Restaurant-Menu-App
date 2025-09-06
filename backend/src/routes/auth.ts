@@ -324,6 +324,22 @@ router.get('/debug', asyncHandler(async (req, res) => {
   });
 }));
 
+// @route   GET /api/auth/check-user
+// @desc    Check current user's role and status
+// @access  Private
+router.get('/check-user', authenticate, asyncHandler(async (req, res) => {
+  res.json({
+    success: true,
+    message: 'User info',
+    user: {
+      id: req.user!.id,
+      role: req.user!.role,
+      email: req.user!.email
+    },
+    timestamp: new Date().toISOString()
+  });
+}));
+
 // @route   GET /api/auth/create-test-user
 // @desc    Create a test user for development
 // @access  Public

@@ -190,9 +190,15 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
 // @desc    Get current user's restaurants
 // @access  Private
 router.get('/my', authenticate, asyncHandler(async (req, res) => {
+  console.log('🔍 /api/restaurants/my - User:', req.user);
+  console.log('🔍 /api/restaurants/my - User ID:', req.user!.id);
+  console.log('🔍 /api/restaurants/my - User Role:', req.user!.role);
+  
   const restaurants = await Restaurant.find({ owner: req.user!.id })
     .populate('owner', 'firstName lastName email')
     .sort({ createdAt: -1 });
+
+  console.log('🔍 /api/restaurants/my - Found restaurants:', restaurants.length);
 
   res.json({
     success: true,
@@ -206,6 +212,8 @@ router.get('/my', authenticate, asyncHandler(async (req, res) => {
 // @desc    Get all restaurants (with filtering and pagination)
 // @access  Public
 router.get('/', asyncHandler(async (req, res) => {
+  console.log('🔍 /api/restaurants - Public endpoint called');
+  console.log('🔍 /api/restaurants - Query params:', req.query);
   const {
     page = 1,
     limit = 10,

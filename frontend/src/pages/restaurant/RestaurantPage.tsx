@@ -40,7 +40,19 @@ const RestaurantPage: React.FC = () => {
       setRestaurants(data);
     } catch (error: any) {
       console.error('Error fetching restaurants:', error);
-      const errorMessage = error.message || 'Failed to fetch restaurants';
+      
+      // Extract proper error message
+      let errorMessage = 'Failed to fetch restaurants';
+      if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error?.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+      
       setError(errorMessage);
       toast.error(errorMessage);
       // Set empty array instead of leaving restaurants undefined

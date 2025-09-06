@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import RestaurantList from '@/components/restaurant/RestaurantList';
 import RestaurantForm from '@/components/restaurant/RestaurantForm';
 import RestaurantService from '@/services/restaurant';
+import RoleGuard from '@/components/auth/RoleGuard';
 import { Restaurant } from '@/types';
 import { Plus, ArrowLeft } from 'lucide-react';
 
@@ -280,25 +281,27 @@ const RestaurantPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Restaurant Management</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {viewMode === 'list' 
-            ? 'Manage your restaurant profiles and settings'
-            : viewMode === 'add'
-            ? 'Create a new restaurant profile'
-            : viewMode === 'edit'
-            ? 'Edit restaurant information'
-            : 'View restaurant details'
-          }
-        </p>
-      </div>
+    <RoleGuard allowedRoles={['restaurant_owner', 'admin']}>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Restaurant Management</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            {viewMode === 'list' 
+              ? 'Manage your restaurant profiles and settings'
+              : viewMode === 'add'
+              ? 'Create a new restaurant profile'
+              : viewMode === 'edit'
+              ? 'Edit restaurant information'
+              : 'View restaurant details'
+            }
+          </p>
+        </div>
 
-      {/* Content */}
-      {renderContent()}
-    </div>
+        {/* Content */}
+        {renderContent()}
+      </div>
+    </RoleGuard>
   );
 };
 

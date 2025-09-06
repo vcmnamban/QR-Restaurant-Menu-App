@@ -190,6 +190,13 @@ const createTestUserIfNotExists = async (): Promise<void> => {
     const existingUser = await User.findOne({ email: 'test@example.com' });
     if (existingUser) {
       console.log('✅ Test user already exists');
+      
+      // Update existing user to restaurant_owner role if they're a customer
+      if (existingUser.role === 'customer') {
+        existingUser.role = 'restaurant_owner';
+        await existingUser.save();
+        console.log('✅ Updated test user role to restaurant_owner');
+      }
       return;
     }
 
@@ -200,7 +207,7 @@ const createTestUserIfNotExists = async (): Promise<void> => {
       firstName: 'Test',
       lastName: 'User',
       phone: '0501234567',
-      role: 'customer',
+      role: 'restaurant_owner',
       isVerified: true,
       isActive: true
     });

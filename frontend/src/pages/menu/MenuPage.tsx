@@ -14,6 +14,7 @@ import MenuCategoryList from '@/components/menu/MenuCategoryList';
 import MenuCategoryForm from '@/components/menu/MenuCategoryForm';
 import MenuItemList from '@/components/menu/MenuItemList';
 import MenuItemForm from '@/components/menu/MenuItemForm';
+import RoleGuard from '@/components/auth/RoleGuard';
 
 // Import services
 import MenuService from '@/services/menu';
@@ -592,10 +593,11 @@ const MenuPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Menu Management</h1>
+    <RoleGuard allowedRoles={['restaurant_owner', 'admin']}>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Menu Management</h1>
         <p className="mt-1 text-sm text-gray-500">
           {viewMode === 'categories' 
             ? 'Organize your menu into categories'
@@ -634,9 +636,10 @@ const MenuPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Content */}
-      {renderContent()}
-    </div>
+        {/* Content */}
+        {renderContent()}
+      </div>
+    </RoleGuard>
   );
 };
 

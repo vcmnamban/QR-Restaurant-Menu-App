@@ -21,6 +21,7 @@ import {
 import QRCodeGenerator from '@/components/qr/QRCodeGenerator';
 import QRCodeList from '@/components/qr/QRCodeList';
 import QRCodeForm from '@/components/qr/QRCodeForm';
+import RoleGuard from '@/components/auth/RoleGuard';
 
 // Import services
 import QRService from '@/services/qr';
@@ -279,10 +280,11 @@ const QRGenerationPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">QR Code Generation</h1>
+    <RoleGuard allowedRoles={['restaurant_owner', 'admin']}>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">QR Code Generation</h1>
         <p className="mt-1 text-sm text-gray-500">
           {viewMode === 'list'
             ? 'Create and manage QR codes for tables, menus, and your restaurant'
@@ -295,9 +297,10 @@ const QRGenerationPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Content */}
-      {renderContent()}
-    </div>
+        {/* Content */}
+        {renderContent()}
+      </div>
+    </RoleGuard>
   );
 };
 

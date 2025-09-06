@@ -42,7 +42,7 @@ const queryClient = new QueryClient({
 function App() {
   const { isAuthenticated, isLoading, refreshUser } = useAuthStore();
 
-  // Initialize app on mount
+  // Initialize app on mount (only once)
   useEffect(() => {
     const initializeApp = async () => {
       try {
@@ -55,11 +55,13 @@ function App() {
         }
       } catch (error) {
         console.error('Failed to initialize app:', error);
+        // Don't throw error, just log it to prevent app crashes
       }
     };
 
+    // Only initialize once on mount
     initializeApp();
-  }, [refreshUser]);
+  }, []); // Remove refreshUser dependency to prevent re-initialization
 
   // Show loading spinner while initializing
   if (isLoading) {

@@ -120,17 +120,15 @@ export const useAuthStore = create<AuthState>()(
         
         try {
           const user = await AuthService.getCurrentUser();
-          set({ user, isLoading: false });
+          set({ user, isLoading: false, error: null });
         } catch (error: any) {
+          console.error('Failed to refresh user:', error);
+          
+          // Don't logout user on refresh failure - just log error and continue
           set({
             isLoading: false,
-            error: error.message || 'Failed to refresh user data',
+            error: null, // Don't set error state for refresh failures
           });
-          
-          // If refresh fails, logout user
-          if (error.message.includes('401') || error.message.includes('unauthorized')) {
-            get().logout();
-          }
         }
       },
 

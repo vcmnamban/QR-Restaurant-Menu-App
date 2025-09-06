@@ -34,6 +34,9 @@ const Layout: React.FC = () => {
 
   const handleNavigation = (href: string) => {
     console.log('Navigating to:', href);
+    console.log('Current location:', location.pathname);
+    console.log('Is authenticated:', user ? 'Yes' : 'No');
+    console.log('User:', user);
     navigate(href);
   };
 

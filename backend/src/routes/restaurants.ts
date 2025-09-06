@@ -10,9 +10,9 @@ const router = express.Router();
 // Validation schemas
 const createRestaurantSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
-  nameAr: Joi.string().min(2).max(100),
+  nameAr: Joi.string().min(2).max(100).allow(''),
   description: Joi.string().min(10).max(1000).required(),
-  descriptionAr: Joi.string().min(10).max(1000),
+  descriptionAr: Joi.string().min(10).max(1000).allow(''),
   category: Joi.array().items(Joi.string()).min(1).required(),
   cuisine: Joi.array().items(Joi.string()).min(1).required(),
   address: Joi.object({
@@ -82,9 +82,9 @@ const createRestaurantSchema = Joi.object({
 
 const updateRestaurantSchema = Joi.object({
   name: Joi.string().min(2).max(100),
-  nameAr: Joi.string().min(2).max(100),
+  nameAr: Joi.string().min(2).max(100).allow(''),
   description: Joi.string().min(10).max(1000),
-  descriptionAr: Joi.string().min(10).max(1000),
+  descriptionAr: Joi.string().min(10).max(1000).allow(''),
   category: Joi.array().items(Joi.string()).min(1),
   cuisine: Joi.array().items(Joi.string()).min(1),
   address: Joi.object({

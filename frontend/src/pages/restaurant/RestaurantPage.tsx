@@ -94,11 +94,22 @@ const RestaurantPage: React.FC = () => {
   const handleSubmitRestaurant = async (data: Partial<Restaurant>) => {
     setIsSubmitting(true);
     try {
+      // Clean up the data - remove empty optional fields
+      const cleanedData = { ...data };
+      
+      // Remove empty optional fields that cause validation errors
+      if (cleanedData.nameAr === '') {
+        delete cleanedData.nameAr;
+      }
+      if (cleanedData.descriptionAr === '') {
+        delete cleanedData.descriptionAr;
+      }
+      
       if (viewMode === 'add') {
-        await RestaurantService.createRestaurant(data);
+        await RestaurantService.createRestaurant(cleanedData);
         toast.success('Restaurant created successfully');
       } else if (viewMode === 'edit' && selectedRestaurant) {
-        await RestaurantService.updateRestaurant(selectedRestaurant._id, data);
+        await RestaurantService.updateRestaurant(selectedRestaurant._id, cleanedData);
         toast.success('Restaurant updated successfully');
       }
       setViewMode('list');

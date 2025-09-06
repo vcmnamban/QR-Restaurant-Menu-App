@@ -5,10 +5,10 @@ import { Restaurant, ApiResponse } from '@/types';
 export class RestaurantService {
   // Get all restaurants for the current user
   static async getMyRestaurants(): Promise<Restaurant[]> {
-    const response = await http.get<Restaurant[]>('/restaurants/my');
+    const response = await http.get<{ restaurants: Restaurant[] }>('/restaurants/my');
     
-    if (response.success && response.data) {
-      return response.data;
+    if (response.success && response.data && response.data.restaurants) {
+      return response.data.restaurants;
     }
     
     throw new Error(response.error || 'Failed to fetch restaurants');

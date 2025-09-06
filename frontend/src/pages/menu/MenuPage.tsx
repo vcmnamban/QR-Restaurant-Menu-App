@@ -60,12 +60,14 @@ const MenuPage: React.FC = () => {
   const fetchRestaurants = async () => {
     try {
       const data = await RestaurantService.getMyRestaurants();
-      setRestaurants(data);
-      if (data.length > 0) {
+      setRestaurants(Array.isArray(data) ? data : []);
+      if (Array.isArray(data) && data.length > 0) {
         setSelectedRestaurant(data[0]);
       }
     } catch (error: any) {
+      console.error('Error fetching restaurants:', error);
       toast.error(error.message || 'Failed to fetch restaurants');
+      setRestaurants([]);
     }
   };
 
@@ -623,7 +625,7 @@ const MenuPage: React.FC = () => {
             }}
             className="input max-w-xs"
           >
-            {restaurants.map((restaurant) => (
+            {Array.isArray(restaurants) && restaurants.map((restaurant) => (
               <option key={restaurant._id} value={restaurant._id}>
                 {restaurant.name}
               </option>

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
 import { asyncHandler } from '../middleware/errorHandler';
 import { createError } from '../middleware/errorHandler';
+import { authenticate } from '../middleware/auth';
 
 const router = express.Router();
 

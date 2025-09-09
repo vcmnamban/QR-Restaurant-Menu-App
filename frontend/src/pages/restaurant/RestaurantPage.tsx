@@ -98,11 +98,24 @@ const RestaurantPage: React.FC = () => {
       const cleanedData = { ...data };
       
       // Remove empty optional fields that cause validation errors
-      if (cleanedData.nameAr === '') {
+      if (cleanedData.nameAr === '' || cleanedData.nameAr === null || cleanedData.nameAr === undefined) {
         delete cleanedData.nameAr;
       }
-      if (cleanedData.descriptionAr === '') {
+      if (cleanedData.descriptionAr === '' || cleanedData.descriptionAr === null || cleanedData.descriptionAr === undefined) {
         delete cleanedData.descriptionAr;
+      }
+      
+      // Clean up other optional fields
+      if (cleanedData.contact?.website === '' || cleanedData.contact?.website === null || cleanedData.contact?.website === undefined) {
+        delete cleanedData.contact.website;
+      }
+      
+      // Ensure required arrays are not empty
+      if (!cleanedData.category || cleanedData.category.length === 0) {
+        cleanedData.category = ['Fast Food']; // Default category
+      }
+      if (!cleanedData.cuisine || cleanedData.cuisine.length === 0) {
+        cleanedData.cuisine = ['International']; // Default cuisine
       }
       
       if (viewMode === 'add') {
@@ -115,7 +128,21 @@ const RestaurantPage: React.FC = () => {
       setViewMode('list');
       fetchRestaurants();
     } catch (error: any) {
-      toast.error(error.message || 'Failed to save restaurant');
+      console.error('Restaurant save error:', error);
+      
+      // Extract proper error message
+      let errorMessage = 'Failed to save restaurant';
+      if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

@@ -97,7 +97,7 @@ const RestaurantPage: React.FC = () => {
       console.log('🔍 Original form data:', JSON.stringify(data, null, 2));
       
       // Clean up the data - remove empty optional fields
-      const cleanedData = { ...data };
+      let cleanedData = { ...data };
       
       // Remove empty optional fields that cause validation errors
       if (cleanedData.nameAr === '' || cleanedData.nameAr === null || cleanedData.nameAr === undefined) {
@@ -143,6 +143,17 @@ const RestaurantPage: React.FC = () => {
           minimumOrder: 0,
           deliveryRadius: 5
         };
+      }
+      
+      // Convert string numbers to actual numbers
+      if (cleanedData.deliveryOptions.deliveryFee && typeof cleanedData.deliveryOptions.deliveryFee === 'string') {
+        cleanedData.deliveryOptions.deliveryFee = parseFloat(cleanedData.deliveryOptions.deliveryFee);
+      }
+      if (cleanedData.deliveryOptions.minimumOrder && typeof cleanedData.deliveryOptions.minimumOrder === 'string') {
+        cleanedData.deliveryOptions.minimumOrder = parseFloat(cleanedData.deliveryOptions.minimumOrder);
+      }
+      if (cleanedData.deliveryOptions.deliveryRadius && typeof cleanedData.deliveryOptions.deliveryRadius === 'string') {
+        cleanedData.deliveryOptions.deliveryRadius = parseFloat(cleanedData.deliveryOptions.deliveryRadius);
       }
       
       console.log('🔍 Cleaned data before API call:', JSON.stringify(cleanedData, null, 2));

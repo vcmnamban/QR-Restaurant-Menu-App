@@ -27,47 +27,11 @@ const createRestaurantSchema = Joi.object({
     })
   }).required(),
   contact: Joi.object({
-    phone: Joi.string().pattern(/^(\+966|966|0)?5[0-9]{8}$/).required(),
+    phone: Joi.string().min(5).max(20).required(),
     email: Joi.string().email().required(),
-    website: Joi.string().uri()
+    website: Joi.string().uri().allow('')
   }).required(),
-  hours: Joi.object({
-    sunday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    monday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    tuesday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    wednesday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    thursday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    friday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    saturday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    })
-  }),
+  hours: Joi.object().allow({}),
   features: Joi.array().items(Joi.string()),
   paymentMethods: Joi.array().items(Joi.string()),
   deliveryOptions: Joi.object({

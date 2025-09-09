@@ -118,6 +118,31 @@ const RestaurantPage: React.FC = () => {
         cleanedData.cuisine = ['International']; // Default cuisine
       }
       
+      // Ensure required fields have default values
+      if (!cleanedData.features || cleanedData.features.length === 0) {
+        cleanedData.features = [];
+      }
+      if (!cleanedData.paymentMethods || cleanedData.paymentMethods.length === 0) {
+        cleanedData.paymentMethods = ['Cash']; // Default payment method
+      }
+      
+      // Ensure hours object exists
+      if (!cleanedData.hours) {
+        cleanedData.hours = {};
+      }
+      
+      // Ensure deliveryOptions has required fields
+      if (!cleanedData.deliveryOptions) {
+        cleanedData.deliveryOptions = {
+          delivery: false,
+          pickup: true,
+          dineIn: true,
+          deliveryFee: 0,
+          minimumOrder: 0,
+          deliveryRadius: 5
+        };
+      }
+      
       if (viewMode === 'add') {
         await RestaurantService.createRestaurant(cleanedData);
         toast.success('Restaurant created successfully');

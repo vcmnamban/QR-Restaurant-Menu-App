@@ -128,7 +128,18 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
     }
   });
 
-  await restaurant.save();
+  try {
+    await restaurant.save();
+    console.log('✅ Restaurant saved successfully:', restaurant._id);
+  } catch (saveError: any) {
+    console.log('❌ Database save error:', saveError);
+    console.log('❌ Error name:', saveError.name);
+    console.log('❌ Error message:', saveError.message);
+    if (saveError.errors) {
+      console.log('❌ Validation errors:', saveError.errors);
+    }
+    throw createError(saveError.message || 'Failed to save restaurant', 400);
+  }
 
   res.status(201).json({
     success: true,

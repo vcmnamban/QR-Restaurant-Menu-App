@@ -100,13 +100,7 @@ const restaurantSchema = new Schema<IRestaurant>({
   }],
   category: [{
     type: String,
-    required: [true, 'At least one category is required'],
-    enum: [
-      'Fast Food', 'Fine Dining', 'Casual Dining', 'Cafe', 'Bakery',
-      'Pizza', 'Burger', 'Seafood', 'Steakhouse', 'Italian',
-      'Chinese', 'Japanese', 'Thai', 'Indian', 'Mexican',
-      'Mediterranean', 'Middle Eastern', 'Saudi', 'International'
-    ]
+    required: [true, 'At least one category is required']
   }],
   cuisine: [{
     type: String,
@@ -152,8 +146,7 @@ const restaurantSchema = new Schema<IRestaurant>({
   contact: {
     phone: {
       type: String,
-      required: [true, 'Phone number is required'],
-      match: [/^(\+966|966|0)?5[0-9]{8}$/, 'Please enter a valid Saudi phone number']
+      required: [true, 'Phone number is required']
     },
     email: {
       type: String,
@@ -162,8 +155,7 @@ const restaurantSchema = new Schema<IRestaurant>({
       match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
     },
     website: {
-      type: String,
-      match: [/^https?:\/\/.+/, 'Please enter a valid website URL']
+      type: String
     }
   },
   hours: {

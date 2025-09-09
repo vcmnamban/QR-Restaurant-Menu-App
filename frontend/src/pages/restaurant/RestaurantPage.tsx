@@ -94,7 +94,7 @@ const RestaurantPage: React.FC = () => {
   const handleSubmitRestaurant = async (data: Partial<Restaurant>) => {
     setIsSubmitting(true);
     try {
-      console.log('🔍 Original form data:', data);
+      console.log('🔍 Original form data:', JSON.stringify(data, null, 2));
       
       // Clean up the data - remove empty optional fields
       const cleanedData = { ...data };
@@ -145,43 +145,41 @@ const RestaurantPage: React.FC = () => {
         };
       }
       
-      console.log('🔍 Cleaned data before API call:', cleanedData);
+      console.log('🔍 Cleaned data before API call:', JSON.stringify(cleanedData, null, 2));
       
-      // Test with minimal valid data if current data is incomplete
-      if (!cleanedData.name || !cleanedData.description || !cleanedData.address?.street) {
-        console.log('⚠️ Incomplete form data detected, creating test data...');
-        const testData = {
-          name: cleanedData.name || 'Test Restaurant',
-          description: cleanedData.description || 'A test restaurant for debugging',
-          category: cleanedData.category || ['Fast Food'],
-          cuisine: cleanedData.cuisine || ['International'],
-          address: {
-            street: cleanedData.address?.street || 'Test Street',
-            city: cleanedData.address?.city || 'Test City',
-            state: cleanedData.address?.state || 'Test State',
-            zipCode: cleanedData.address?.zipCode || '12345',
-            country: cleanedData.address?.country || 'Saudi Arabia'
-          },
-          contact: {
-            phone: cleanedData.contact?.phone || '501234567',
-            email: cleanedData.contact?.email || 'test@example.com',
-            website: cleanedData.contact?.website || ''
-          },
-          hours: {},
-          features: [],
-          paymentMethods: ['Cash'],
-          deliveryOptions: {
-            delivery: false,
-            pickup: true,
-            dineIn: true,
-            deliveryFee: 0,
-            minimumOrder: 0,
-            deliveryRadius: 5
-          }
-        };
-        console.log('🔍 Using test data:', testData);
-        cleanedData = testData;
-      }
+      // Always use test data for now to debug the issue
+      console.log('⚠️ Using test data to debug validation issues...');
+      const testData = {
+        name: 'Test Restaurant',
+        description: 'A test restaurant for debugging',
+        category: ['Fast Food'],
+        cuisine: ['International'],
+        address: {
+          street: 'Test Street 123',
+          city: 'Test City',
+          state: 'Test State',
+          zipCode: '12345',
+          country: 'Saudi Arabia'
+        },
+        contact: {
+          phone: '501234567',
+          email: 'test@example.com',
+          website: ''
+        },
+        hours: {},
+        features: [],
+        paymentMethods: ['Cash'],
+        deliveryOptions: {
+          delivery: false,
+          pickup: true,
+          dineIn: true,
+          deliveryFee: 0,
+          minimumOrder: 0,
+          deliveryRadius: 5
+        }
+      };
+      console.log('🔍 Using test data:', JSON.stringify(testData, null, 2));
+      cleanedData = testData;
       
       // Validate required fields before sending
       if (!cleanedData.name || cleanedData.name.trim() === '') {

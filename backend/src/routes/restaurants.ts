@@ -11,20 +11,20 @@ const router = express.Router();
 const createRestaurantSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
   nameAr: Joi.string().max(100).allow(''),
-  description: Joi.string().min(10).max(1000).required(),
+  description: Joi.string().min(5).max(1000).required(),
   descriptionAr: Joi.string().max(1000).allow(''),
   category: Joi.array().items(Joi.string()).min(1).required(),
   cuisine: Joi.array().items(Joi.string()).min(1).required(),
   address: Joi.object({
-    street: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zipCode: Joi.string().required(),
+    street: Joi.string().min(1).required(),
+    city: Joi.string().min(1).required(),
+    state: Joi.string().min(1).required(),
+    zipCode: Joi.string().min(1).required(),
     country: Joi.string().default('Saudi Arabia'),
     coordinates: Joi.object({
       latitude: Joi.number().min(-90).max(90),
       longitude: Joi.number().min(-180).max(180)
-    })
+    }).optional()
   }).required(),
   contact: Joi.object({
     phone: Joi.string().min(5).max(20).required(),

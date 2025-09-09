@@ -110,10 +110,22 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
     throw createError('You can only own one restaurant', 400);
   }
 
-  // Create restaurant
+  // Create restaurant with required fields
   const restaurant = new Restaurant({
     ...value,
-    owner: req.user!.id
+    owner: req.user!.id,
+    // Add required fields that might be missing
+    images: value.images || [],
+    rating: value.rating || 0,
+    totalReviews: value.totalReviews || 0,
+    isActive: value.isActive !== undefined ? value.isActive : true,
+    isVerified: value.isVerified !== undefined ? value.isVerified : false,
+    subscription: {
+      plan: 'free',
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      isActive: true
+    }
   });
 
   await restaurant.save();

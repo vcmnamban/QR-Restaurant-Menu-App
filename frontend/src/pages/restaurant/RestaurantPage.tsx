@@ -156,6 +156,29 @@ const RestaurantPage: React.FC = () => {
         cleanedData.deliveryOptions.deliveryRadius = parseFloat(cleanedData.deliveryOptions.deliveryRadius);
       }
       
+      // Fix phone number format for Saudi validation
+      if (cleanedData.contact?.phone) {
+        let phone = cleanedData.contact.phone;
+        // Remove any non-digit characters
+        phone = phone.replace(/\D/g, '');
+        // Add country code if missing
+        if (phone.length === 9 && phone.startsWith('5')) {
+          phone = '966' + phone;
+        } else if (phone.length === 10 && phone.startsWith('05')) {
+          phone = '966' + phone.substring(1);
+        }
+        cleanedData.contact.phone = phone;
+      }
+      
+      // Fix website format if provided
+      if (cleanedData.contact?.website && cleanedData.contact.website !== '') {
+        let website = cleanedData.contact.website;
+        if (!website.startsWith('http://') && !website.startsWith('https://')) {
+          website = 'https://' + website;
+        }
+        cleanedData.contact.website = website;
+      }
+      
       console.log('🔍 Cleaned data before API call:', JSON.stringify(cleanedData, null, 2));
       
       // Always use test data for now to debug the issue

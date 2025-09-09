@@ -27,13 +27,32 @@ export class RestaurantService {
 
   // Create new restaurant
   static async createRestaurant(restaurantData: Partial<Restaurant>): Promise<Restaurant> {
-    const response = await http.post<Restaurant>('/restaurants', restaurantData);
-    
-    if (response.success && response.data) {
-      return response.data;
+    try {
+      const response = await http.post<Restaurant>('/restaurants', restaurantData);
+      
+      if (response.success && response.data) {
+        return response.data;
+      }
+      
+      throw new Error(response.error || 'Failed to create restaurant');
+    } catch (error: any) {
+      console.error('Restaurant creation error:', error);
+      
+      // Extract detailed error message
+      let errorMessage = 'Failed to create restaurant';
+      
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      throw new Error(errorMessage);
     }
-    
-    throw new Error(response.error || 'Failed to create restaurant');
   }
 
   // Update restaurant

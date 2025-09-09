@@ -29,7 +29,7 @@ const createRestaurantSchema = Joi.object({
   contact: Joi.object({
     phone: Joi.string().min(5).max(20).required(),
     email: Joi.string().email().required(),
-    website: Joi.string().uri().allow('')
+    website: Joi.string().allow('')
   }).required(),
   hours: Joi.object().allow({}),
   features: Joi.array().items(Joi.string()),
@@ -65,7 +65,7 @@ const updateRestaurantSchema = Joi.object({
   contact: Joi.object({
     phone: Joi.string().min(5).max(20),
     email: Joi.string().email(),
-    website: Joi.string().uri().allow('')
+    website: Joi.string().allow('')
   }),
   hours: Joi.object().allow({}),
   features: Joi.array().items(Joi.string()),

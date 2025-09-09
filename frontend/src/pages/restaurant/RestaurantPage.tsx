@@ -276,6 +276,28 @@ const RestaurantPage: React.FC = () => {
     setSelectedRestaurant(null);
   };
 
+  const handleTestBackend = async () => {
+    try {
+      console.log('🔍 Testing backend connectivity...');
+      await RestaurantService.testBackend();
+      toast.success('Backend test successful!');
+    } catch (error: any) {
+      console.error('Backend test failed:', error);
+      toast.error(`Backend test failed: ${error.message}`);
+    }
+  };
+
+  const handleTestSimpleRestaurant = async () => {
+    try {
+      console.log('🔍 Testing simple restaurant creation...');
+      await RestaurantService.testSimpleRestaurant();
+      toast.success('Simple restaurant test successful!');
+    } catch (error: any) {
+      console.error('Simple restaurant test failed:', error);
+      toast.error(`Simple restaurant test failed: ${error.message}`);
+    }
+  };
+
   const renderContent = () => {
     switch (viewMode) {
       case 'add':
@@ -385,6 +407,8 @@ const RestaurantPage: React.FC = () => {
             onEditRestaurant={handleEditRestaurant}
             onViewRestaurant={handleViewRestaurant}
             onDeleteRestaurant={handleDeleteRestaurant}
+            onTestBackend={handleTestBackend}
+            onTestSimpleRestaurant={handleTestSimpleRestaurant}
             isLoading={isLoading}
           />
         );

@@ -3,6 +3,35 @@ import { Restaurant, ApiResponse } from '@/types';
 
 // Restaurant service
 export class RestaurantService {
+  // Test backend connectivity
+  static async testBackend(): Promise<any> {
+    try {
+      console.log('🔍 Frontend: Testing backend connectivity...');
+      const response = await http.get('/restaurants/test');
+      console.log('🔍 Frontend: Backend test response:', response);
+      return response;
+    } catch (error: any) {
+      console.error('🔍 Frontend: Backend test failed:', error);
+      throw error;
+    }
+  }
+
+  // Test simple restaurant creation without authentication
+  static async testSimpleRestaurant(): Promise<any> {
+    try {
+      console.log('🔍 Frontend: Testing simple restaurant creation...');
+      const testData = {
+        name: 'Test Restaurant',
+        description: 'Test Description'
+      };
+      const response = await http.post('/restaurants/simple', testData);
+      console.log('🔍 Frontend: Simple restaurant test response:', response);
+      return response;
+    } catch (error: any) {
+      console.error('🔍 Frontend: Simple restaurant test failed:', error);
+      throw error;
+    }
+  }
   // Get all restaurants for the current user
   static async getMyRestaurants(): Promise<Restaurant[]> {
     const response = await http.get<{ restaurants: Restaurant[] }>('/restaurants/my');
@@ -28,7 +57,11 @@ export class RestaurantService {
   // Create new restaurant
   static async createRestaurant(restaurantData: Partial<Restaurant>): Promise<Restaurant> {
     try {
+      console.log('🔍 Frontend: Sending restaurant data:', JSON.stringify(restaurantData, null, 2));
+      
       const response = await http.post<Restaurant>('/restaurants', restaurantData);
+      
+      console.log('🔍 Frontend: Received response:', response);
       
       if (response.success && response.data) {
         return response.data;
@@ -36,7 +69,9 @@ export class RestaurantService {
       
       throw new Error(response.error || 'Failed to create restaurant');
     } catch (error: any) {
-      console.error('Restaurant creation error:', error);
+      console.error('🔍 Frontend: Restaurant creation error:', error);
+      console.error('🔍 Frontend: Error response:', error.response);
+      console.error('🔍 Frontend: Error response data:', error.response?.data);
       
       // Extract detailed error message
       let errorMessage = 'Failed to create restaurant';
@@ -51,6 +86,7 @@ export class RestaurantService {
         errorMessage = error;
       }
       
+      console.error('🔍 Frontend: Final error message:', errorMessage);
       throw new Error(errorMessage);
     }
   }

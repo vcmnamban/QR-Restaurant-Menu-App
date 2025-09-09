@@ -21,6 +21,8 @@ interface RestaurantListProps {
   onEditRestaurant: (restaurant: Restaurant) => void;
   onViewRestaurant: (restaurant: Restaurant) => void;
   onDeleteRestaurant: (restaurantId: string) => void;
+  onTestBackend?: () => void;
+  onTestSimpleRestaurant?: () => void;
   isLoading?: boolean;
 }
 
@@ -30,6 +32,8 @@ const RestaurantList: React.FC<RestaurantListProps> = ({
   onEditRestaurant,
   onViewRestaurant,
   onDeleteRestaurant,
+  onTestBackend,
+  onTestSimpleRestaurant,
   isLoading = false
 }) => {
   const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
@@ -119,13 +123,31 @@ const RestaurantList: React.FC<RestaurantListProps> = ({
             Manage your restaurant profiles and settings
           </p>
         </div>
-        <button
-          onClick={onAddRestaurant}
-          className="btn-primary"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Restaurant
-        </button>
+        <div className="flex gap-2">
+          {onTestBackend && (
+            <button
+              onClick={onTestBackend}
+              className="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm"
+            >
+              Test Backend
+            </button>
+          )}
+          {onTestSimpleRestaurant && (
+            <button
+              onClick={onTestSimpleRestaurant}
+              className="bg-yellow-600 text-white px-3 py-2 rounded-lg hover:bg-yellow-700 transition-colors text-sm"
+            >
+              Test Simple
+            </button>
+          )}
+          <button
+            onClick={onAddRestaurant}
+            className="btn-primary"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Restaurant
+          </button>
+        </div>
       </div>
 
       {/* Restaurant Cards */}

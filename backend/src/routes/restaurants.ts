@@ -63,47 +63,11 @@ const updateRestaurantSchema = Joi.object({
     })
   }),
   contact: Joi.object({
-    phone: Joi.string().pattern(/^(\+966|966|0)?5[0-9]{8}$/),
+    phone: Joi.string().min(5).max(20),
     email: Joi.string().email(),
-    website: Joi.string().uri()
+    website: Joi.string().uri().allow('')
   }),
-  hours: Joi.object({
-    sunday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    monday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    tuesday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    wednesday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    thursday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    friday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    }),
-    saturday: Joi.object({
-      open: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      close: Joi.string().pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      isOpen: Joi.boolean()
-    })
-  }),
+  hours: Joi.object().allow({}),
   features: Joi.array().items(Joi.string()),
   paymentMethods: Joi.array().items(Joi.string()),
   deliveryOptions: Joi.object({
@@ -121,11 +85,20 @@ const updateRestaurantSchema = Joi.object({
 // @desc    Create a new restaurant
 // @access  Private (Restaurant owners only)
 router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHandler(async (req, res) => {
+  // Debug logging
+  console.log('🔍 POST /api/restaurants - Request received');
+  console.log('🔍 Request body:', JSON.stringify(req.body, null, 2));
+  console.log('🔍 User:', req.user);
+  
   // Validate request body
   const { error, value } = createRestaurantSchema.validate(req.body);
   if (error) {
+    console.log('❌ Validation error:', error.details);
+    console.log('❌ Error message:', error.details[0].message);
     throw createError(error.details[0].message, 400);
   }
+  
+  console.log('✅ Validation passed, processed data:', JSON.stringify(value, null, 2));
 
   // Check if user already has a restaurant
   const existingRestaurant = await Restaurant.findOne({ owner: req.user!.id });

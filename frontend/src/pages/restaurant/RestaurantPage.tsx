@@ -94,6 +94,8 @@ const RestaurantPage: React.FC = () => {
   const handleSubmitRestaurant = async (data: Partial<Restaurant>) => {
     setIsSubmitting(true);
     try {
+      console.log('🔍 Original form data:', data);
+      
       // Clean up the data - remove empty optional fields
       const cleanedData = { ...data };
       
@@ -141,6 +143,28 @@ const RestaurantPage: React.FC = () => {
           minimumOrder: 0,
           deliveryRadius: 5
         };
+      }
+      
+      console.log('🔍 Cleaned data before API call:', cleanedData);
+      
+      // Validate required fields before sending
+      if (!cleanedData.name || cleanedData.name.trim() === '') {
+        throw new Error('Restaurant name is required');
+      }
+      if (!cleanedData.description || cleanedData.description.trim() === '') {
+        throw new Error('Restaurant description is required');
+      }
+      if (!cleanedData.address?.street || cleanedData.address.street.trim() === '') {
+        throw new Error('Street address is required');
+      }
+      if (!cleanedData.address?.city || cleanedData.address.city.trim() === '') {
+        throw new Error('City is required');
+      }
+      if (!cleanedData.contact?.phone || cleanedData.contact.phone.trim() === '') {
+        throw new Error('Phone number is required');
+      }
+      if (!cleanedData.contact?.email || cleanedData.contact.email.trim() === '') {
+        throw new Error('Email is required');
       }
       
       if (viewMode === 'add') {

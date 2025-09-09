@@ -36,7 +36,8 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
     control,
     formState: { errors },
     watch,
-    setValue
+    setValue,
+    getValues
   } = useForm<Partial<Restaurant>>({
     defaultValues: {
       name: restaurant?.name || '',
@@ -106,7 +107,27 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
 
   const handleFormSubmit = async (data: Partial<Restaurant>) => {
     try {
-      await onSubmit(data);
+      // Fix checkbox data - React Hook Form doesn't handle checkboxes properly by default
+      const formData = { ...data };
+      
+      // Get all checked categories
+      const categoryCheckboxes = document.querySelectorAll('input[name="category"]:checked');
+      formData.category = Array.from(categoryCheckboxes).map((cb: any) => cb.value);
+      
+      // Get all checked cuisines
+      const cuisineCheckboxes = document.querySelectorAll('input[name="cuisine"]:checked');
+      formData.cuisine = Array.from(cuisineCheckboxes).map((cb: any) => cb.value);
+      
+      // Get all checked features
+      const featureCheckboxes = document.querySelectorAll('input[name="features"]:checked');
+      formData.features = Array.from(featureCheckboxes).map((cb: any) => cb.value);
+      
+      // Get all checked payment methods
+      const paymentCheckboxes = document.querySelectorAll('input[name="paymentMethods"]:checked');
+      formData.paymentMethods = Array.from(paymentCheckboxes).map((cb: any) => cb.value);
+      
+      console.log('🔍 Fixed form data:', formData);
+      await onSubmit(formData);
     } catch (error) {
       console.error('Form submission failed:', error);
     }
@@ -224,7 +245,7 @@ const RestaurantForm: React.FC<RestaurantFormProps> = ({
                       <input
                         type="checkbox"
                         value={category}
-                        {...register('category', { required: 'At least one category is required' })}
+                        {...register('category')}
                         className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                       />
                       <span className="text-sm text-gray-700">{category}</span>

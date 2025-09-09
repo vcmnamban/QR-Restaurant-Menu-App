@@ -202,6 +202,12 @@ const RestaurantPage: React.FC = () => {
       if (!cleanedData.contact?.email || cleanedData.contact.email.trim() === '') {
         throw new Error('Email is required');
       }
+      if (!cleanedData.category || cleanedData.category.length === 0) {
+        throw new Error('At least one category is required');
+      }
+      if (!cleanedData.cuisine || cleanedData.cuisine.length === 0) {
+        throw new Error('At least one cuisine type is required');
+      }
       
       if (viewMode === 'add') {
         await RestaurantService.createRestaurant(cleanedData);

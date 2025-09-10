@@ -186,40 +186,6 @@ const RestaurantPage: React.FC = () => {
       
       console.log('🔍 Cleaned data before API call:', JSON.stringify(cleanedData, null, 2));
       
-      // Always use test data for now to debug the issue
-      console.log('⚠️ Using test data to debug validation issues...');
-      const testData = {
-        name: 'Test Restaurant',
-        description: 'A test restaurant for debugging',
-        category: ['Fast Food'],
-        cuisine: ['International'],
-        address: {
-          street: 'Test Street 123',
-          city: 'Test City',
-          state: 'Test State',
-          zipCode: '12345',
-          country: 'Saudi Arabia'
-        },
-        contact: {
-          phone: '501234567',
-          email: 'test@example.com',
-          website: ''
-        },
-        hours: {},
-        features: [],
-        paymentMethods: ['Cash'],
-        deliveryOptions: {
-          delivery: false,
-          pickup: true,
-          dineIn: true,
-          deliveryFee: 0,
-          minimumOrder: 0,
-          deliveryRadius: 5
-        }
-      };
-      console.log('🔍 Using test data:', JSON.stringify(testData, null, 2));
-      cleanedData = testData;
-      
       // Validate required fields before sending
       if (!cleanedData.name || cleanedData.name.trim() === '') {
         throw new Error('Restaurant name is required');

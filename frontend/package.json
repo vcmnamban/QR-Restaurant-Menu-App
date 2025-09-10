@@ -1,6 +1,6 @@
 {
   "name": "qr-restaurant-menu-frontend",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Frontend for QR Restaurant Menu App",
   "type": "module",
   "scripts": {

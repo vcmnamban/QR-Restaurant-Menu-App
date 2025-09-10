@@ -477,12 +477,14 @@ router.get('/:id/menus', asyncHandler(async (req, res) => {
 // @desc    Get restaurant menu categories
 // @access  Public
 router.get('/:id/categories', asyncHandler(async (req, res) => {
+  console.log('🔍 Categories endpoint called for restaurant:', req.params.id);
   const restaurant = await Restaurant.findById(req.params.id);
   if (!restaurant || !restaurant.isActive) {
     throw createError('Restaurant not found or inactive', 404);
   }
 
   // Return empty categories for now
+  console.log('✅ Returning empty categories array');
   res.json({
     success: true,
     data: {
@@ -495,12 +497,14 @@ router.get('/:id/categories', asyncHandler(async (req, res) => {
 // @desc    Get restaurant menu items
 // @access  Public
 router.get('/:id/menu-items', asyncHandler(async (req, res) => {
+  console.log('🔍 Menu items endpoint called for restaurant:', req.params.id);
   const restaurant = await Restaurant.findById(req.params.id);
   if (!restaurant || !restaurant.isActive) {
     throw createError('Restaurant not found or inactive', 404);
   }
 
   // Return empty menu items for now
+  console.log('✅ Returning empty menu items array');
   res.json({
     success: true,
     data: {

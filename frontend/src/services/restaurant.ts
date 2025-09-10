@@ -82,13 +82,26 @@ export class RestaurantService {
 
   // Update restaurant
   static async updateRestaurant(id: string, restaurantData: Partial<Restaurant>): Promise<Restaurant> {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Frontend: Updating restaurant with ID:', id);
+      console.log('🔍 Frontend: Update data:', JSON.stringify(restaurantData, null, 2));
+    }
+    
     const response = await http.put<Restaurant>(`/restaurants/${id}`, restaurantData);
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Frontend: Update response:', response);
+      console.log('🔍 Frontend: Update success:', response.success);
+      console.log('🔍 Frontend: Update error:', response.error);
+    }
     
     if (response.success && response.data) {
       return response.data;
     }
     
-    throw new Error(response.error || 'Failed to update restaurant');
+    const errorMessage = response.error || response.message || 'Failed to update restaurant';
+    console.error('Restaurant update failed:', errorMessage);
+    throw new Error(errorMessage);
   }
 
   // Delete restaurant

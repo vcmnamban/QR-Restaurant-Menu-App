@@ -155,6 +155,7 @@ const startServer = async (): Promise<void> => {
     const server = app.listen(PORT, HOST, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log('🔧 Validation fixes applied - nameAr and descriptionAr now allow empty strings');
+      console.log('🔄 FORCE REDEPLOY - Menu endpoints added at', new Date().toISOString());
       console.log(`🌍 Environment: ${NODE_ENV}`);
       console.log(`📊 Database: ${mongoose.connection.name || 'Connecting...'}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);

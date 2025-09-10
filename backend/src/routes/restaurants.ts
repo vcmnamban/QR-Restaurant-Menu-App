@@ -137,7 +137,9 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
   // Check if user already has a restaurant
   const existingRestaurant = await Restaurant.findOne({ owner: req.user!.id });
   if (existingRestaurant && req.user!.role === 'restaurant_owner') {
-    throw createError('You can only own one restaurant', 400);
+    console.log('❌ User already has a restaurant:', existingRestaurant._id);
+    console.log('❌ Existing restaurant name:', existingRestaurant.name);
+    throw createError('You can only own one restaurant. Please edit your existing restaurant or contact support to delete it first.', 400);
   }
 
   // Create restaurant with minimal required fields only

@@ -63,6 +63,11 @@ const RestaurantPage: React.FC = () => {
   };
 
   const handleAddRestaurant = () => {
+    // Check if user already has a restaurant
+    if (restaurants.length > 0) {
+      toast.error('You already have a restaurant! Please edit your existing restaurant instead.');
+      return;
+    }
     setSelectedRestaurant(null);
     setViewMode('add');
   };
@@ -265,7 +270,14 @@ const RestaurantPage: React.FC = () => {
         errorMessage = error;
       }
       
-      toast.error(errorMessage);
+      // Handle specific business logic errors
+      if (errorMessage.includes('You can only own one restaurant')) {
+        toast.error('You already have a restaurant! Please edit your existing restaurant or contact support to delete it first.');
+        // Optionally redirect to edit mode if there's an existing restaurant
+        fetchRestaurants(); // Refresh the list to show existing restaurant
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsSubmitting(false);
     }

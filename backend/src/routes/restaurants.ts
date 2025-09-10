@@ -113,15 +113,16 @@ router.post('/simple', asyncHandler(async (req, res) => {
 // @desc    Create a new restaurant
 // @access  Private (Restaurant owners only)
 router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHandler(async (req, res) => {
-  // Debug logging
-  console.log('🔍 POST /api/restaurants - Request received');
-  console.log('🔍 Request body:', JSON.stringify(req.body, null, 2));
-  console.log('🔍 User:', req.user);
-  console.log('🔍 User ID:', req.user?.id);
-  console.log('🔍 User Role:', req.user?.role);
+  // Debug logging only in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 POST /api/restaurants - Request received');
+    console.log('🔍 Request body:', JSON.stringify(req.body, null, 2));
+    console.log('🔍 User:', req.user);
+    console.log('🔍 User ID:', req.user?.id);
+    console.log('🔍 User Role:', req.user?.role);
+  }
   
   // TEMPORARY: Skip validation for debugging
-  console.log('⚠️ SKIPPING VALIDATION FOR DEBUGGING');
   const value = req.body;
   
   // Validate request body
@@ -132,7 +133,9 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
   //   throw createError(error.details[0].message, 400);
   // }
   
-  console.log('✅ Using raw data without validation:', JSON.stringify(value, null, 2));
+  if (process.env.NODE_ENV === 'development') {
+    console.log('✅ Using raw data without validation:', JSON.stringify(value, null, 2));
+  }
 
   // Check if user already has a restaurant
   const existingRestaurant = await Restaurant.findOne({ owner: req.user!.id });

@@ -56,14 +56,19 @@ export class RestaurantService {
 
   // Create new restaurant
   static async createRestaurant(restaurantData: Partial<Restaurant>): Promise<Restaurant> {
-    console.log('🔍 Frontend: Sending restaurant data:', JSON.stringify(restaurantData, null, 2));
+    // Only log in development mode
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Frontend: Sending restaurant data:', JSON.stringify(restaurantData, null, 2));
+    }
     
     const response = await http.post<Restaurant>('/restaurants', restaurantData);
     
-    console.log('🔍 Frontend: Received response:', response);
-    console.log('🔍 Frontend: Response success:', response.success);
-    console.log('🔍 Frontend: Response error:', response.error);
-    console.log('🔍 Frontend: Response message:', response.message);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Frontend: Received response:', response);
+      console.log('🔍 Frontend: Response success:', response.success);
+      console.log('🔍 Frontend: Response error:', response.error);
+      console.log('🔍 Frontend: Response message:', response.message);
+    }
     
     if (response.success && response.data) {
       return response.data;
@@ -71,7 +76,7 @@ export class RestaurantService {
     
     // Handle error response
     const errorMessage = response.error || response.message || 'Failed to create restaurant';
-    console.error('🔍 Frontend: Restaurant creation failed:', errorMessage);
+    console.error('Restaurant creation failed:', errorMessage);
     throw new Error(errorMessage);
   }
 

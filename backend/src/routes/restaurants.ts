@@ -473,6 +473,42 @@ router.get('/:id/menus', asyncHandler(async (req, res) => {
   });
 }));
 
+// @route   GET /api/restaurants/:id/categories
+// @desc    Get restaurant menu categories
+// @access  Public
+router.get('/:id/categories', asyncHandler(async (req, res) => {
+  const restaurant = await Restaurant.findById(req.params.id);
+  if (!restaurant || !restaurant.isActive) {
+    throw createError('Restaurant not found or inactive', 404);
+  }
+
+  // Return empty categories for now
+  res.json({
+    success: true,
+    data: {
+      categories: []
+    }
+  });
+}));
+
+// @route   GET /api/restaurants/:id/menu-items
+// @desc    Get restaurant menu items
+// @access  Public
+router.get('/:id/menu-items', asyncHandler(async (req, res) => {
+  const restaurant = await Restaurant.findById(req.params.id);
+  if (!restaurant || !restaurant.isActive) {
+    throw createError('Restaurant not found or inactive', 404);
+  }
+
+  // Return empty menu items for now
+  res.json({
+    success: true,
+    data: {
+      menuItems: []
+    }
+  });
+}));
+
 // @route   POST /api/restaurants/:id/verify
 // @desc    Verify restaurant (Admin only)
 // @access  Private (Admin only)

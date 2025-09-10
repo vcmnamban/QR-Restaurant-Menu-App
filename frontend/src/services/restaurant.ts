@@ -56,46 +56,23 @@ export class RestaurantService {
 
   // Create new restaurant
   static async createRestaurant(restaurantData: Partial<Restaurant>): Promise<Restaurant> {
-    try {
-      console.log('🔍 Frontend: Sending restaurant data:', JSON.stringify(restaurantData, null, 2));
-      
-      const response = await http.post<Restaurant>('/restaurants', restaurantData);
-      
-      console.log('🔍 Frontend: Received response:', response);
-      
-      if (response.success && response.data) {
-        return response.data;
-      }
-      
-      throw new Error(response.error || 'Failed to create restaurant');
-    } catch (error: any) {
-      console.error('🔍 Frontend: Restaurant creation error:', error);
-      
-      let errorMessage = 'Failed to create restaurant';
-      
-      // Handle different error structures
-      if (error.response && error.response.data) {
-        // Standard Axios error structure
-        if (error.response.data.error && error.response.data.error.message) {
-          errorMessage = error.response.data.error.message;
-        } else if (error.response.data.message) {
-          errorMessage = error.response.data.message;
-        } else if (error.response.data.error) {
-          errorMessage = error.response.data.error;
-        } else {
-          errorMessage = `Server error: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
-        }
-      } else if (error.message) {
-        errorMessage = error.message;
-      } else if (typeof error === 'string') {
-        errorMessage = error;
-      } else {
-        errorMessage = `Error: ${JSON.stringify(error)}`;
-      }
-      
-      console.error('🔍 Frontend: Final error message:', errorMessage);
-      throw new Error(errorMessage);
+    console.log('🔍 Frontend: Sending restaurant data:', JSON.stringify(restaurantData, null, 2));
+    
+    const response = await http.post<Restaurant>('/restaurants', restaurantData);
+    
+    console.log('🔍 Frontend: Received response:', response);
+    console.log('🔍 Frontend: Response success:', response.success);
+    console.log('🔍 Frontend: Response error:', response.error);
+    console.log('🔍 Frontend: Response message:', response.message);
+    
+    if (response.success && response.data) {
+      return response.data;
     }
+    
+    // Handle error response
+    const errorMessage = response.error || response.message || 'Failed to create restaurant';
+    console.error('🔍 Frontend: Restaurant creation failed:', errorMessage);
+    throw new Error(errorMessage);
   }
 
   // Update restaurant

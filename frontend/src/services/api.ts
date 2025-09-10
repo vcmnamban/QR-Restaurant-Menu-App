@@ -178,14 +178,21 @@ export const http = {
 
 // Error handler
 function handleApiError(error: any): ApiResponse {
+  console.log('🔍 API Error Handler - Error:', error);
+  console.log('🔍 API Error Handler - Error response:', error.response);
+  console.log('🔍 API Error Handler - Error response data:', error.response?.data);
+  
   if (error.response) {
     // Server responded with error status
     const { status, data } = error.response;
     
+    console.log('🔍 API Error Handler - Status:', status);
+    console.log('🔍 API Error Handler - Data:', data);
+    
     return {
       success: false,
-      error: data?.error || data?.message || `HTTP ${status} Error`,
-      message: data?.message || 'An error occurred',
+      error: data?.error?.message || data?.error || data?.message || `HTTP ${status} Error`,
+      message: data?.message || data?.error?.message || 'An error occurred',
     };
   } else if (error.request) {
     // Request was made but no response received

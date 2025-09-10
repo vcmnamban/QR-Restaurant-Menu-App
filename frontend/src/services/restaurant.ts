@@ -70,20 +70,27 @@ export class RestaurantService {
       throw new Error(response.error || 'Failed to create restaurant');
     } catch (error: any) {
       console.error('🔍 Frontend: Restaurant creation error:', error);
-      console.error('🔍 Frontend: Error response:', error.response);
-      console.error('🔍 Frontend: Error response data:', error.response?.data);
       
-      // Extract detailed error message
       let errorMessage = 'Failed to create restaurant';
       
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.data?.error) {
-        errorMessage = error.response.data.error;
+      // Handle different error structures
+      if (error.response && error.response.data) {
+        // Standard Axios error structure
+        if (error.response.data.error && error.response.data.error.message) {
+          errorMessage = error.response.data.error.message;
+        } else if (error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data.error) {
+          errorMessage = error.response.data.error;
+        } else {
+          errorMessage = `Server error: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
+        }
       } else if (error.message) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
+      } else {
+        errorMessage = `Error: ${JSON.stringify(error)}`;
       }
       
       console.error('🔍 Frontend: Final error message:', errorMessage);

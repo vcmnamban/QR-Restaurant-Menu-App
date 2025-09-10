@@ -85,11 +85,12 @@ const updateRestaurantSchema = Joi.object({
 // @desc    Test endpoint to verify backend is working
 // @access  Public
 router.get('/test', asyncHandler(async (req, res) => {
+  console.log('🔍 TEST ENDPOINT CALLED');
   res.json({
     success: true,
     message: 'Backend is working!',
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.2'
   });
 }));
 
@@ -116,6 +117,8 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
   console.log('🔍 POST /api/restaurants - Request received');
   console.log('🔍 Request body:', JSON.stringify(req.body, null, 2));
   console.log('🔍 User:', req.user);
+  console.log('🔍 User ID:', req.user?.id);
+  console.log('🔍 User Role:', req.user?.role);
   
   // TEMPORARY: Skip validation for debugging
   console.log('⚠️ SKIPPING VALIDATION FOR DEBUGGING');
@@ -193,6 +196,9 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
     console.log('❌ Error message:', saveError.message);
     if (saveError.errors) {
       console.log('❌ Validation errors:', saveError.errors);
+      // Extract specific validation errors
+      const validationErrors = Object.values(saveError.errors).map((err: any) => err.message).join(', ');
+      throw createError(`Validation failed: ${validationErrors}`, 400);
     }
     throw createError(saveError.message || 'Failed to save restaurant', 400);
   }

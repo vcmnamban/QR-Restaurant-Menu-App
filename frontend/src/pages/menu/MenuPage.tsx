@@ -214,6 +214,125 @@ const MenuPage: React.FC = () => {
     }
   };
 
+  const handleExportMenu = () => {
+    try {
+      // Create CSV data
+      const csvData = items.map(item => ({
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        category: getCategoryName(item.categoryId || ''),
+        isActive: item.isActive ? 'Yes' : 'No',
+        spiceLevel: item.spiceLevel || '1',
+        preparationTime: item.preparationTime || '15',
+        calories: item.calories || '0',
+        allergens: item.allergens?.join(', ') || 'None',
+        ingredients: item.ingredients?.join(', ') || 'None'
+      }));
+
+      // Convert to CSV string
+      const headers = Object.keys(csvData[0]);
+      const csvContent = [
+        headers.join(','),
+        ...csvData.map(row => headers.map(header => `"${row[header]}"`).join(','))
+      ].join('\n');
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `menu-export-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success('Menu exported successfully');
+    } catch (error: any) {
+      toast.error('Failed to export menu: ' + error.message);
+    }
+  };
+
+  const handleImportMenu = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.csv';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const lines = text.split('\n');
+        const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
+        
+        const importedItems = lines.slice(1).filter(line => line.trim()).map(line => {
+          const values = line.split(',').map(v => v.replace(/"/g, ''));
+          const item: any = {};
+          headers.forEach((header, index) => {
+            item[header] = values[index];
+          });
+          return item;
+        });
+
+        // Convert back to proper format
+        const formattedItems = importedItems.map(item => ({
+          name: item.name,
+          description: item.description,
+          price: parseFloat(item.price) || 0,
+          categoryId: categories.find(cat => cat.name === item.category)?._id || categories[0]?._id,
+          isActive: item.isActive === 'Yes',
+          spiceLevel: parseInt(item.spiceLevel) || 1,
+          preparationTime: parseInt(item.preparationTime) || 15,
+          calories: parseInt(item.calories) || 0,
+          allergens: item.allergens && item.allergens !== 'None' ? item.allergens.split(', ') : [],
+          ingredients: item.ingredients && item.ingredients !== 'None' ? item.ingredients.split(', ') : []
+        }));
+
+        // Add items to backend
+        for (const item of formattedItems) {
+          if (selectedRestaurant) {
+            await MenuService.createMenuItem(selectedRestaurant._id, item);
+          }
+        }
+
+        toast.success(`Successfully imported ${formattedItems.length} menu items`);
+        await fetchItems();
+      } catch (error: any) {
+        toast.error('Failed to import menu: ' + error.message);
+      }
+    };
+    input.click();
+  };
+
+  const handleClearAllData = async () => {
+    if (!selectedRestaurant) return;
+    
+    const confirmed = window.confirm(
+      'Are you sure you want to clear all menu data? This action cannot be undone and will permanently delete all menu items and categories.'
+    );
+    
+    if (!confirmed) return;
+
+    try {
+      // Clear all menu items
+      for (const item of items) {
+        await MenuService.deleteMenuItem(item._id);
+      }
+      
+      // Clear all categories
+      for (const category of categories) {
+        await MenuService.deleteCategory(category._id);
+      }
+
+      toast.success('All menu data cleared successfully');
+      await Promise.all([fetchItems(), fetchCategories()]);
+    } catch (error: any) {
+      toast.error('Failed to clear data: ' + error.message);
+    }
+  };
+
   const handleSubmitItem = async (data: Partial<MenuItem>) => {
     if (!selectedRestaurant) return;
     
@@ -728,11 +847,11 @@ const MenuPage: React.FC = () => {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Management</h3>
                   <div className="space-y-4">
                     <div className="flex items-center space-x-4">
-                      <button className="btn-outline">
+                      <button className="btn-outline" onClick={handleExportMenu}>
                         <Settings className="h-4 w-4 mr-2" />
                         Export Menu
                       </button>
-                      <button className="btn-outline">
+                      <button className="btn-outline" onClick={handleImportMenu}>
                         <Settings className="h-4 w-4 mr-2" />
                         Import Menu
                       </button>
@@ -752,7 +871,10 @@ const MenuPage: React.FC = () => {
                       <p className="text-sm text-red-700 mb-3">
                         This will permanently delete all menu items and categories. This action cannot be undone.
                       </p>
-                      <button className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700">
+                      <button 
+                        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
+                        onClick={handleClearAllData}
+                      >
                         Clear All Data
                       </button>
                     </div>

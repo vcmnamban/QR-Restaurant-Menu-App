@@ -14,6 +14,7 @@ import menuRoutes from './routes/menus';
 import orderRoutes from './routes/orders';
 import userRoutes from './routes/users';
 import paymentRoutes from './routes/payments';
+import qrCodeRoutes from './routes/qrCodes';
 import mongoose from 'mongoose';
 
 // Load environment variables
@@ -117,6 +118,7 @@ app.use('/api/menus', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/restaurants', qrCodeRoutes);
 
 // 404 handler
 app.use(notFound);
@@ -155,7 +157,7 @@ const startServer = async (): Promise<void> => {
     const server = app.listen(PORT, HOST, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log('🔧 Validation fixes applied - nameAr and descriptionAr now allow empty strings');
-      console.log('🔄 FORCE REDEPLOY - Menu endpoints added at', new Date().toISOString());
+      console.log('🔄 FORCE REDEPLOY - QR Code endpoints added at', new Date().toISOString());
       console.log(`🌍 Environment: ${NODE_ENV}`);
       console.log(`📊 Database: ${mongoose.connection.name || 'Connecting...'}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);

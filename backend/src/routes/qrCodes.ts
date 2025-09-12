@@ -9,45 +9,96 @@ const router = express.Router();
 const qrCodesStorage = new Map<string, any[]>();
 
 // Initialize sample QR codes on server start
-const initializeSampleQRCodes = () => {
+const initializeSampleQRCodes = async () => {
   console.log('🔧 Initializing sample QR codes...');
   
-  // Sample QR codes for different restaurants
-  const sampleQRCodes = [
-    {
-      _id: 'qr_001',
-      restaurantId: '68c06ccb91f62a12fa494813', // Your test restaurant ID
-      name: 'Table 1 Main Entrance',
-      description: '4 seat table',
-      type: 'table',
-      targetUrl: 'TB01',
-      qrCodeData: 'https://qr-restaurant-menu-app-01.vercel.app/menu/68c06ccb91f62a12fa494813?table=TB01',
-      qrCodeImage: '', // Will be generated
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      _id: 'qr_002',
-      restaurantId: '68c06ccb91f62a12fa494813',
-      name: 'Restaurant Main Menu',
-      description: 'Full restaurant menu access',
-      type: 'restaurant',
-      targetUrl: '',
-      qrCodeData: 'https://qr-restaurant-menu-app-01.vercel.app/menu/68c06ccb91f62a12fa494813',
-      qrCodeImage: '',
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  ];
+  try {
+    // Generate QR code images for sample data
+    const qrCodeData1 = 'https://qr-restaurant-menu-app-01.vercel.app/menu/68c06ccb91f62a12fa494813?table=TB01';
+    const qrCodeData2 = 'https://qr-restaurant-menu-app-01.vercel.app/menu/68c06ccb91f62a12fa494813';
+    
+    const qrCodeImage1 = await QRCode.toDataURL(qrCodeData1, {
+      width: 300,
+      margin: 2,
+      color: { dark: '#000000', light: '#FFFFFF' }
+    });
+    
+    const qrCodeImage2 = await QRCode.toDataURL(qrCodeData2, {
+      width: 300,
+      margin: 2,
+      color: { dark: '#000000', light: '#FFFFFF' }
+    });
+    
+    // Sample QR codes for different restaurants
+    const sampleQRCodes = [
+      {
+        _id: 'qr_001',
+        restaurantId: '68c06ccb91f62a12fa494813', // Your test restaurant ID
+        name: 'Table 1 Main Entrance',
+        description: '4 seat table',
+        type: 'table',
+        targetUrl: 'TB01',
+        qrCodeData: qrCodeData1,
+        qrCodeImage: qrCodeImage1,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        _id: 'qr_002',
+        restaurantId: '68c06ccb91f62a12fa494813',
+        name: 'Restaurant Main Menu',
+        description: 'Full restaurant menu access',
+        type: 'restaurant',
+        targetUrl: '',
+        qrCodeData: qrCodeData2,
+        qrCodeImage: qrCodeImage2,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
 
-  qrCodesStorage.set('68c06ccb91f62a12fa494813', sampleQRCodes);
-  console.log('✅ Sample QR codes initialized');
+    qrCodesStorage.set('68c06ccb91f62a12fa494813', sampleQRCodes);
+    console.log('✅ Sample QR codes initialized with images');
+  } catch (error) {
+    console.error('❌ Failed to initialize sample QR codes:', error);
+    // Initialize without images as fallback
+    const sampleQRCodes = [
+      {
+        _id: 'qr_001',
+        restaurantId: '68c06ccb91f62a12fa494813',
+        name: 'Table 1 Main Entrance',
+        description: '4 seat table',
+        type: 'table',
+        targetUrl: 'TB01',
+        qrCodeData: 'https://qr-restaurant-menu-app-01.vercel.app/menu/68c06ccb91f62a12fa494813?table=TB01',
+        qrCodeImage: '',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        _id: 'qr_002',
+        restaurantId: '68c06ccb91f62a12fa494813',
+        name: 'Restaurant Main Menu',
+        description: 'Full restaurant menu access',
+        type: 'restaurant',
+        targetUrl: '',
+        qrCodeData: 'https://qr-restaurant-menu-app-01.vercel.app/menu/68c06ccb91f62a12fa494813',
+        qrCodeImage: '',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+    qrCodesStorage.set('68c06ccb91f62a12fa494813', sampleQRCodes);
+    console.log('✅ Sample QR codes initialized without images (fallback)');
+  }
 };
 
 // Initialize on server start
-initializeSampleQRCodes();
+initializeSampleQRCodes().catch(console.error);
 
 // @route   GET /api/restaurants/:restaurantId/qr-codes
 // @desc    Get all QR codes for a restaurant

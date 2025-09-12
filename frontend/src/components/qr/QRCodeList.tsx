@@ -253,9 +253,9 @@ const QRCodeList: React.FC<QRCodeListProps> = ({
                 
                 <span className={cn(
                   'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium',
-                  getStatusColor(qrCode.settings?.isActive ?? true)
+                  getStatusColor(qrCode.isActive ?? true)
                 )}>
-                  {qrCode.settings?.isActive ? 'Active' : 'Inactive'}
+                  {qrCode.isActive ? 'Active' : 'Inactive'}
                 </span>
               </div>
             </div>

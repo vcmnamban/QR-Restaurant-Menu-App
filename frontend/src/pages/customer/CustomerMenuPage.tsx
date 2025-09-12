@@ -23,9 +23,7 @@ import CategoryFilter from '@/components/customer/CategoryFilter';
 import SearchBar from '@/components/customer/SearchBar';
 import CartDrawer from '@/components/customer/CartDrawer';
 
-// Import services
-import MenuService from '@/services/menu';
-import RestaurantService from '@/services/restaurant';
+// Note: Using direct fetch calls for public endpoints to avoid authentication issues
 
 // Import types
 import { MenuItem, MenuCategory, Restaurant } from '@/types';
@@ -69,9 +67,16 @@ const CustomerMenuPage: React.FC = () => {
 
   const fetchRestaurantData = async () => {
     try {
-      const data = await RestaurantService.getRestaurant(restaurantId!);
-      setRestaurant(data);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}`);
+      const data = await response.json();
+      
+      if (data.success && data.data.restaurant) {
+        setRestaurant(data.data.restaurant);
+      } else {
+        throw new Error(data.message || 'Restaurant not found');
+      }
     } catch (error: any) {
+      console.error('Failed to fetch restaurant:', error);
       toast.error(error.message || 'Failed to fetch restaurant information');
     } finally {
       setIsLoading(false);
@@ -80,13 +85,23 @@ const CustomerMenuPage: React.FC = () => {
 
   const fetchMenuData = async () => {
     try {
-      const [menuData, categoriesData] = await Promise.all([
-        MenuService.getPublicMenu(restaurantId!),
-        MenuService.getCategories(restaurantId!)
+      const [menuItemsResponse, categoriesResponse] = await Promise.all([
+        fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}/menu-items`),
+        fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}/categories`)
       ]);
-      setMenuItems(menuData.categories.flatMap(cat => cat.items));
-      setCategories(categoriesData);
+      
+      const menuItemsData = await menuItemsResponse.json();
+      const categoriesData = await categoriesResponse.json();
+      
+      if (menuItemsData.success && menuItemsData.data.menuItems) {
+        setMenuItems(menuItemsData.data.menuItems);
+      }
+      
+      if (categoriesData.success && categoriesData.data.categories) {
+        setCategories(categoriesData.data.categories);
+      }
     } catch (error: any) {
+      console.error('Failed to fetch menu data:', error);
       toast.error(error.message || 'Failed to fetch menu data');
     } finally {
       setIsLoadingMenu(false);

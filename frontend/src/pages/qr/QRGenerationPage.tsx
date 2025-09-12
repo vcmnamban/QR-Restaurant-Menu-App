@@ -101,12 +101,14 @@ const QRGenerationPage: React.FC = () => {
   };
 
   const handleDeleteQR = async (qrCodeId: string) => {
+    if (!selectedRestaurant) return;
+    
     if (!confirm('Are you sure you want to delete this QR code? This action cannot be undone.')) {
       return;
     }
 
     try {
-      await QRService.deleteQRCode(qrCodeId);
+      await QRService.deleteQRCode(selectedRestaurant._id, qrCodeId);
       toast.success('QR code deleted successfully');
       fetchQRCodes();
     } catch (error: any) {
@@ -123,7 +125,7 @@ const QRGenerationPage: React.FC = () => {
         await QRService.generateQRCode(selectedRestaurant._id, data as any);
         toast.success('QR code generated successfully');
       } else if (viewMode === 'edit' && selectedQR) {
-        await QRService.updateQRCode(selectedQR._id, data);
+        await QRService.updateQRCode(selectedRestaurant._id, selectedQR._id, data);
         toast.success('QR code updated successfully');
       }
       setViewMode('list');

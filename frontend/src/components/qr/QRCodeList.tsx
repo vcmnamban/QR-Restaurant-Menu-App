@@ -101,13 +101,28 @@ const QRCodeList: React.FC<QRCodeListProps> = ({
     });
 
   const handleDownload = (qrCode: QRCodeType) => {
-    // TODO: Implement actual QR code download
-    console.log('Downloading QR code:', qrCode.name);
+    if (!qrCode.qrCodeImage) {
+      console.error('No QR code image available for download');
+      return;
+    }
+
+    try {
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = qrCode.qrCodeImage;
+      link.download = `${qrCode.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qr_code.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Failed to download QR code:', error);
+    }
   };
 
   const handleCopyUrl = async (qrCode: QRCodeType) => {
     try {
-      await navigator.clipboard.writeText(qrCode.targetUrl);
+      const urlToCopy = qrCode.qrCodeData || qrCode.targetUrl || '';
+      await navigator.clipboard.writeText(urlToCopy);
       // You could add a toast notification here
     } catch (error) {
       console.error('Failed to copy URL:', error);
@@ -247,13 +262,33 @@ const QRCodeList: React.FC<QRCodeListProps> = ({
 
             {/* Content */}
             <div className="p-4 space-y-3">
+              {/* QR Code Preview */}
+              <div className="text-center">
+                <div className="bg-gray-50 rounded-lg p-4 mb-3">
+                  {qrCode.qrCodeImage ? (
+                    <img 
+                      src={qrCode.qrCodeImage} 
+                      alt={`QR Code for ${qrCode.name}`}
+                      className="mx-auto max-w-full h-auto"
+                      style={{ maxHeight: '120px' }}
+                    />
+                  ) : (
+                    <div className="text-gray-400 text-sm">
+                      <QrCode className="h-8 w-8 mx-auto mb-2" />
+                      <p>QR Code Preview</p>
+                      <p className="text-xs">No image generated</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {/* Target URL */}
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
                   Target URL
                 </label>
                 <div className="text-xs text-gray-600 truncate bg-gray-50 p-2 rounded">
-                  {qrCode.targetUrl}
+                  {qrCode.qrCodeData || qrCode.targetUrl || 'No URL'}
                 </div>
               </div>
 

@@ -39,9 +39,9 @@ class QRService {
   }
 
   // Get a specific QR code
-  static async getQRCode(qrCodeId: string): Promise<QRCode> {
+  static async getQRCode(restaurantId: string, qrCodeId: string): Promise<QRCode> {
     try {
-      const response = await api.get(`/qr-codes/${qrCodeId}`);
+      const response = await api.get(`/restaurants/${restaurantId}/qr-codes/${qrCodeId}`);
       return response.data.qrCode;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to fetch QR code');
@@ -49,19 +49,30 @@ class QRService {
   }
 
   // Generate a new QR code
-  static async generateQRCode(restaurantId: string, data: GenerateQRCodeData): Promise<QRCode> {
+  static async generateQRCode(restaurantId: string, data: any): Promise<QRCode> {
     try {
-      const response = await api.post(`/restaurants/${restaurantId}/qr-codes`, data);
+      // Simplify the data format to match backend expectations
+      const simplifiedData = {
+        name: data.name || 'Untitled QR Code',
+        description: data.description || '',
+        type: data.type || 'table',
+        targetUrl: data.targetUrl || data.tableNumber || ''
+      };
+      
+      console.log('🔧 Generating QR code with data:', simplifiedData);
+      
+      const response = await api.post(`/restaurants/${restaurantId}/qr-codes`, simplifiedData);
       return response.data.qrCode;
     } catch (error: any) {
+      console.error('❌ QR code generation error:', error);
       throw new Error(error.response?.data?.message || 'Failed to generate QR code');
     }
   }
 
   // Update an existing QR code
-  static async updateQRCode(qrCodeId: string, data: UpdateQRCodeData): Promise<QRCode> {
+  static async updateQRCode(restaurantId: string, qrCodeId: string, data: UpdateQRCodeData): Promise<QRCode> {
     try {
-      const response = await api.put(`/qr-codes/${qrCodeId}`, data);
+      const response = await api.put(`/restaurants/${restaurantId}/qr-codes/${qrCodeId}`, data);
       return response.data.qrCode;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to update QR code');
@@ -69,9 +80,9 @@ class QRService {
   }
 
   // Delete a QR code
-  static async deleteQRCode(qrCodeId: string): Promise<void> {
+  static async deleteQRCode(restaurantId: string, qrCodeId: string): Promise<void> {
     try {
-      await api.delete(`/qr-codes/${qrCodeId}`);
+      await api.delete(`/restaurants/${restaurantId}/qr-codes/${qrCodeId}`);
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to delete QR code');
     }

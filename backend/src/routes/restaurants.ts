@@ -10,6 +10,51 @@ const router = express.Router();
 // In-memory storage for menu items (in production, use a database)
 const menuItemsStorage = new Map<string, any[]>();
 
+// Initialize storage with sample data on server start
+const initializeSampleData = () => {
+  const sampleMenuItems = [
+    {
+      _id: 'sample-item-1',
+      name: 'Chicken Biryani',
+      nameAr: 'برياني الدجاج',
+      description: 'Fragrant basmati rice with tender chicken pieces',
+      descriptionAr: 'أرز بسمتي عطري مع قطع دجاج طرية',
+      categoryId: 'sample-cat-2',
+      price: 25.00,
+      isActive: true,
+      spiceLevel: 2,
+      preparationTime: 20,
+      isVegetarian: false,
+      isVegan: false,
+      isGlutenFree: true,
+      isHalal: true
+    },
+    {
+      _id: 'sample-item-2',
+      name: 'Fresh Salad',
+      nameAr: 'سلطة طازجة',
+      description: 'Mixed greens with fresh vegetables',
+      descriptionAr: 'خضار مختلطة مع خضار طازجة',
+      categoryId: 'sample-cat-1',
+      price: 12.00,
+      isActive: true,
+      spiceLevel: 0,
+      preparationTime: 10,
+      isVegetarian: true,
+      isVegan: true,
+      isGlutenFree: true,
+      isHalal: true
+    }
+  ];
+  
+  // Initialize with a default restaurant ID
+  menuItemsStorage.set('default', sampleMenuItems);
+  console.log('✅ Initialized sample menu items');
+};
+
+// Initialize sample data
+initializeSampleData();
+
 // Validation schemas
 const createRestaurantSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
@@ -546,50 +591,20 @@ router.get('/:id/menu-items', asyncHandler(async (req, res) => {
   }
 
   // Get stored menu items for this restaurant
-  const storedItems = menuItemsStorage.get(req.params.id) || [];
+  let storedItems = menuItemsStorage.get(req.params.id) || [];
   console.log('🔍 Current stored items for restaurant', req.params.id, ':', storedItems.length);
   
-  // If no stored items, initialize with sample data
+  // If no stored items, copy from default sample data
   if (storedItems.length === 0) {
-    const sampleMenuItems = [
-      {
-        _id: 'sample-item-1',
-        name: 'Chicken Biryani',
-        nameAr: 'برياني الدجاج',
-        description: 'Fragrant basmati rice with tender chicken pieces',
-        descriptionAr: 'أرز بسمتي عطري مع قطع دجاج طرية',
-        categoryId: 'sample-cat-2',
-        price: 25.00,
-        isActive: true,
-        spiceLevel: 2,
-        preparationTime: 20,
-        isVegetarian: false,
-        isVegan: false,
-        isGlutenFree: true,
-        isHalal: true
-      },
-      {
-        _id: 'sample-item-2',
-        name: 'Fresh Salad',
-        nameAr: 'سلطة طازجة',
-        description: 'Mixed greens with fresh vegetables',
-        descriptionAr: 'خضار مختلطة مع خضار طازجة',
-        categoryId: 'sample-cat-1',
-        price: 12.00,
-        isActive: true,
-        spiceLevel: 0,
-        preparationTime: 10,
-        isVegetarian: true,
-        isVegan: true,
-        isGlutenFree: true,
-        isHalal: true
-      }
-    ];
-    menuItemsStorage.set(req.params.id, sampleMenuItems);
+    const defaultItems = menuItemsStorage.get('default') || [];
+    storedItems = [...defaultItems]; // Create a copy
+    menuItemsStorage.set(req.params.id, storedItems);
+    console.log('✅ Initialized restaurant with sample data:', storedItems.length, 'items');
   }
   
   const allItems = menuItemsStorage.get(req.params.id) || [];
   console.log('✅ Returning menu items array:', allItems.length, 'items');
+  console.log('✅ Items:', allItems.map(item => ({ id: item._id, name: item.name })));
   
   res.json({
     success: true,

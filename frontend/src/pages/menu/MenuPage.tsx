@@ -535,22 +535,229 @@ const MenuPage: React.FC = () => {
             )}
 
             {activeTab === 'analytics' && (
-              <div className="text-center py-12">
-                <BarChart3 className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900">Menu Analytics</h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  Analytics and insights will be available here.
-                </p>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {/* Stats Cards */}
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <Utensils className="h-6 w-6 text-blue-600" />
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-500">Total Items</p>
+                        <p className="text-2xl font-semibold text-gray-900">{items.length}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-green-100 rounded-lg">
+                        <Tag className="h-6 w-6 text-green-600" />
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-500">Categories</p>
+                        <p className="text-2xl font-semibold text-gray-900">{categories.length}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-yellow-100 rounded-lg">
+                        <Eye className="h-6 w-6 text-yellow-600" />
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-500">Active Items</p>
+                        <p className="text-2xl font-semibold text-gray-900">
+                          {items.filter(item => item.isActive).length}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-purple-100 rounded-lg">
+                        <BarChart3 className="h-6 w-6 text-purple-600" />
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-500">Avg. Price</p>
+                        <p className="text-2xl font-semibold text-gray-900">
+                          SAR {items.length > 0 ? (items.reduce((sum, item) => sum + (item.price || 0), 0) / items.length).toFixed(2) : '0.00'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Category Distribution */}
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Items by Category</h3>
+                  <div className="space-y-3">
+                    {categories.map(category => {
+                      const categoryItems = items.filter(item => item.categoryId === category._id);
+                      return (
+                        <div key={category._id} className="flex items-center justify-between">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                            <span className="text-sm font-medium text-gray-700">{category.name}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm text-gray-500">{categoryItems.length} items</span>
+                            <div className="w-20 bg-gray-200 rounded-full h-2">
+                              <div 
+                                className="bg-blue-500 h-2 rounded-full" 
+                                style={{ width: `${items.length > 0 ? (categoryItems.length / items.length) * 100 : 0}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Recent Activity */}
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
+                  <div className="space-y-3">
+                    {items.slice(0, 5).map(item => (
+                      <div key={item._id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                        <div className="flex items-center">
+                          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-3">
+                            <Utensils className="h-4 w-4 text-gray-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                            <p className="text-xs text-gray-500">{getCategoryName(item.categoryId || '')}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium text-gray-900">SAR {item.price}</p>
+                          <p className="text-xs text-gray-500">
+                            {item.isActive ? 'Active' : 'Inactive'}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
 
             {activeTab === 'settings' && (
-              <div className="text-center py-12">
-                <Settings className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900">Menu Settings</h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  Menu configuration and settings will be available here.
-                </p>
+              <div className="space-y-6">
+                {/* Menu Configuration */}
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Menu Configuration</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-900">Auto-refresh Menu</h4>
+                        <p className="text-sm text-gray-500">Automatically refresh menu data every 5 minutes</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" defaultChecked />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-900">Show Nutritional Info</h4>
+                        <p className="text-sm text-gray-500">Display nutritional information to customers</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" defaultChecked />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-sm font-medium text-gray-900">Enable Item Ratings</h4>
+                        <p className="text-sm text-gray-500">Allow customers to rate menu items</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Display Settings */}
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Display Settings</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Items per page</label>
+                      <select className="input max-w-xs">
+                        <option value="10">10 items</option>
+                        <option value="20" selected>20 items</option>
+                        <option value="50">50 items</option>
+                        <option value="100">100 items</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Default sort order</label>
+                      <select className="input max-w-xs">
+                        <option value="name">Name (A-Z)</option>
+                        <option value="price-low">Price (Low to High)</option>
+                        <option value="price-high">Price (High to Low)</option>
+                        <option value="category">Category</option>
+                        <option value="created" selected>Recently Added</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                      <select className="input max-w-xs">
+                        <option value="SAR" selected>Saudi Riyal (SAR)</option>
+                        <option value="USD">US Dollar (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Export/Import */}
+                <div className="bg-white p-6 rounded-lg border border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Data Management</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-4">
+                      <button className="btn-outline">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Export Menu
+                      </button>
+                      <button className="btn-outline">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Import Menu
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-500">
+                      Export your menu data as CSV or import from a backup file.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Danger Zone */}
+                <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-red-900 mb-4">Danger Zone</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="text-sm font-medium text-red-900">Clear All Menu Items</h4>
+                      <p className="text-sm text-red-700 mb-3">
+                        This will permanently delete all menu items and categories. This action cannot be undone.
+                      </p>
+                      <button className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700">
+                        Clear All Data
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

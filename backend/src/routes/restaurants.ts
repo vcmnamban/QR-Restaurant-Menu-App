@@ -368,18 +368,32 @@ router.get('/', asyncHandler(async (req, res) => {
 // @desc    Get restaurant by ID
 // @access  Public
 router.get('/:id', asyncHandler(async (req, res) => {
+  console.log('🔍 GET /api/restaurants/:id - Public endpoint called');
+  console.log('🔍 Restaurant ID:', req.params.id);
+  
   const restaurant = await Restaurant.findById(req.params.id)
     .populate('owner', 'firstName lastName email')
     .populate('menus', 'name description isActive');
 
+  console.log('🔍 Found restaurant:', restaurant ? 'Yes' : 'No');
+  if (restaurant) {
+    console.log('🔍 Restaurant name:', restaurant.name);
+    console.log('🔍 Restaurant isActive:', restaurant.isActive);
+    console.log('🔍 Restaurant isVerified:', restaurant.isVerified);
+  }
+
   if (!restaurant) {
+    console.log('❌ Restaurant not found in database');
     throw createError('Restaurant not found', 404);
   }
 
-  if (!restaurant.isActive) {
+  // Make isActive check more lenient - only block if explicitly false
+  if (restaurant.isActive === false) {
+    console.log('❌ Restaurant is explicitly inactive');
     throw createError('Restaurant is not active', 400);
   }
 
+  console.log('✅ Returning restaurant data');
   res.json({
     success: true,
     data: {
@@ -527,8 +541,21 @@ router.get('/:id/menus', asyncHandler(async (req, res) => {
 router.get('/:id/categories', asyncHandler(async (req, res) => {
   console.log('🔍 Categories endpoint called for restaurant:', req.params.id);
   const restaurant = await Restaurant.findById(req.params.id);
-  if (!restaurant || !restaurant.isActive) {
-    throw createError('Restaurant not found or inactive', 404);
+  
+  console.log('🔍 Restaurant found:', restaurant ? 'Yes' : 'No');
+  if (restaurant) {
+    console.log('🔍 Restaurant isActive:', restaurant.isActive);
+  }
+  
+  if (!restaurant) {
+    console.log('❌ Restaurant not found in database');
+    throw createError('Restaurant not found', 404);
+  }
+  
+  // Make isActive check more lenient - only block if explicitly false
+  if (restaurant.isActive === false) {
+    console.log('❌ Restaurant is explicitly inactive');
+    throw createError('Restaurant is not active', 400);
   }
 
   // Return sample categories for now
@@ -586,8 +613,21 @@ router.get('/:id/categories', asyncHandler(async (req, res) => {
 router.get('/:id/menu-items', asyncHandler(async (req, res) => {
   console.log('🔍 Menu items endpoint called for restaurant:', req.params.id);
   const restaurant = await Restaurant.findById(req.params.id);
-  if (!restaurant || !restaurant.isActive) {
-    throw createError('Restaurant not found or inactive', 404);
+  
+  console.log('🔍 Restaurant found:', restaurant ? 'Yes' : 'No');
+  if (restaurant) {
+    console.log('🔍 Restaurant isActive:', restaurant.isActive);
+  }
+  
+  if (!restaurant) {
+    console.log('❌ Restaurant not found in database');
+    throw createError('Restaurant not found', 404);
+  }
+  
+  // Make isActive check more lenient - only block if explicitly false
+  if (restaurant.isActive === false) {
+    console.log('❌ Restaurant is explicitly inactive');
+    throw createError('Restaurant is not active', 400);
   }
 
   // Get stored menu items for this restaurant

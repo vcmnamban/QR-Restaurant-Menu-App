@@ -142,6 +142,58 @@ router.get('/test', asyncHandler(async (req, res) => {
   });
 }));
 
+// @route   GET /api/restaurants/test-fallback
+// @desc    Test fallback restaurant data
+// @access  Public
+router.get('/test-fallback', asyncHandler(async (req, res) => {
+  console.log('🔍 Test fallback endpoint called');
+  const fallbackRestaurant = {
+    _id: '68c06ccb91f62a12fa494813',
+    name: 'Test Restaurant',
+    description: 'A test restaurant for QR code scanning',
+    address: {
+      street: '123 Test Street',
+      city: 'Riyadh',
+      state: 'Riyadh Province',
+      zipCode: '12345',
+      country: 'Saudi Arabia'
+    },
+    contact: {
+      phone: '+966501234567',
+      email: 'test@restaurant.com'
+    },
+    isActive: true,
+    isVerified: true,
+    rating: 4.5,
+    totalReviews: 10,
+    category: ['Restaurant'],
+    cuisine: ['International'],
+    features: ['WiFi', 'Parking'],
+    paymentMethods: ['Cash', 'Credit Card'],
+    deliveryOptions: {
+      delivery: true,
+      pickup: true,
+      dineIn: true
+    },
+    subscription: {
+      plan: 'free',
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      isActive: true
+    },
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+  
+  res.json({
+    success: true,
+    data: {
+      restaurant: fallbackRestaurant
+    },
+    message: 'Fallback restaurant data test'
+  });
+}));
+
 // @route   POST /api/restaurants/simple
 // @desc    Simple test endpoint without authentication
 // @access  Public

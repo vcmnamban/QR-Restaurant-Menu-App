@@ -21,6 +21,15 @@ export function formatDate(date: Date | string): string {
   });
 }
 
+export function formatTime(date: Date | string): string {
+  const d = new Date(date);
+  return d.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
 export function formatDateTime(date: Date | string): string {
   const d = new Date(date);
   return d.toLocaleString('en-US', {

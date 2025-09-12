@@ -483,12 +483,51 @@ router.get('/:id/categories', asyncHandler(async (req, res) => {
     throw createError('Restaurant not found or inactive', 404);
   }
 
-  // Return empty categories for now
-  console.log('✅ Returning empty categories array');
+  // Return sample categories for now
+  console.log('✅ Returning sample categories array');
+  const sampleCategories = [
+    {
+      _id: 'sample-cat-1',
+      name: 'Appetizers',
+      nameAr: 'المقبلات',
+      description: 'Start your meal with our delicious appetizers',
+      descriptionAr: 'ابدأ وجبتك مع مقبلاتنا اللذيذة',
+      isActive: true,
+      sortOrder: 1
+    },
+    {
+      _id: 'sample-cat-2', 
+      name: 'Main Courses',
+      nameAr: 'الأطباق الرئيسية',
+      description: 'Our signature main dishes',
+      descriptionAr: 'أطباقنا الرئيسية المميزة',
+      isActive: true,
+      sortOrder: 2
+    },
+    {
+      _id: 'sample-cat-3',
+      name: 'Beverages',
+      nameAr: 'المشروبات',
+      description: 'Refreshing drinks and beverages',
+      descriptionAr: 'مشروبات منعشة',
+      isActive: true,
+      sortOrder: 3
+    },
+    {
+      _id: 'sample-cat-4',
+      name: 'Desserts',
+      nameAr: 'الحلويات',
+      description: 'Sweet treats to end your meal',
+      descriptionAr: 'حلويات لذيذة لإنهاء وجبتك',
+      isActive: true,
+      sortOrder: 4
+    }
+  ];
+  
   res.json({
     success: true,
     data: {
-      categories: []
+      categories: sampleCategories
     }
   });
 }));
@@ -503,12 +542,47 @@ router.get('/:id/menu-items', asyncHandler(async (req, res) => {
     throw createError('Restaurant not found or inactive', 404);
   }
 
-  // Return empty menu items for now
-  console.log('✅ Returning empty menu items array');
+  // Return sample menu items for now
+  console.log('✅ Returning sample menu items array');
+  const sampleMenuItems = [
+    {
+      _id: 'sample-item-1',
+      name: 'Chicken Biryani',
+      nameAr: 'برياني الدجاج',
+      description: 'Fragrant basmati rice with tender chicken pieces',
+      descriptionAr: 'أرز بسمتي عطري مع قطع دجاج طرية',
+      categoryId: 'sample-cat-2',
+      price: 25.00,
+      isActive: true,
+      spiceLevel: 2,
+      preparationTime: 20,
+      isVegetarian: false,
+      isVegan: false,
+      isGlutenFree: true,
+      isHalal: true
+    },
+    {
+      _id: 'sample-item-2',
+      name: 'Fresh Salad',
+      nameAr: 'سلطة طازجة',
+      description: 'Mixed greens with fresh vegetables',
+      descriptionAr: 'خضار مختلطة مع خضار طازجة',
+      categoryId: 'sample-cat-1',
+      price: 12.00,
+      isActive: true,
+      spiceLevel: 0,
+      preparationTime: 10,
+      isVegetarian: true,
+      isVegan: true,
+      isGlutenFree: true,
+      isHalal: true
+    }
+  ];
+  
   res.json({
     success: true,
     data: {
-      menuItems: []
+      menuItems: sampleMenuItems
     }
   });
 }));

@@ -7,6 +7,9 @@ import { createError } from '../middleware/errorHandler';
 
 const router = express.Router();
 
+// In-memory storage for menu items (in production, use a database)
+const menuItemsStorage = new Map<string, any[]>();
+
 // Validation schemas
 const createRestaurantSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
@@ -542,48 +545,98 @@ router.get('/:id/menu-items', asyncHandler(async (req, res) => {
     throw createError('Restaurant not found or inactive', 404);
   }
 
-  // Return sample menu items for now
-  console.log('✅ Returning sample menu items array');
-  const sampleMenuItems = [
-    {
-      _id: 'sample-item-1',
-      name: 'Chicken Biryani',
-      nameAr: 'برياني الدجاج',
-      description: 'Fragrant basmati rice with tender chicken pieces',
-      descriptionAr: 'أرز بسمتي عطري مع قطع دجاج طرية',
-      categoryId: 'sample-cat-2',
-      price: 25.00,
-      isActive: true,
-      spiceLevel: 2,
-      preparationTime: 20,
-      isVegetarian: false,
-      isVegan: false,
-      isGlutenFree: true,
-      isHalal: true
-    },
-    {
-      _id: 'sample-item-2',
-      name: 'Fresh Salad',
-      nameAr: 'سلطة طازجة',
-      description: 'Mixed greens with fresh vegetables',
-      descriptionAr: 'خضار مختلطة مع خضار طازجة',
-      categoryId: 'sample-cat-1',
-      price: 12.00,
-      isActive: true,
-      spiceLevel: 0,
-      preparationTime: 10,
-      isVegetarian: true,
-      isVegan: true,
-      isGlutenFree: true,
-      isHalal: true
-    }
-  ];
+  // Get stored menu items for this restaurant
+  const storedItems = menuItemsStorage.get(req.params.id) || [];
+  
+  // If no stored items, initialize with sample data
+  if (storedItems.length === 0) {
+    const sampleMenuItems = [
+      {
+        _id: 'sample-item-1',
+        name: 'Chicken Biryani',
+        nameAr: 'برياني الدجاج',
+        description: 'Fragrant basmati rice with tender chicken pieces',
+        descriptionAr: 'أرز بسمتي عطري مع قطع دجاج طرية',
+        categoryId: 'sample-cat-2',
+        price: 25.00,
+        isActive: true,
+        spiceLevel: 2,
+        preparationTime: 20,
+        isVegetarian: false,
+        isVegan: false,
+        isGlutenFree: true,
+        isHalal: true
+      },
+      {
+        _id: 'sample-item-2',
+        name: 'Fresh Salad',
+        nameAr: 'سلطة طازجة',
+        description: 'Mixed greens with fresh vegetables',
+        descriptionAr: 'خضار مختلطة مع خضار طازجة',
+        categoryId: 'sample-cat-1',
+        price: 12.00,
+        isActive: true,
+        spiceLevel: 0,
+        preparationTime: 10,
+        isVegetarian: true,
+        isVegan: true,
+        isGlutenFree: true,
+        isHalal: true
+      }
+    ];
+    menuItemsStorage.set(req.params.id, sampleMenuItems);
+  }
+  
+  const allItems = menuItemsStorage.get(req.params.id) || [];
+  console.log('✅ Returning menu items array:', allItems.length, 'items');
   
   res.json({
     success: true,
     data: {
-      menuItems: sampleMenuItems
+      menuItems: allItems
     }
+  });
+}));
+
+// @route   POST /api/restaurants/:id/menu-items
+// @desc    Create a new menu item for a restaurant
+// @access  Private
+router.post('/:id/menu-items', authenticate, authorizeOwner(), asyncHandler(async (req, res) => {
+  console.log('🔍 POST /api/restaurants/:id/menu-items - Request received');
+  console.log('🔍 Restaurant ID:', req.params.id);
+  console.log('🔍 Request body:', JSON.stringify(req.body, null, 2));
+  console.log('🔍 User:', req.user);
+
+  const restaurant = await Restaurant.findById(req.params.id);
+  if (!restaurant) {
+    throw createError('Restaurant not found', 404);
+  }
+
+  if (req.user!.role !== 'admin' && restaurant.owner.toString() !== req.user!.id) {
+    throw createError('Access denied', 403);
+  }
+
+  // Create new menu item
+  const newItem = {
+    _id: `item-${Date.now()}`,
+    ...req.body,
+    restaurant: req.params.id,
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+
+  // Store the new item
+  const existingItems = menuItemsStorage.get(req.params.id) || [];
+  existingItems.push(newItem);
+  menuItemsStorage.set(req.params.id, existingItems);
+
+  console.log('✅ Menu item created successfully:', newItem._id);
+  console.log('✅ Total items for restaurant:', existingItems.length);
+  
+  res.status(201).json({
+    success: true,
+    message: 'Menu item created successfully',
+    data: newItem
   });
 }));
 

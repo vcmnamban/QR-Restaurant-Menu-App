@@ -227,7 +227,8 @@ const MenuPage: React.FC = () => {
         toast.success('Menu item updated successfully');
       }
       setViewMode('items');
-      fetchItems();
+      // Force refresh both items and categories
+      await Promise.all([fetchItems(), fetchCategories()]);
     } catch (error: any) {
       toast.error(error.message || 'Failed to save menu item');
     } finally {

@@ -547,6 +547,7 @@ router.get('/:id/menu-items', asyncHandler(async (req, res) => {
 
   // Get stored menu items for this restaurant
   const storedItems = menuItemsStorage.get(req.params.id) || [];
+  console.log('🔍 Current stored items for restaurant', req.params.id, ':', storedItems.length);
   
   // If no stored items, initialize with sample data
   if (storedItems.length === 0) {
@@ -632,6 +633,7 @@ router.post('/:id/menu-items', authenticate, authorizeOwner(), asyncHandler(asyn
 
   console.log('✅ Menu item created successfully:', newItem._id);
   console.log('✅ Total items for restaurant:', existingItems.length);
+  console.log('✅ All items:', existingItems.map(item => ({ id: item._id, name: item.name })));
   
   res.status(201).json({
     success: true,

@@ -149,34 +149,46 @@ router.get('/test-fallback', asyncHandler(async (req, res) => {
   console.log('🔍 Test fallback endpoint called');
   const fallbackRestaurant = {
     _id: '68c06ccb91f62a12fa494813',
-    name: 'Test Restaurant',
-    description: 'A test restaurant for QR code scanning',
+    name: 'QR Restaurant',
+    description: 'Your premium dining experience with digital menu access',
     address: {
-      street: '123 Test Street',
+      street: 'King Fahd Road',
       city: 'Riyadh',
       state: 'Riyadh Province',
-      zipCode: '12345',
+      zipCode: '11564',
       country: 'Saudi Arabia'
     },
     contact: {
       phone: '+966501234567',
-      email: 'test@restaurant.com'
+      email: 'info@qrrestaurant.com'
     },
     isActive: true,
     isVerified: true,
-    rating: 4.5,
-    totalReviews: 10,
-    category: ['Restaurant'],
-    cuisine: ['International'],
-    features: ['WiFi', 'Parking'],
-    paymentMethods: ['Cash', 'Credit Card'],
+    rating: 4.8,
+    totalReviews: 156,
+    category: ['Restaurant', 'Fine Dining'],
+    cuisine: ['International', 'Middle Eastern', 'Asian'],
+    features: ['WiFi', 'Parking', 'Outdoor Seating', 'Family Friendly'],
+    paymentMethods: ['Cash', 'Credit Card', 'Digital Wallet'],
     deliveryOptions: {
       delivery: true,
       pickup: true,
-      dineIn: true
+      dineIn: true,
+      deliveryFee: 15,
+      minimumOrder: 50,
+      deliveryRadius: 10
+    },
+    hours: {
+      sunday: { open: '10:00', close: '23:00', isOpen: true },
+      monday: { open: '10:00', close: '23:00', isOpen: true },
+      tuesday: { open: '10:00', close: '23:00', isOpen: true },
+      wednesday: { open: '10:00', close: '23:00', isOpen: true },
+      thursday: { open: '10:00', close: '23:00', isOpen: true },
+      friday: { open: '14:00', close: '24:00', isOpen: true },
+      saturday: { open: '10:00', close: '23:00', isOpen: true }
     },
     subscription: {
-      plan: 'free',
+      plan: 'premium',
       startDate: new Date(),
       endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       isActive: true
@@ -443,34 +455,46 @@ router.get('/:id', asyncHandler(async (req, res) => {
         console.log('🔄 Creating fallback restaurant for test ID');
         const fallbackRestaurant = {
           _id: '68c06ccb91f62a12fa494813',
-          name: 'Test Restaurant',
-          description: 'A test restaurant for QR code scanning',
+          name: 'QR Restaurant',
+          description: 'Your premium dining experience with digital menu access',
           address: {
-            street: '123 Test Street',
+            street: 'King Fahd Road',
             city: 'Riyadh',
             state: 'Riyadh Province',
-            zipCode: '12345',
+            zipCode: '11564',
             country: 'Saudi Arabia'
           },
           contact: {
             phone: '+966501234567',
-            email: 'test@restaurant.com'
+            email: 'info@qrrestaurant.com'
           },
           isActive: true,
           isVerified: true,
-          rating: 4.5,
-          totalReviews: 10,
-          category: ['Restaurant'],
-          cuisine: ['International'],
-          features: ['WiFi', 'Parking'],
-          paymentMethods: ['Cash', 'Credit Card'],
+          rating: 4.8,
+          totalReviews: 156,
+          category: ['Restaurant', 'Fine Dining'],
+          cuisine: ['International', 'Middle Eastern', 'Asian'],
+          features: ['WiFi', 'Parking', 'Outdoor Seating', 'Family Friendly'],
+          paymentMethods: ['Cash', 'Credit Card', 'Digital Wallet'],
           deliveryOptions: {
             delivery: true,
             pickup: true,
-            dineIn: true
+            dineIn: true,
+            deliveryFee: 15,
+            minimumOrder: 50,
+            deliveryRadius: 10
+          },
+          hours: {
+            sunday: { open: '10:00', close: '23:00', isOpen: true },
+            monday: { open: '10:00', close: '23:00', isOpen: true },
+            tuesday: { open: '10:00', close: '23:00', isOpen: true },
+            wednesday: { open: '10:00', close: '23:00', isOpen: true },
+            thursday: { open: '10:00', close: '23:00', isOpen: true },
+            friday: { open: '14:00', close: '24:00', isOpen: true },
+            saturday: { open: '10:00', close: '23:00', isOpen: true }
           },
           subscription: {
-            plan: 'free',
+            plan: 'premium',
             startDate: new Date(),
             endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
             isActive: true

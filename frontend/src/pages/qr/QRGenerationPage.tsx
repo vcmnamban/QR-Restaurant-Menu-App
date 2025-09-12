@@ -90,14 +90,36 @@ const QRGenerationPage: React.FC = () => {
     setViewMode('generate');
   };
 
-  const handleEditQR = (qrCode: QRCode) => {
-    setSelectedQR(qrCode);
-    setViewMode('edit');
+  const handleEditQR = async (qrCode: QRCode) => {
+    if (!selectedRestaurant) return;
+    
+    try {
+      // Fetch the full QR code data from backend
+      const fullQRCode = await QRService.getQRCode(selectedRestaurant._id, qrCode._id);
+      setSelectedQR(fullQRCode);
+      setViewMode('edit');
+    } catch (error: any) {
+      console.error('Failed to fetch QR code details:', error);
+      // Fallback to using the existing QR code data
+      setSelectedQR(qrCode);
+      setViewMode('edit');
+    }
   };
 
-  const handleViewQR = (qrCode: QRCode) => {
-    setSelectedQR(qrCode);
-    setViewMode('view');
+  const handleViewQR = async (qrCode: QRCode) => {
+    if (!selectedRestaurant) return;
+    
+    try {
+      // Fetch the full QR code data from backend
+      const fullQRCode = await QRService.getQRCode(selectedRestaurant._id, qrCode._id);
+      setSelectedQR(fullQRCode);
+      setViewMode('view');
+    } catch (error: any) {
+      console.error('Failed to fetch QR code details:', error);
+      // Fallback to using the existing QR code data
+      setSelectedQR(qrCode);
+      setViewMode('view');
+    }
   };
 
   const handleDeleteQR = async (qrCodeId: string) => {

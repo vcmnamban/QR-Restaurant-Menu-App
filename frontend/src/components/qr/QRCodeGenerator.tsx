@@ -63,14 +63,16 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   };
 
   const handleDownload = async () => {
-    if (!canvasRef.current) return;
+    if (!qrCode.qrCodeImage) {
+      console.error('No QR code image available for download');
+      return;
+    }
 
     setIsDownloading(true);
     try {
-      const canvas = canvasRef.current;
       const link = document.createElement('a');
-      link.download = `${qrCode.name}-QR-Code.png`;
-      link.href = canvas.toDataURL();
+      link.download = `${qrCode.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qr_code.png`;
+      link.href = qrCode.qrCodeImage;
       link.click();
     } catch (error) {
       console.error('Failed to download QR code:', error);
@@ -81,7 +83,8 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
   const handleCopyUrl = async () => {
     try {
-      await navigator.clipboard.writeText(qrCode.targetUrl);
+      const urlToCopy = qrCode.qrCodeData || qrCode.targetUrl || '';
+      await navigator.clipboard.writeText(urlToCopy);
       // You could add a toast notification here
     } catch (error) {
       console.error('Failed to copy URL:', error);
@@ -149,17 +152,35 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
             <div className="text-center">
               <h3 className="text-lg font-medium text-gray-900 mb-4">QR Code Preview</h3>
               
-              {/* QR Code Canvas */}
+              {/* QR Code Image */}
               <div className="bg-gray-50 rounded-lg p-6 inline-block">
-                <canvas
-                  ref={canvasRef}
-                  width={qrCode.design?.size || 256}
-                  height={qrCode.design?.size || 256}
-                  className="border border-gray-200 rounded"
-                  style={{
-                    backgroundColor: qrCode.design?.backgroundColor || '#FFFFFF'
-                  }}
-                />
+                {qrCode.qrCodeImage ? (
+                  <img 
+                    src={qrCode.qrCodeImage} 
+                    alt={`QR Code for ${qrCode.name}`}
+                    className="border border-gray-200 rounded"
+                    style={{
+                      width: qrCode.design?.size || 256,
+                      height: qrCode.design?.size || 256,
+                      backgroundColor: qrCode.design?.backgroundColor || '#FFFFFF'
+                    }}
+                  />
+                ) : (
+                  <div 
+                    className="border border-gray-200 rounded flex items-center justify-center text-gray-400"
+                    style={{
+                      width: qrCode.design?.size || 256,
+                      height: qrCode.design?.size || 256,
+                      backgroundColor: qrCode.design?.backgroundColor || '#FFFFFF'
+                    }}
+                  >
+                    <div className="text-center">
+                      <QrCode className="h-12 w-12 mx-auto mb-2" />
+                      <p className="text-sm">QR Code Preview</p>
+                      <p className="text-xs">No image available</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons */}

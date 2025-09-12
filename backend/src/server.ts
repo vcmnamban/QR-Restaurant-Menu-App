@@ -159,6 +159,7 @@ const startServer = async (): Promise<void> => {
       console.log('🔧 Validation fixes applied - nameAr and descriptionAr now allow empty strings');
       console.log('🔄 FORCE REDEPLOY - QR Code endpoints added at', new Date().toISOString());
       console.log('🔄 FORCE REDEPLOY - Fixed public restaurant endpoints at', new Date().toISOString());
+      console.log('🔄 FORCE REDEPLOY - Added fallback data for QR code scanning at', new Date().toISOString());
       console.log(`🌍 Environment: ${NODE_ENV}`);
       console.log(`📊 Database: ${mongoose.connection.name || 'Connecting...'}`);
       console.log(`🔗 Health check: http://localhost:${PORT}/health`);

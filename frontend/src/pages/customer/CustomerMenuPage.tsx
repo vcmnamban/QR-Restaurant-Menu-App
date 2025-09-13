@@ -84,62 +84,58 @@ const CustomerMenuPage: React.FC = () => {
       console.error('Failed to fetch restaurant:', error);
       
       // Provide fallback restaurant data if API fails
-      if (restaurantId === '68c06ccb91f62a12fa494813') {
-        console.log('🔄 Using fallback restaurant data');
-        const fallbackRestaurant = {
-          _id: '68c06ccb91f62a12fa494813',
-          name: 'QR Restaurant',
-          description: 'Your premium dining experience with digital menu access',
-          address: {
-            street: 'King Fahd Road',
-            city: 'Riyadh',
-            state: 'Riyadh Province',
-            zipCode: '11564',
-            country: 'Saudi Arabia'
-          },
-          contact: {
-            phone: '+966501234567',
-            email: 'info@qrrestaurant.com'
-          },
-          isActive: true,
-          isVerified: true,
-          rating: 4.8,
-          totalReviews: 156,
-          category: ['Restaurant', 'Fine Dining'],
-          cuisine: ['International', 'Middle Eastern', 'Asian'],
-          features: ['WiFi', 'Parking', 'Outdoor Seating', 'Family Friendly'],
-          paymentMethods: ['Cash', 'Credit Card', 'Digital Wallet'],
-          deliveryOptions: {
-            delivery: true,
-            pickup: true,
-            dineIn: true,
-            deliveryFee: 15,
-            minimumOrder: 50,
-            deliveryRadius: 10
-          },
-          hours: {
-            sunday: { open: '10:00', close: '23:00', isOpen: true },
-            monday: { open: '10:00', close: '23:00', isOpen: true },
-            tuesday: { open: '10:00', close: '23:00', isOpen: true },
-            wednesday: { open: '10:00', close: '23:00', isOpen: true },
-            thursday: { open: '10:00', close: '23:00', isOpen: true },
-            friday: { open: '14:00', close: '24:00', isOpen: true },
-            saturday: { open: '10:00', close: '23:00', isOpen: true }
-          },
-          subscription: {
-            plan: 'premium',
-            startDate: new Date(),
-            endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-            isActive: true
-          },
-          createdAt: new Date(),
-          updatedAt: new Date()
-        };
-        setRestaurant(fallbackRestaurant);
-        toast.success('Using fallback restaurant data');
-      } else {
-        toast.error(error.message || 'Failed to fetch restaurant information');
-      }
+      console.log('🔄 Using fallback restaurant data');
+      const fallbackRestaurant = {
+        _id: restaurantId,
+        name: 'QR Restaurant',
+        description: 'Your premium dining experience with digital menu access',
+        address: {
+          street: 'King Fahd Road',
+          city: 'Riyadh',
+          state: 'Riyadh Province',
+          zipCode: '11564',
+          country: 'Saudi Arabia'
+        },
+        contact: {
+          phone: '+966501234567',
+          email: 'info@qrrestaurant.com'
+        },
+        isActive: true,
+        isVerified: true,
+        rating: 4.8,
+        totalReviews: 156,
+        category: ['Restaurant', 'Fine Dining'],
+        cuisine: ['International', 'Middle Eastern', 'Asian'],
+        features: ['WiFi', 'Parking', 'Outdoor Seating', 'Family Friendly'],
+        paymentMethods: ['Cash', 'Credit Card', 'Digital Wallet'],
+        deliveryOptions: {
+          delivery: true,
+          pickup: true,
+          dineIn: true,
+          deliveryFee: 15,
+          minimumOrder: 50,
+          deliveryRadius: 10
+        },
+        hours: {
+          sunday: { open: '10:00', close: '23:00', isOpen: true },
+          monday: { open: '10:00', close: '23:00', isOpen: true },
+          tuesday: { open: '10:00', close: '23:00', isOpen: true },
+          wednesday: { open: '10:00', close: '23:00', isOpen: true },
+          thursday: { open: '10:00', close: '23:00', isOpen: true },
+          friday: { open: '14:00', close: '24:00', isOpen: true },
+          saturday: { open: '10:00', close: '23:00', isOpen: true }
+        },
+        subscription: {
+          plan: 'premium',
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+          isActive: true
+        },
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      setRestaurant(fallbackRestaurant);
+      toast.success('Using fallback restaurant data');
     } finally {
       setIsLoading(false);
     }

@@ -336,12 +336,13 @@ const MenuPage: React.FC = () => {
   const handleSubmitItem = async (data: Partial<MenuItem>) => {
     if (!selectedRestaurant) return;
     
-    // Clean up preparation time data
+    // Clean up preparation time data and ensure isActive is set
     const cleanedData = {
       ...data,
       preparationTime: typeof data.preparationTime === 'string' 
         ? parseInt(data.preparationTime.replace(/[^0-9]/g, '')) || 15
-        : data.preparationTime || 15
+        : data.preparationTime || 15,
+      isActive: data.isActive ?? true  // Ensure isActive is true by default
     };
     
     setIsSubmitting(true);

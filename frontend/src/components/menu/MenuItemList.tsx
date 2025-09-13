@@ -54,7 +54,22 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
     const matchesCategory = selectedCategory === '' || item.categoryId === selectedCategory;
     const matchesStatus = !showOnlyActive || item.isActive;
     
-    return matchesSearch && matchesCategory && matchesStatus;
+    const shouldInclude = matchesSearch && matchesCategory && matchesStatus;
+    
+    // Debug logging
+    if (!shouldInclude) {
+      console.log('Item filtered out:', {
+        name: item.name,
+        isActive: item.isActive,
+        matchesSearch,
+        matchesCategory,
+        matchesStatus,
+        showOnlyActive,
+        selectedCategory
+      });
+    }
+    
+    return shouldInclude;
   });
 
   const getCategoryName = (categoryId: string) => {

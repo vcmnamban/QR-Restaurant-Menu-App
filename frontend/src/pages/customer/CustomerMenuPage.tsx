@@ -415,12 +415,12 @@ const CustomerMenuPage: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Clock className="h-4 w-4" />
               <span>
-                {restaurant.operatingHours ? 'Open Now' : 'Closed'}
+                {restaurant.hours ? 'Open Now' : 'Closed'}
               </span>
             </div>
             <div className="flex items-center space-x-2">
               <MapPin className="h-4 w-4" />
-              <span>{restaurant.location}</span>
+              <span>{restaurant.address ? `${restaurant.address.city}, ${restaurant.address.state}` : 'Location not available'}</span>
             </div>
             <div className="flex items-center space-x-2">
               <Phone className="h-4 w-4" />

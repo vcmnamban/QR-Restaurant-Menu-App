@@ -147,6 +147,22 @@ router.get('/test', asyncHandler(async (req, res) => {
 // @access  Public
 router.get('/test-fallback', asyncHandler(async (req, res) => {
   console.log('🔍 Test fallback endpoint called');
+  
+  // First try to find any restaurant in the database
+  const anyRestaurant = await Restaurant.findOne({ isActive: { $ne: false } });
+  
+  if (anyRestaurant) {
+    console.log('✅ Found restaurant in database:', anyRestaurant.name);
+    return res.json({
+      success: true,
+      data: {
+        restaurant: anyRestaurant
+      },
+      message: 'Found actual restaurant data'
+    });
+  }
+  
+  console.log('❌ No restaurant found in database, using fallback');
   const fallbackRestaurant = {
     _id: '68c06ccb91f62a12fa494813',
     name: 'QR Restaurant',
@@ -204,6 +220,50 @@ router.get('/test-fallback', asyncHandler(async (req, res) => {
     },
     message: 'Fallback restaurant data test'
   });
+}));
+
+// @route   GET /api/restaurants/debug/all
+// @desc    Debug endpoint to list all restaurants
+// @access  Public
+router.get('/debug/all', asyncHandler(async (req, res) => {
+  console.log('🔍 Debug: Listing all restaurants');
+  
+  try {
+    const restaurants = await Restaurant.find({});
+    console.log('🔍 Found restaurants:', restaurants.length);
+    
+    restaurants.forEach((restaurant, index) => {
+      console.log(`Restaurant ${index + 1}:`, {
+        id: restaurant._id,
+        name: restaurant.name,
+        isActive: restaurant.isActive,
+        owner: restaurant.owner
+      });
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        restaurants: restaurants.map(r => ({
+          _id: r._id,
+          name: r.name,
+          isActive: r.isActive,
+          owner: r.owner,
+          address: r.address,
+          contact: r.contact
+        })),
+        count: restaurants.length
+      },
+      message: `Found ${restaurants.length} restaurants`
+    });
+  } catch (error) {
+    console.error('❌ Error fetching restaurants:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching restaurants',
+      error: error.message
+    });
+  }
 }));
 
 // @route   POST /api/restaurants/simple

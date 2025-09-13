@@ -146,12 +146,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
                 <span>
-                  {typeof item.preparationTime === 'string' 
-                    ? item.preparationTime.includes('min') 
-                      ? item.preparationTime 
-                      : `${item.preparationTime} min`
-                    : `${item.preparationTime} min`
-                  }
+                  {(() => {
+                    if (typeof item.preparationTime === 'string') {
+                      // Clean up string values that might have "min0" or other issues
+                      const cleanTime = item.preparationTime.replace(/min0+$/, 'min').replace(/0+$/, '');
+                      return cleanTime.includes('min') ? cleanTime : `${cleanTime} min`;
+                    }
+                    return `${item.preparationTime} min`;
+                  })()}
                 </span>
               </div>
             )}

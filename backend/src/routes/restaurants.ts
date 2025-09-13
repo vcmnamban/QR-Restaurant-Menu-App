@@ -1016,6 +1016,80 @@ router.post('/:id/menu-items', authenticate, authorizeOwner(), asyncHandler(asyn
   });
 }));
 
+// @route   PUT /api/restaurants/:id/menu-items/:itemId
+// @desc    Update a menu item
+// @access  Private (Owner or Admin)
+router.put('/:id/menu-items/:itemId', authenticate, authorizeOwner(), asyncHandler(async (req, res) => {
+  console.log('🔍 PUT /api/restaurants/:id/menu-items/:itemId - Request received');
+  console.log('🔍 Restaurant ID:', req.params.id);
+  console.log('🔍 Item ID:', req.params.itemId);
+  console.log('🔍 Request body:', JSON.stringify(req.body, null, 2));
+
+  const restaurant = await Restaurant.findById(req.params.id);
+  if (!restaurant) {
+    throw createError('Restaurant not found', 404);
+  }
+
+  // Get stored menu items for this restaurant
+  const existingItems = menuItemsStorage.get(req.params.id) || [];
+  const itemIndex = existingItems.findIndex(item => item._id === req.params.itemId);
+  
+  if (itemIndex === -1) {
+    throw createError('Menu item not found', 404);
+  }
+
+  // Update the item
+  const updatedItem = {
+    ...existingItems[itemIndex],
+    ...req.body,
+    updatedAt: new Date()
+  };
+
+  existingItems[itemIndex] = updatedItem;
+  menuItemsStorage.set(req.params.id, existingItems);
+
+  console.log('✅ Menu item updated successfully:', updatedItem._id);
+  
+  res.json({
+    success: true,
+    message: 'Menu item updated successfully',
+    data: updatedItem
+  });
+}));
+
+// @route   DELETE /api/restaurants/:id/menu-items/:itemId
+// @desc    Delete a menu item
+// @access  Private (Owner or Admin)
+router.delete('/:id/menu-items/:itemId', authenticate, authorizeOwner(), asyncHandler(async (req, res) => {
+  console.log('🔍 DELETE /api/restaurants/:id/menu-items/:itemId - Request received');
+  console.log('🔍 Restaurant ID:', req.params.id);
+  console.log('🔍 Item ID:', req.params.itemId);
+
+  const restaurant = await Restaurant.findById(req.params.id);
+  if (!restaurant) {
+    throw createError('Restaurant not found', 404);
+  }
+
+  // Get stored menu items for this restaurant
+  const existingItems = menuItemsStorage.get(req.params.id) || [];
+  const itemIndex = existingItems.findIndex(item => item._id === req.params.itemId);
+  
+  if (itemIndex === -1) {
+    throw createError('Menu item not found', 404);
+  }
+
+  // Remove the item
+  existingItems.splice(itemIndex, 1);
+  menuItemsStorage.set(req.params.id, existingItems);
+
+  console.log('✅ Menu item deleted successfully:', req.params.itemId);
+  
+  res.json({
+    success: true,
+    message: 'Menu item deleted successfully'
+  });
+}));
+
 // @route   POST /api/restaurants/:id/verify
 // @desc    Verify restaurant (Admin only)
 // @access  Private (Admin only)

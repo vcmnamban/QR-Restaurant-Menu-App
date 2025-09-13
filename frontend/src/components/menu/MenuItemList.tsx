@@ -315,17 +315,26 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                       <span>
                         {(() => {
                           const time = item.preparationTime || 15;
+                          console.log('🔍 Preparation time for', item.name, ':', time, 'type:', typeof time);
+                          
                           if (typeof time === 'string') {
                             // Comprehensive cleaning for corrupted data
                             let cleanTime = time.toString().trim();
+                            console.log('🔍 Original cleanTime:', cleanTime);
                             
                             // Handle various corrupted formats
                             // Remove any trailing zeros after 'min'
                             cleanTime = cleanTime.replace(/min0+$/, 'min');
+                            console.log('🔍 After min0+ removal:', cleanTime);
+                            
                             // Remove any standalone zeros at the end
                             cleanTime = cleanTime.replace(/0+$/, '');
+                            console.log('🔍 After trailing 0 removal:', cleanTime);
+                            
                             // Remove any extra spaces
                             cleanTime = cleanTime.replace(/\s+/g, ' ');
+                            console.log('🔍 After space cleanup:', cleanTime);
+                            
                             // Remove any non-numeric characters except 'min'
                             const numericPart = cleanTime.match(/\d+/);
                             if (numericPart) {
@@ -334,6 +343,7 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                               cleanTime = '15 min';
                             }
                             
+                            console.log('🔍 Final cleanTime:', cleanTime);
                             return cleanTime;
                           }
                           return `${time} min`;

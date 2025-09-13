@@ -196,7 +196,7 @@ const MenuPage: React.FC = () => {
     }
 
     try {
-      await MenuService.deleteMenuItem(itemId);
+      await MenuService.deleteMenuItem(selectedRestaurant._id, itemId);
       toast.success('Menu item deleted successfully');
       fetchItems();
     } catch (error: any) {
@@ -354,7 +354,7 @@ const MenuPage: React.FC = () => {
         await MenuService.createMenuItem(selectedRestaurant._id, cleanedData);
         toast.success('Menu item created successfully');
       } else if (viewMode === 'edit-item' && selectedItem) {
-        await MenuService.updateMenuItem(selectedItem._id, cleanedData);
+        await MenuService.updateMenuItem(selectedRestaurant._id, selectedItem._id, cleanedData);
         toast.success('Menu item updated successfully');
       }
       setViewMode('items');

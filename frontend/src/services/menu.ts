@@ -37,13 +37,13 @@ class MenuService {
     return response.data;
   }
 
-  static async updateMenuItem(itemId: string, itemData: Partial<MenuItem>): Promise<MenuItem> {
-    const response = await http.put<MenuItem>(`/menu-items/${itemId}`, itemData);
+  static async updateMenuItem(restaurantId: string, itemId: string, itemData: Partial<MenuItem>): Promise<MenuItem> {
+    const response = await http.put<MenuItem>(`/restaurants/${restaurantId}/menu-items/${itemId}`, itemData);
     return response.data;
   }
 
-  static async deleteMenuItem(itemId: string): Promise<void> {
-    await http.delete(`/menu-items/${itemId}`);
+  static async deleteMenuItem(restaurantId: string, itemId: string): Promise<void> {
+    await http.delete(`/restaurants/${restaurantId}/menu-items/${itemId}`);
   }
 
   static async toggleItemStatus(itemId: string): Promise<void> {

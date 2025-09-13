@@ -148,9 +148,25 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
                 <span>
                   {(() => {
                     if (typeof item.preparationTime === 'string') {
-                      // Clean up string values that might have "min0" or other issues
-                      const cleanTime = item.preparationTime.replace(/min0+$/, 'min').replace(/0+$/, '');
-                      return cleanTime.includes('min') ? cleanTime : `${cleanTime} min`;
+                      // Comprehensive cleaning for corrupted data
+                      let cleanTime = item.preparationTime.toString().trim();
+                      
+                      // Handle various corrupted formats
+                      // Remove any trailing zeros after 'min'
+                      cleanTime = cleanTime.replace(/min0+$/, 'min');
+                      // Remove any standalone zeros at the end
+                      cleanTime = cleanTime.replace(/0+$/, '');
+                      // Remove any extra spaces
+                      cleanTime = cleanTime.replace(/\s+/g, ' ');
+                      // Remove any non-numeric characters except 'min'
+                      const numericPart = cleanTime.match(/\d+/);
+                      if (numericPart) {
+                        cleanTime = `${numericPart[0]} min`;
+                      } else {
+                        cleanTime = '15 min';
+                      }
+                      
+                      return cleanTime;
                     }
                     return `${item.preparationTime} min`;
                   })()}

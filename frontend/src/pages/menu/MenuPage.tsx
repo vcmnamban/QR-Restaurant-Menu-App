@@ -336,13 +336,21 @@ const MenuPage: React.FC = () => {
   const handleSubmitItem = async (data: Partial<MenuItem>) => {
     if (!selectedRestaurant) return;
     
+    // Clean up preparation time data
+    const cleanedData = {
+      ...data,
+      preparationTime: typeof data.preparationTime === 'string' 
+        ? parseInt(data.preparationTime.replace(/[^0-9]/g, '')) || 15
+        : data.preparationTime || 15
+    };
+    
     setIsSubmitting(true);
     try {
       if (viewMode === 'add-item') {
-        await MenuService.createMenuItem(selectedRestaurant._id, data);
+        await MenuService.createMenuItem(selectedRestaurant._id, cleanedData);
         toast.success('Menu item created successfully');
       } else if (viewMode === 'edit-item' && selectedItem) {
-        await MenuService.updateMenuItem(selectedItem._id, data);
+        await MenuService.updateMenuItem(selectedItem._id, cleanedData);
         toast.success('Menu item updated successfully');
       }
       setViewMode('items');

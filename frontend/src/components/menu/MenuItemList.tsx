@@ -443,7 +443,17 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                       <div className="flex items-center space-x-4 text-sm text-gray-500">
                         <div className="flex items-center">
                           <Clock className="h-4 w-4 mr-1" />
-                          <span>{item.preparationTime || 15} min</span>
+                          <span>
+                            {(() => {
+                              const time = item.preparationTime || 15;
+                              if (typeof time === 'string') {
+                                // Clean up string values that might have "min0" or other issues
+                                const cleanTime = time.replace(/min0+$/, 'min').replace(/0+$/, '');
+                                return cleanTime.includes('min') ? cleanTime : `${cleanTime} min`;
+                              }
+                              return `${time} min`;
+                            })()}
+                          </span>
                         </div>
                         {item.calories && item.calories > 0 && (
                           <div className="flex items-center">

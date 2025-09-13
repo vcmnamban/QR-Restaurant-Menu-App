@@ -145,7 +145,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             {item.preparationTime && (
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
-                <span>{item.preparationTime} min</span>
+                <span>{typeof item.preparationTime === 'string' ? item.preparationTime : `${item.preparationTime} min`}</span>
               </div>
             )}
             {item.calories && item.calories > 0 && (

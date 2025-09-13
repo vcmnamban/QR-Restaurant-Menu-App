@@ -87,34 +87,34 @@ const CustomerMenuPage: React.FC = () => {
       console.log('🔄 Using fallback restaurant data');
       const fallbackRestaurant = {
         _id: restaurantId,
-        name: 'QR Restaurant',
-        description: 'Your premium dining experience with digital menu access',
+        name: 'Test Restaurant Chaya Kada',
+        description: 'A test restaurant for chaay',
         address: {
-          street: 'King Fahd Road',
-          city: 'Riyadh',
-          state: 'Riyadh Province',
-          zipCode: '11564',
+          street: 'adaan',
+          city: 'Adan',
+          state: 'Adan State',
+          zipCode: '12345',
           country: 'Saudi Arabia'
         },
         contact: {
-          phone: '+966501234567',
-          email: 'info@qrrestaurant.com'
+          phone: '966501234567',
+          email: 'test@restaurant.com'
         },
         isActive: true,
         isVerified: true,
-        rating: 4.8,
-        totalReviews: 156,
-        category: ['Restaurant', 'Fine Dining'],
-        cuisine: ['International', 'Middle Eastern', 'Asian'],
-        features: ['WiFi', 'Parking', 'Outdoor Seating', 'Family Friendly'],
-        paymentMethods: ['Cash', 'Credit Card', 'Digital Wallet'],
+        rating: 0.0,
+        totalReviews: 0,
+        category: ['Fast Food'],
+        cuisine: ['International'],
+        features: ['WiFi', 'Parking'],
+        paymentMethods: ['Cash', 'Credit Card'],
         deliveryOptions: {
-          delivery: true,
+          delivery: false,
           pickup: true,
           dineIn: true,
-          deliveryFee: 15,
-          minimumOrder: 50,
-          deliveryRadius: 10
+          deliveryFee: 0,
+          minimumOrder: 0,
+          deliveryRadius: 5
         },
         hours: {
           sunday: { open: '10:00', close: '23:00', isOpen: true },
@@ -122,11 +122,11 @@ const CustomerMenuPage: React.FC = () => {
           tuesday: { open: '10:00', close: '23:00', isOpen: true },
           wednesday: { open: '10:00', close: '23:00', isOpen: true },
           thursday: { open: '10:00', close: '23:00', isOpen: true },
-          friday: { open: '14:00', close: '24:00', isOpen: true },
+          friday: { open: '10:00', close: '23:00', isOpen: true },
           saturday: { open: '10:00', close: '23:00', isOpen: true }
         },
         subscription: {
-          plan: 'premium',
+          plan: 'free',
           startDate: new Date(),
           endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
           isActive: true

@@ -417,34 +417,18 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
         {/* Nutrition Tab */}
         {activeTab === 'nutrition' && (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="form-group">
-                <label htmlFor="calories" className="form-label">
-                  Calories
-                </label>
-                <input
-                  id="calories"
-                  type="number"
-                  min="0"
-                  className="input"
-                  placeholder="0"
-                  {...register('calories', { valueAsNumber: true })}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="preparationTime" className="form-label">
-                  Preparation Time (minutes)
-                </label>
-                <input
-                  id="preparationTime"
-                  type="number"
-                  min="0"
-                  className="input"
-                  placeholder="15"
-                  {...register('preparationTime', { valueAsNumber: true })}
-                />
-              </div>
+            <div className="form-group">
+              <label htmlFor="calories" className="form-label">
+                Calories
+              </label>
+              <input
+                id="calories"
+                type="number"
+                min="0"
+                className="input"
+                placeholder="0"
+                {...register('calories', { valueAsNumber: true })}
+              />
             </div>
 
             <div className="border-t pt-6">

@@ -320,13 +320,6 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                         <span>{item.calories} cal</span>
                       </div>
                     )}
-                    {/* Debug: Log item data to console */}
-                    {item.name === 'Avocado Juice' && console.log('Avocado Juice data:', {
-                      calories: item.calories,
-                      preparationTime: item.preparationTime,
-                      rating: item.rating,
-                      popularity: item.popularity
-                    })}
                   </div>
 
                   {/* Actions */}

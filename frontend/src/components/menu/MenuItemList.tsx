@@ -474,7 +474,7 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                         {item.calories && item.calories > 0 && (
                           <div className="flex items-center">
                             <Star className="h-4 w-4 mr-1" />
-                            <span>{item.calories || 0} cal</span>
+                            <span>{item.calories} cal</span>
                           </div>
                         )}
                       </div>

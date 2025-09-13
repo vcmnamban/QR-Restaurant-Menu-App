@@ -348,6 +348,13 @@ const MenuPage: React.FC = () => {
       isActive: data.isActive ?? true  // Ensure isActive is true by default
     };
     
+    // Debug logging for pricing fields
+    console.log('🔍 MenuPage - Original data:', data);
+    console.log('🔍 MenuPage - Cleaned data:', cleanedData);
+    console.log('🔍 MenuPage - Price:', cleanedData.price);
+    console.log('🔍 MenuPage - Compare Price:', cleanedData.comparePrice);
+    console.log('🔍 MenuPage - Image:', cleanedData.image);
+    
     setIsSubmitting(true);
     try {
       if (viewMode === 'add-item') {

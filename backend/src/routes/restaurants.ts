@@ -1024,6 +1024,9 @@ router.put('/:id/menu-items/:itemId', authenticate, authorizeOwner(), asyncHandl
   console.log('🔍 Restaurant ID:', req.params.id);
   console.log('🔍 Item ID:', req.params.itemId);
   console.log('🔍 Request body:', JSON.stringify(req.body, null, 2));
+  console.log('🔍 Price field:', req.body.price);
+  console.log('🔍 Compare Price field:', req.body.comparePrice);
+  console.log('🔍 Image field:', req.body.image);
 
   const restaurant = await Restaurant.findById(req.params.id);
   if (!restaurant) {

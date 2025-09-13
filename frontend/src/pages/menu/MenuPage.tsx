@@ -208,7 +208,10 @@ const MenuPage: React.FC = () => {
     try {
       await MenuService.toggleItemStatus(itemId);
       toast.success('Item status updated successfully');
-      fetchItems();
+      // Force refresh with a small delay to ensure backend is updated
+      setTimeout(async () => {
+        await fetchItems();
+      }, 100);
     } catch (error: any) {
       toast.error(error.message || 'Failed to update item status');
     }
@@ -283,7 +286,7 @@ const MenuPage: React.FC = () => {
           price: parseFloat(item.price) || 0,
           categoryId: categories.find(cat => cat.name === item.category)?._id || categories[0]?._id,
           isActive: item.isActive === 'Yes',
-          spiceLevel: parseInt(item.spiceLevel) || 1,
+          spiceLevel: (['mild', 'medium', 'hot', 'extra-hot'].includes(item.spiceLevel) ? item.spiceLevel : 'mild') as 'mild' | 'medium' | 'hot' | 'extra-hot',
           preparationTime: parseInt(item.preparationTime) || 15,
           calories: parseInt(item.calories) || 0,
           allergens: item.allergens && item.allergens !== 'None' ? item.allergens.split(', ') : [],
@@ -340,8 +343,8 @@ const MenuPage: React.FC = () => {
     const cleanedData = {
       ...data,
       preparationTime: typeof data.preparationTime === 'string' 
-        ? parseInt(data.preparationTime.replace(/[^0-9]/g, '')) || 15
-        : data.preparationTime || 15,
+        ? parseInt((data.preparationTime as string).replace(/[^0-9]/g, '')) || 15
+        : (data.preparationTime as number) || 15,
       isActive: data.isActive ?? true  // Ensure isActive is true by default
     };
     
@@ -355,8 +358,11 @@ const MenuPage: React.FC = () => {
         toast.success('Menu item updated successfully');
       }
       setViewMode('items');
-      // Force refresh both items and categories
-      await Promise.all([fetchItems(), fetchCategories()]);
+      setSelectedItem(null); // Clear selected item
+      // Force refresh both items and categories with a small delay to ensure backend is updated
+      setTimeout(async () => {
+        await Promise.all([fetchItems(), fetchCategories()]);
+      }, 100);
     } catch (error: any) {
       toast.error(error.message || 'Failed to save menu item');
     } finally {

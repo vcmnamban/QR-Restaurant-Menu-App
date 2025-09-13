@@ -312,7 +312,33 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 mr-1" />
-                      <span>{item.preparationTime || 15} min</span>
+                      <span>
+                        {(() => {
+                          const time = item.preparationTime || 15;
+                          if (typeof time === 'string') {
+                            // Comprehensive cleaning for corrupted data
+                            let cleanTime = time.toString().trim();
+                            
+                            // Handle various corrupted formats
+                            // Remove any trailing zeros after 'min'
+                            cleanTime = cleanTime.replace(/min0+$/, 'min');
+                            // Remove any standalone zeros at the end
+                            cleanTime = cleanTime.replace(/0+$/, '');
+                            // Remove any extra spaces
+                            cleanTime = cleanTime.replace(/\s+/g, ' ');
+                            // Remove any non-numeric characters except 'min'
+                            const numericPart = cleanTime.match(/\d+/);
+                            if (numericPart) {
+                              cleanTime = `${numericPart[0]} min`;
+                            } else {
+                              cleanTime = '15 min';
+                            }
+                            
+                            return cleanTime;
+                          }
+                          return `${time} min`;
+                        })()}
+                      </span>
                     </div>
                     {item.calories && item.calories > 0 && (
                       <div className="flex items-center">

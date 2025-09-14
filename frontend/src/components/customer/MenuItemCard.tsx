@@ -91,9 +91,20 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
         {/* Price Badge */}
         <div className="absolute bottom-3 right-3">
-          <span className="bg-white text-primary-600 px-3 py-1 rounded-full text-lg font-bold shadow-sm">
-            {formatCurrency(item.price)}
-          </span>
+          {item.comparePrice && item.comparePrice > item.price ? (
+            <div className="flex flex-col items-end space-y-1">
+              <span className="bg-white text-gray-500 px-2 py-1 rounded-full text-sm line-through shadow-sm">
+                {formatCurrency(item.comparePrice)}
+              </span>
+              <span className="bg-white text-primary-600 px-3 py-1 rounded-full text-lg font-bold shadow-sm">
+                {formatCurrency(item.price)}
+              </span>
+            </div>
+          ) : (
+            <span className="bg-white text-primary-600 px-3 py-1 rounded-full text-lg font-bold shadow-sm">
+              {formatCurrency(item.price)}
+            </span>
+          )}
         </div>
       </div>
 

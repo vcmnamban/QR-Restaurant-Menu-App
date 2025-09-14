@@ -262,9 +262,22 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
 
                 {/* Price Badge */}
                 <div className="absolute bottom-2 left-2">
-                  <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    {formatCurrency(item.price)}
-                  </span>
+                  <div className="flex flex-col space-y-1">
+                    {item.comparePrice && item.comparePrice > item.price ? (
+                      <>
+                        <span className="bg-gray-500 text-white px-2 py-1 rounded-full text-xs line-through">
+                          {formatCurrency(item.comparePrice)}
+                        </span>
+                        <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                          {formatCurrency(item.price)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="bg-primary-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {formatCurrency(item.price)}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -464,7 +477,20 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                       {/* Price and Status */}
                       <div className="flex-shrink-0 ml-4 text-right">
                         <div className="text-lg font-medium text-gray-900">
-                          {formatCurrency(item.price)}
+                          {item.comparePrice && item.comparePrice > item.price ? (
+                            <div className="flex flex-col items-end space-y-1">
+                              <span className="text-sm text-gray-500 line-through">
+                                {formatCurrency(item.comparePrice)}
+                              </span>
+                              <span className="text-lg font-medium text-primary-600">
+                                {formatCurrency(item.price)}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-lg font-medium text-gray-900">
+                              {formatCurrency(item.price)}
+                            </span>
+                          )}
                         </div>
                         <span className={cn(
                           'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-1',

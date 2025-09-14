@@ -51,6 +51,7 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
       price: item?.price || 0,
       comparePrice: item?.comparePrice || 0,
       categoryId: item?.categoryId || '',
+      image: item?.image || '',
       isActive: item?.isActive ?? true,
       isVegetarian: item?.isVegetarian ?? false,
       isVegan: item?.isVegan ?? false,
@@ -110,6 +111,14 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
         image: data.image,
         calories: data.calories,
         allData: data
+      });
+      
+      // Debug image field specifically
+      console.log('🔍 Image field details:', {
+        hasImage: !!data.image,
+        imageLength: data.image?.length || 0,
+        imageType: typeof data.image,
+        imagePreview: data.image?.substring(0, 50) + '...'
       });
       
       await onSubmit(data);

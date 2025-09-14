@@ -135,22 +135,70 @@ const CheckoutPage: React.FC = () => {
       return;
     }
 
+    if (!restaurantId) {
+      toast.error('Restaurant ID is missing');
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
-      // Simulate order processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Prepare order data
+      const orderData = {
+        customer: {
+          name: customerInfo.name,
+          phone: customerInfo.phone,
+          email: customerInfo.email || ''
+        },
+        items: cartItems.map(cartItem => ({
+          menuItemId: cartItem.item._id,
+          name: cartItem.item.name,
+          quantity: cartItem.quantity,
+          price: cartItem.item.price,
+          totalPrice: cartItem.item.price * cartItem.quantity,
+          notes: cartItem.notes || ''
+        })),
+        totalAmount: calculateTotal(),
+        paymentMethod: paymentMethod,
+        deliveryMethod: tableId ? 'dine_in' : 'pickup',
+        tableNumber: tableId || '',
+        deliveryAddress: paymentMethod === 'cash' && deliveryInfo.address ? {
+          street: deliveryInfo.address,
+          city: deliveryInfo.city,
+          zipCode: deliveryInfo.zipCode
+        } : null,
+        specialInstructions: customerInfo.notes || deliveryInfo.deliveryInstructions || ''
+      };
+
+      console.log('Submitting order:', orderData);
+
+      // Submit order to backend
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      console.log('Order submitted successfully:', result);
 
       // Clear cart
       localStorage.removeItem(`cart_${restaurantId}`);
       
-      toast.success('Order placed successfully!');
+      toast.success(`Order ${result.data?.order?.orderNumber || 'placed'} successfully!`);
       
       // Redirect back to menu
       navigate(`/restaurant/${restaurantId}${tableId ? `?table=${tableId}` : ''}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Order submission failed:', error);
-      toast.error('Failed to place order. Please try again.');
+      toast.error(error.message || 'Failed to place order. Please try again.');
     } finally {
       setIsProcessing(false);
     }

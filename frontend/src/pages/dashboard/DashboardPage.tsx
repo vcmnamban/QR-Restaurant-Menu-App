@@ -11,7 +11,8 @@ import {
   MapPin,
   Phone,
   Mail,
-  ShoppingCart
+  ShoppingCart,
+  RefreshCw
 } from 'lucide-react';
 import { cn } from '@/utils';
 import { Order } from '@/types';
@@ -26,6 +27,7 @@ const DashboardPage: React.FC = () => {
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
   const [restaurantId, setRestaurantId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -54,7 +56,32 @@ const DashboardPage: React.FC = () => {
     };
 
     fetchData();
+
+    // Refresh data every 30 seconds to catch new orders
+    const interval = setInterval(fetchData, 30000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  // Manual refresh function
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    
+    setIsRefreshing(true);
+    try {
+      if (restaurantId) {
+        const ordersData = await OrderService.getOrders(restaurantId, {
+          limit: '5',
+          page: '1'
+        });
+        setRecentOrders(ordersData.orders);
+      }
+    } catch (error) {
+      console.error('Error refreshing orders:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Calculate stats from real data
   const totalOrders = recentOrders.length;
@@ -159,11 +186,24 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Welcome back, {user?.firstName}! Here's what's happening with your restaurant business.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Welcome back, {user?.firstName}! Here's what's happening with your restaurant business.
+          </p>
+        </div>
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className={cn(
+            'flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
+            isRefreshing && 'opacity-50 cursor-not-allowed'
+          )}
+        >
+          <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} />
+          <span>{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+        </button>
       </div>
 
       {/* Stats Grid */}

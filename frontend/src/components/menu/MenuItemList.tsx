@@ -367,7 +367,7 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                         })()}
                       </span>
                     </div>
-                    {item.calories && item.calories > 0 && (
+                    {item.calories && Number(item.calories) > 0 && (
                       <div className="flex items-center">
                         <Star className="h-4 w-4 mr-1" />
                         <span>{item.calories} cal</span>
@@ -554,7 +554,7 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                             })()}
                           </span>
                         </div>
-                        {item.calories && item.calories > 0 && (
+                        {item.calories && Number(item.calories) > 0 && (
                           <div className="flex items-center">
                             <Star className="h-4 w-4 mr-1" />
                             <span>{item.calories} cal</span>

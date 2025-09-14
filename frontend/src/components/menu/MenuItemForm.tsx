@@ -57,7 +57,7 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
       isGlutenFree: item?.isGlutenFree ?? false,
       isHalal: item?.isHalal ?? true,
       preparationTime: item?.preparationTime || 15,
-      calories: item?.calories || 0,
+      calories: item?.calories || undefined,
       allergens: item?.allergens || [],
       tags: item?.tags || [],
       customizationOptions: item?.customizationOptions || [],
@@ -98,11 +98,17 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
       // Add customizations to the data
       data.customizationOptions = customizations;
       
+      // Clean calories field - only include if it has a meaningful value
+      if (data.calories === 0 || data.calories === '' || data.calories === null || data.calories === undefined) {
+        delete data.calories;
+      }
+      
       // Debug logging for pricing fields
       console.log('🔍 Form submission data:', {
         price: data.price,
         comparePrice: data.comparePrice,
         image: data.image,
+        calories: data.calories,
         allData: data
       });
       
@@ -493,8 +499,11 @@ const MenuItemForm: React.FC<MenuItemFormProps> = ({
                 type="number"
                 min="0"
                 className="input"
-                placeholder="0"
-                {...register('calories', { valueAsNumber: true })}
+                placeholder="Enter calories (optional)"
+                {...register('calories', { 
+                  valueAsNumber: true,
+                  setValueAs: (value) => value === '' ? undefined : Number(value)
+                })}
               />
             </div>
 

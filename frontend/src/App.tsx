@@ -18,6 +18,7 @@ import AnalyticsPage from '@/pages/analytics/AnalyticsPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import CustomerMenuPage from '@/pages/customer/CustomerMenuPage';
+import CheckoutPage from '@/pages/customer/CheckoutPage';
 import QRGenerationPage from '@/pages/qr/QRGenerationPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
 import PaymentTestingPage from '@/pages/testing/PaymentTestingPage';
@@ -114,6 +115,7 @@ function App() {
             
             {/* Customer-facing routes (public) */}
             <Route path="/menu/:restaurantId" element={<CustomerMenuPage />} />
+            <Route path="/checkout/:restaurantId" element={<CheckoutPage />} />
 
             {/* Protected routes */}
             <Route path="/" element={

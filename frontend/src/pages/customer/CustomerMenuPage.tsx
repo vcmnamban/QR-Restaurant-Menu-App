@@ -539,6 +539,7 @@ const CustomerMenuPage: React.FC = () => {
         onClearCart={clearCart}
         total={getCartTotal()}
         restaurant={restaurant}
+        restaurantId={restaurantId || ''}
         tableId={tableId}
       />
     </div>

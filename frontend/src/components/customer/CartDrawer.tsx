@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   X,
   Plus,
@@ -29,6 +30,7 @@ interface CartDrawerProps {
   onClearCart: () => void;
   total: number;
   restaurant: Restaurant;
+  restaurantId: string;
   tableId?: string | null;
 }
 
@@ -41,17 +43,20 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
   onClearCart,
   total,
   restaurant,
+  restaurantId,
   tableId
 }) => {
+  const navigate = useNavigate();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const handleCheckout = () => {
-    setIsCheckingOut(true);
-    // TODO: Implement checkout flow
-    setTimeout(() => {
-      setIsCheckingOut(false);
-      onClose();
-    }, 2000);
+    // Save cart items to localStorage for checkout page
+    localStorage.setItem(`cart_${restaurantId}`, JSON.stringify(items));
+    
+    // Navigate to checkout page
+    const checkoutUrl = `/checkout/${restaurantId}${tableId ? `?table=${tableId}` : ''}`;
+    navigate(checkoutUrl);
+    onClose();
   };
 
   if (!isOpen) return null;

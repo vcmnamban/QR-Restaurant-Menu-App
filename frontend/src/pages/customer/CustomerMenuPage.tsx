@@ -387,7 +387,10 @@ const CustomerMenuPage: React.FC = () => {
               <div>
                 <h1 className="text-xl font-bold text-gray-900">{restaurant.name}</h1>
                 <p className="text-sm text-gray-500">
-                  {restaurant.cuisineType} • {restaurant.location}
+                  {restaurant.cuisineType} • {restaurant.address 
+                    ? `${restaurant.address.street}, ${restaurant.address.city}, ${restaurant.address.state}`
+                    : restaurant.location || 'Location not available'
+                  }
                 </p>
               </div>
             </div>

@@ -183,7 +183,12 @@ const CartDrawer: React.FC<CartDrawerProps> = ({
                 <div className="space-y-1 text-xs text-gray-600">
                   <div className="flex items-center space-x-2">
                     <MapPin className="h-3 w-3" />
-                    <span>{restaurant.location}</span>
+                    <span>
+                      {restaurant.address 
+                        ? `${restaurant.address.street}, ${restaurant.address.city}, ${restaurant.address.state}`
+                        : restaurant.location || 'Location not available'
+                      }
+                    </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Phone className="h-3 w-3" />

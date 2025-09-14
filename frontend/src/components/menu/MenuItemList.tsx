@@ -344,6 +344,10 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                             cleanTime = cleanTime.replace(/0+$/, '');
                             console.log('🔍 After trailing 0 removal:', cleanTime);
                             
+                            // Remove any standalone zeros that appear after 'min'
+                            cleanTime = cleanTime.replace(/min\s*0+$/, 'min');
+                            console.log('🔍 After min space 0 removal:', cleanTime);
+                            
                             // Remove any extra spaces
                             cleanTime = cleanTime.replace(/\s+/g, ' ');
                             console.log('🔍 After space cleanup:', cleanTime);
@@ -532,6 +536,8 @@ const MenuItemList: React.FC<MenuItemListProps> = ({
                                 cleanTime = cleanTime.replace(/min0+$/, 'min');
                                 // Remove any standalone zeros at the end
                                 cleanTime = cleanTime.replace(/0+$/, '');
+                                // Remove any standalone zeros that appear after 'min'
+                                cleanTime = cleanTime.replace(/min\s*0+$/, 'min');
                                 // Remove any extra spaces
                                 cleanTime = cleanTime.replace(/\s+/g, ' ');
                                 // Remove any non-numeric characters except 'min'

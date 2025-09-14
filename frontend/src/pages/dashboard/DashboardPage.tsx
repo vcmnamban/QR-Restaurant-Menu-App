@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/store/auth';
 import { 
@@ -10,76 +10,116 @@ import {
   Star,
   MapPin,
   Phone,
-  Mail
+  Mail,
+  ShoppingCart
 } from 'lucide-react';
 import { cn } from '@/utils';
+import { Order } from '@/types';
+import OrderService from '@/services/order';
+import RestaurantService from '@/services/restaurant';
 
 const DashboardPage: React.FC = () => {
   const user = useUser();
   const navigate = useNavigate();
+  
+  // State for orders and restaurant
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [restaurantId, setRestaurantId] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data - replace with real data from API
+  // Fetch data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Get user's restaurants
+        const restaurants = await RestaurantService.getMyRestaurants();
+        if (restaurants && restaurants.length > 0) {
+          const firstRestaurant = restaurants[0];
+          setRestaurantId(firstRestaurant._id);
+          
+          // Fetch recent orders
+          const ordersData = await OrderService.getOrders(firstRestaurant._id, {
+            limit: '5',
+            page: '1'
+          });
+          setRecentOrders(ordersData.orders);
+        }
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        // Set fallback data
+        setRecentOrders([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Calculate stats from real data
+  const totalOrders = recentOrders.length;
+  const totalRevenue = recentOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+  const pendingOrders = recentOrders.filter(order => order.status === 'pending').length;
+  const preparingOrders = recentOrders.filter(order => order.status === 'preparing').length;
+
+  // Stats data - now using real data
   const stats = [
     {
-      name: 'Total Restaurants',
-      value: '12',
-      change: '+2.5%',
-      changeType: 'positive',
-      icon: Building2,
-    },
-    {
-      name: 'Active Menus',
-      value: '48',
+      name: 'Total Orders',
+      value: totalOrders.toString(),
       change: '+12.3%',
       changeType: 'positive',
+      icon: ShoppingCart,
+    },
+    {
+      name: 'Pending Orders',
+      value: pendingOrders.toString(),
+      change: preparingOrders > 0 ? 'In Progress' : 'All Clear',
+      changeType: preparingOrders > 0 ? 'positive' : 'positive',
+      icon: Clock,
+    },
+    {
+      name: 'Preparing Orders',
+      value: preparingOrders.toString(),
+      change: preparingOrders > 0 ? 'Active' : 'None',
+      changeType: preparingOrders > 0 ? 'positive' : 'positive',
       icon: Menu,
     },
     {
-      name: 'Total Users',
-      value: '1,234',
-      change: '+8.1%',
-      changeType: 'positive',
-      icon: Users,
-    },
-    {
-      name: 'Revenue',
-      value: 'SAR 45,678',
+      name: 'Total Revenue',
+      value: `SAR ${totalRevenue.toFixed(2)}`,
       change: '+15.2%',
       changeType: 'positive',
       icon: TrendingUp,
     },
   ];
 
-  const recentActivities = [
-    {
-      id: 1,
-      type: 'restaurant_created',
-      message: 'New restaurant "Al Baik" was created',
-      time: '2 hours ago',
-      user: 'Ahmed Al-Rashid',
-    },
-    {
-      id: 2,
-      type: 'menu_updated',
-      message: 'Menu "Main Course" was updated',
-      time: '4 hours ago',
-      user: 'Sarah Johnson',
-    },
-    {
-      id: 3,
-      type: 'order_placed',
-      message: 'New order #12345 was placed',
-      time: '6 hours ago',
-      user: 'Customer',
-    },
-    {
-      id: 4,
-      type: 'user_registered',
-      message: 'New user registered: Omar Hassan',
-      time: '1 day ago',
-      user: 'System',
-    },
-  ];
+  // Helper function to format time ago
+  const getTimeAgo = (date: Date | string): string => {
+    const now = new Date();
+    const orderDate = new Date(date);
+    const diffInMinutes = Math.floor((now.getTime() - orderDate.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 60) {
+      return `${diffInMinutes} minutes ago`;
+    } else if (diffInMinutes < 1440) {
+      const hours = Math.floor(diffInMinutes / 60);
+      return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else {
+      const days = Math.floor(diffInMinutes / 1440);
+      return `${days} day${days > 1 ? 's' : ''} ago`;
+    }
+  };
+
+  // Generate recent activities from orders
+  const recentActivities = recentOrders.slice(0, 4).map((order, index) => ({
+    id: order._id,
+    type: 'order_placed',
+    message: `New order ${order.orderNumber} was placed by ${order.customer?.name || 'Customer'}`,
+    time: getTimeAgo(order.createdAt),
+    user: order.customer?.name || 'Customer',
+    order: order
+  }));
 
   const getActivityIcon = (type: string) => {
     switch (type) {
@@ -100,13 +140,13 @@ const DashboardPage: React.FC = () => {
   const handleQuickAction = (action: string) => {
     switch (action) {
       case 'add-restaurant':
-        navigate('/restaurants/new');
+        navigate('/restaurant');
         break;
       case 'create-menu':
-        navigate('/menus/new');
+        navigate('/menu');
         break;
-      case 'manage-users':
-        navigate('/users');
+      case 'view-orders':
+        navigate('/orders');
         break;
       case 'view-analytics':
         navigate('/analytics');
@@ -224,21 +264,21 @@ const DashboardPage: React.FC = () => {
                 className="btn-outline w-full justify-center hover:bg-primary-50 hover:border-primary-300 transition-colors"
               >
                 <Building2 className="mr-2 h-5 w-5" />
-                Add Restaurant
+                Manage Restaurant
               </button>
               <button 
                 onClick={() => handleQuickAction('create-menu')}
                 className="btn-outline w-full justify-center hover:bg-primary-50 hover:border-primary-300 transition-colors"
               >
                 <Menu className="mr-2 h-5 w-5" />
-                Create Menu
+                Manage Menu
               </button>
               <button 
-                onClick={() => handleQuickAction('manage-users')}
+                onClick={() => handleQuickAction('view-orders')}
                 className="btn-outline w-full justify-center hover:bg-primary-50 hover:border-primary-300 transition-colors"
               >
-                <Users className="mr-2 h-5 w-5" />
-                Manage Users
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                View Orders
               </button>
               <button 
                 onClick={() => handleQuickAction('view-analytics')}
@@ -310,29 +350,54 @@ const DashboardPage: React.FC = () => {
             <h3 className="text-lg font-medium text-gray-900">Recent Orders</h3>
           </div>
           <div className="card-body">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Order #12345</p>
-                  <p className="text-xs text-gray-500">2 items • SAR 45.00</p>
-                </div>
-                <span className="badge-warning">Preparing</span>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Order #12344</p>
-                  <p className="text-xs text-gray-500">1 item • SAR 25.00</p>
-                </div>
-                <span className="badge-success">Delivered</span>
+            ) : recentOrders.length === 0 ? (
+              <div className="text-center py-8">
+                <ShoppingCart className="mx-auto h-12 w-12 text-gray-400" />
+                <p className="mt-2 text-sm text-gray-500">No orders yet</p>
+                <p className="text-xs text-gray-400">Orders from QR code scans will appear here</p>
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-900">Order #12343</p>
-                  <p className="text-xs text-gray-500">3 items • SAR 67.50</p>
-                </div>
-                <span className="badge-primary">Out for Delivery</span>
+            ) : (
+              <div className="space-y-4">
+                {recentOrders.slice(0, 3).map((order) => (
+                  <div key={order._id} className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{order.orderNumber}</p>
+                      <p className="text-xs text-gray-500">
+                        {order.items?.length || 0} item{(order.items?.length || 0) !== 1 ? 's' : ''} • 
+                        SAR {order.totalAmount?.toFixed(2) || '0.00'}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {order.customer?.name || 'Customer'} • {getTimeAgo(order.createdAt)}
+                      </p>
+                    </div>
+                    <span className={cn(
+                      'px-2 py-1 text-xs font-medium rounded-full',
+                      order.status === 'pending' && 'bg-yellow-100 text-yellow-800',
+                      order.status === 'preparing' && 'bg-orange-100 text-orange-800',
+                      order.status === 'ready' && 'bg-green-100 text-green-800',
+                      order.status === 'delivered' && 'bg-gray-100 text-gray-800',
+                      order.status === 'cancelled' && 'bg-red-100 text-red-800'
+                    )}>
+                      {order.status?.charAt(0).toUpperCase() + order.status?.slice(1) || 'Unknown'}
+                    </span>
+                  </div>
+                ))}
+                {recentOrders.length > 3 && (
+                  <div className="text-center pt-2">
+                    <button 
+                      onClick={() => navigate('/orders')}
+                      className="text-sm text-primary-600 hover:text-primary-800"
+                    >
+                      View all orders ({recentOrders.length})
+                    </button>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

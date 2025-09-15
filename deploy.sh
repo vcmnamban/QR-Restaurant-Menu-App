@@ -61,3 +61,4 @@ echo "Health Check: https://your-project.railway.app/health"
 
 echo ""
 echo "🎉 Ready to launch your restaurant empire! 🚀"
+

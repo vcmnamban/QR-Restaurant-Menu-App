@@ -160,3 +160,4 @@ const NewMenuPage: React.FC = () => {
 };
 
 export default NewMenuPage;
+

@@ -836,3 +836,4 @@ const SupportTrainingSystem: React.FC = () => {
 };
 
 export default SupportTrainingSystem;
+

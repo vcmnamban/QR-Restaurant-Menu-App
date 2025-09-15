@@ -164,3 +164,4 @@ Your QR Restaurant Menu App is now live and ready for:
 - 📊 **Analytics & Reporting**
 
 **Ready to launch your restaurant empire! 🚀**
+

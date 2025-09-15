@@ -46,3 +46,4 @@ router.post('/', authenticate, authorize('restaurant_owner', 'admin'), asyncHand
 }));
 
 export default router;
+

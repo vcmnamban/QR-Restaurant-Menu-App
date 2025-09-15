@@ -261,3 +261,4 @@ const MenuCategoryForm: React.FC<MenuCategoryFormProps> = ({
 };
 
 export default MenuCategoryForm;
+

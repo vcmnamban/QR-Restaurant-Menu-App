@@ -33,3 +33,4 @@ Write-Host "Your repository is now connected to GitHub!" -ForegroundColor Green
 Write-Host "Check: https://github.com/$githubUsername/qr-restaurant-menu-app" -ForegroundColor Cyan
 Write-Host ""
 Read-Host "Press Enter to continue"
+

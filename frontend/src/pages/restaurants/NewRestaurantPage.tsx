@@ -145,3 +145,4 @@ const NewRestaurantPage: React.FC = () => {
 };
 
 export default NewRestaurantPage;
+

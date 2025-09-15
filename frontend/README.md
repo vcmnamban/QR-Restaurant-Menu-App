@@ -26,3 +26,4 @@ npm run build
 ## Deployment
 
 This app is deployed on Vercel with custom npm registry configuration to handle temporary registry issues.
+

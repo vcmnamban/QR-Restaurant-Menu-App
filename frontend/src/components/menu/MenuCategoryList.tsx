@@ -291,3 +291,4 @@ const MenuCategoryList: React.FC<MenuCategoryListProps> = ({
 };
 
 export default MenuCategoryList;
+

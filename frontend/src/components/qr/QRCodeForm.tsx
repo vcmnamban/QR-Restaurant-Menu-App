@@ -587,3 +587,4 @@ const QRCodeForm: React.FC<QRCodeFormProps> = ({
 };
 
 export default QRCodeForm;
+

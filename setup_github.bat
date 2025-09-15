@@ -32,3 +32,4 @@ echo Your repository is now connected to GitHub!
 echo Check: https://github.com/%GITHUB_USERNAME%/qr-restaurant-menu-app
 echo.
 pause
+

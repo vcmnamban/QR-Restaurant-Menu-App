@@ -67,7 +67,7 @@ const CustomerMenuPage: React.FC = () => {
 
   const fetchRestaurantData = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://qr-restaurant-menu-app-production.up.railway.app/api'}/restaurants/${restaurantId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -144,8 +144,8 @@ const CustomerMenuPage: React.FC = () => {
   const fetchMenuData = async () => {
     try {
       const [menuItemsResponse, categoriesResponse] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}/menu-items`),
-        fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}/categories`)
+        fetch(`${import.meta.env.VITE_API_URL || 'https://qr-restaurant-menu-app-production.up.railway.app/api'}/restaurants/${restaurantId}/menu-items`),
+        fetch(`${import.meta.env.VITE_API_URL || 'https://qr-restaurant-menu-app-production.up.railway.app/api'}/restaurants/${restaurantId}/categories`)
       ]);
       
       const menuItemsData = await menuItemsResponse.json();

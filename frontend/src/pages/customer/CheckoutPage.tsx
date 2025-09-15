@@ -62,7 +62,7 @@ const CheckoutPage: React.FC = () => {
 
   const fetchRestaurantData = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://qr-restaurant-menu-app-production.up.railway.app/api'}/restaurants/${restaurantId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -173,7 +173,7 @@ const CheckoutPage: React.FC = () => {
       console.log('Submitting order:', orderData);
 
       // Submit order to backend
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/restaurants/${restaurantId}/orders`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://qr-restaurant-menu-app-production.up.railway.app/api'}/restaurants/${restaurantId}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

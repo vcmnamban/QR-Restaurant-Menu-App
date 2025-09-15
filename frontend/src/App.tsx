@@ -22,6 +22,7 @@ import CheckoutPage from '@/pages/customer/CheckoutPage';
 import QRGenerationPage from '@/pages/qr/QRGenerationPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
 import PaymentTestingPage from '@/pages/testing/PaymentTestingPage';
+import OrdersPage from '@/pages/orders/OrdersPage';
 
 // Import components (we'll create these next)
 import Layout from '@/components/layout/Layout';
@@ -129,6 +130,7 @@ function App() {
               <Route path="restaurants/new" element={<NewRestaurantPage />} />
               <Route path="menu" element={<MenuPage />} />
               <Route path="menus/new" element={<NewMenuPage />} />
+              <Route path="orders" element={<OrdersPage />} />
               <Route path="users" element={<UsersPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="qr" element={<QRGenerationPage />} />

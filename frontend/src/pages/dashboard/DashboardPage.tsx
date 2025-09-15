@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/store/auth';
+import { mockOrderService } from '@/services/mockOrderService';
 import { 
   Building2, 
   Menu, 
@@ -39,38 +40,31 @@ const DashboardPage: React.FC = () => {
           const firstRestaurant = restaurants[0];
           setRestaurantId(firstRestaurant._id);
           
-          // Fetch recent orders
-          const ordersData = await OrderService.getOrders(firstRestaurant._id, {
-            limit: '5',
-            page: '1'
-          });
-          setRecentOrders(ordersData.orders);
+          // Initialize mock order service with sample data
+          mockOrderService.initializeSampleData(firstRestaurant._id);
+          
+          // Try to fetch real orders first
+          try {
+            const ordersData = await OrderService.getOrders(firstRestaurant._id, {
+              limit: '5',
+              page: '1'
+            });
+            setRecentOrders(ordersData.orders);
+          } catch (error) {
+            console.warn('Real orders unavailable, using mock orders:', error);
+            // Use mock orders as fallback
+            const mockOrders = mockOrderService.getOrders(firstRestaurant._id);
+            setRecentOrders(mockOrders);
+          }
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         // Set fallback data with mock orders for testing
-        setRecentOrders([
-          {
-            _id: 'mock_1',
-            orderNumber: 'ORD-1234',
-            customer: { name: 'Test Customer', phone: '+966501234567' },
-            items: [{ name: 'Avocado Juice', quantity: 2, price: 12 }],
-            totalAmount: 24,
-            status: 'pending',
-            paymentMethod: 'cash',
-            createdAt: new Date().toISOString()
-          },
-          {
-            _id: 'mock_2',
-            orderNumber: 'ORD-1235',
-            customer: { name: 'Another Customer', phone: '+966509876543' },
-            items: [{ name: 'Orange Juice', quantity: 1, price: 10 }],
-            totalAmount: 10,
-            status: 'preparing',
-            paymentMethod: 'card',
-            createdAt: new Date(Date.now() - 300000).toISOString()
-          }
-        ]);
+        const testRestaurantId = '68c06ccb91f62a12fa494813';
+        mockOrderService.initializeSampleData(testRestaurantId);
+        const mockOrders = mockOrderService.getOrders(testRestaurantId);
+        setRecentOrders(mockOrders);
+        setRestaurantId(testRestaurantId);
       } finally {
         setIsLoading(false);
       }
@@ -78,11 +72,24 @@ const DashboardPage: React.FC = () => {
 
     fetchData();
 
+    // Listen for new mock orders
+    const handleMockOrderCreated = () => {
+      if (restaurantId) {
+        const mockOrders = mockOrderService.getOrders(restaurantId);
+        setRecentOrders(mockOrders);
+      }
+    };
+
+    window.addEventListener('mockOrderCreated', handleMockOrderCreated);
+
     // Refresh data every 30 seconds to catch new orders
     const interval = setInterval(fetchData, 30000);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('mockOrderCreated', handleMockOrderCreated);
+    };
+  }, [restaurantId]);
 
   // Manual refresh function
   const handleRefresh = async () => {
@@ -91,11 +98,17 @@ const DashboardPage: React.FC = () => {
     setIsRefreshing(true);
     try {
       if (restaurantId) {
-        const ordersData = await OrderService.getOrders(restaurantId, {
-          limit: '5',
-          page: '1'
-        });
-        setRecentOrders(ordersData.orders);
+        try {
+          const ordersData = await OrderService.getOrders(restaurantId, {
+            limit: '5',
+            page: '1'
+          });
+          setRecentOrders(ordersData.orders);
+        } catch (error) {
+          console.warn('Real orders unavailable, refreshing mock orders:', error);
+          const mockOrders = mockOrderService.getOrders(restaurantId);
+          setRecentOrders(mockOrders);
+        }
       }
     } catch (error) {
       console.error('Error refreshing orders:', error);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { mockOrderService } from '@/services/mockOrderService';
 import {
   ArrowLeft,
   CreditCard,
@@ -192,18 +193,18 @@ const CheckoutPage: React.FC = () => {
       } catch (error) {
         console.warn('Backend order submission failed, using mock order:', error);
         
-        // Mock order submission for testing when backend is down
-        const mockOrder = {
-          success: true,
-          data: {
-            _id: `mock_${Date.now()}`,
-            orderNumber: `ORD-${Math.floor(Math.random() * 10000)}`,
-            ...orderData,
-            status: 'pending',
-            createdAt: new Date().toISOString()
-          },
-          message: 'Order placed successfully (mock mode - backend unavailable)'
-        };
+        // Create mock order using the service
+        const mockOrder = mockOrderService.createOrder({
+          restaurantId,
+          customer: orderData.customer,
+          items: orderData.items,
+          totalAmount: orderData.totalAmount,
+          paymentMethod: orderData.paymentMethod,
+          deliveryMethod: orderData.deliveryMethod,
+          tableNumber: orderData.tableNumber,
+          deliveryAddress: orderData.deliveryAddress,
+          specialInstructions: orderData.specialInstructions
+        });
         
         console.log('Mock order created:', mockOrder);
       }

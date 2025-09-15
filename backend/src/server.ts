@@ -67,14 +67,33 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
+// Rate limiting - More lenient for development
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100'), // limit each IP to 100 requests per windowMs
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '1000'), // limit each IP to 1000 requests per windowMs
   message: {
     error: 'Too many requests from this IP, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting for health checks and in development
+    return req.path === '/health' || process.env.NODE_ENV === 'development';
   }
 });
+// More lenient rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // limit each IP to 50 auth requests per windowMs
+  message: {
+    error: 'Too many authentication attempts, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Apply different rate limits to different routes
+app.use('/api/auth', authLimiter);
 app.use('/api/', limiter);
 
 // Body parsing middleware
@@ -99,6 +118,28 @@ app.get('/', (req, res) => {
       users: '/api/users'
     }
   });
+});
+
+// Rate limit reset endpoint (for development)
+app.post('/api/reset-rate-limit', (req, res) => {
+  if (process.env.NODE_ENV === 'development') {
+    // In development, we can't easily reset rate limits, but we can provide info
+    res.status(200).json({
+      success: true,
+      message: 'Rate limit info',
+      info: {
+        windowMs: '15 minutes',
+        maxRequests: '1000 per window',
+        authMaxRequests: '50 per window',
+        note: 'Rate limits reset automatically after the window period'
+      }
+    });
+  } else {
+    res.status(403).json({
+      success: false,
+      message: 'Rate limit reset not available in production'
+    });
+  }
 });
 
 // Health check endpoint

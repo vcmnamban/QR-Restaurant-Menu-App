@@ -6,27 +6,35 @@ import { storage } from '@/utils';
 export class AuthService {
   // Login user
   static async login(credentials: LoginForm): Promise<{ user: User; token: string }> {
-    const response = await http.post<{ user: User; token: string }>('/auth/login', credentials);
-    
-    if (response.success && response.data) {
-      const { user, token } = response.data;
+    try {
+      const response = await http.post<{ user: User; token: string }>('/auth/login', credentials);
       
-      // Store authentication data
-      storage.set('authToken', token);
-      storage.set('user', user);
+      if (response.success && response.data) {
+        const { user, token } = response.data;
+        
+        // Store authentication data
+        storage.set('authToken', token);
+        storage.set('user', user);
+        
+        return { user, token };
+      }
       
-      return { user, token };
+      // Extract proper error message
+      let errorMessage = 'Login failed';
+      if (response.error) {
+        errorMessage = response.error;
+      } else if (response.message) {
+        errorMessage = response.message;
+      }
+      
+      throw new Error(errorMessage);
+    } catch (error: any) {
+      // Handle rate limiting specifically
+      if (error.message && error.message.includes('Too many requests')) {
+        throw new Error('Too many login attempts. Please wait 15 minutes before trying again.');
+      }
+      throw error;
     }
-    
-    // Extract proper error message
-    let errorMessage = 'Login failed';
-    if (response.error) {
-      errorMessage = response.error;
-    } else if (response.message) {
-      errorMessage = response.message;
-    }
-    
-    throw new Error(errorMessage);
   }
 
   // Register user

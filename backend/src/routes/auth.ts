@@ -445,4 +445,39 @@ router.put('/profile', asyncHandler(async (req, res) => {
   });
 }));
 
+// Development bypass endpoint (only in development)
+if (process.env.NODE_ENV === 'development') {
+  router.post('/dev-login', asyncHandler(async (req, res) => {
+    // Create a test user for development
+    const testUser = {
+      _id: 'dev-user-123',
+      email: 'test@example.com',
+      firstName: 'Test',
+      lastName: 'User',
+      phone: '+966501234567',
+      role: 'restaurant_owner',
+      isActive: true,
+      isVerified: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    // Generate token
+    const token = jwt.sign(
+      { userId: testUser._id, email: testUser.email, role: testUser.role },
+      process.env.JWT_SECRET || 'dev-secret',
+      { expiresIn: '24h' }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Development login successful',
+      data: {
+        user: testUser,
+        token
+      }
+    });
+  }));
+}
+
 export default router;

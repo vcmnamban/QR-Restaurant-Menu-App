@@ -115,7 +115,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/menus', menuRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api', orderRoutes); // Orders routes are defined with full paths
 app.use('/api/users', userRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/restaurants', qrCodeRoutes);

@@ -496,6 +496,12 @@ router.get('/:id', asyncHandler(async (req, res) => {
   console.log('🔍 Restaurant ID:', req.params.id);
   
   try {
+    // Check if database is connected
+    if (!Restaurant.db.readyState || Restaurant.db.readyState !== 1) {
+      console.log('⚠️ Database not connected, using fallback data');
+      throw new Error('Database not connected');
+    }
+
     const restaurant = await Restaurant.findById(req.params.id)
       .populate('owner', 'firstName lastName email')
       .populate('menus', 'name description isActive');

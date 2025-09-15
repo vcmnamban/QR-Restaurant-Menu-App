@@ -122,6 +122,23 @@ const initializeSampleOrders = () => {
 // Initialize sample data
 initializeSampleOrders();
 
+// @route   GET /api/orders/test
+// @desc    Test endpoint to verify orders API is working
+// @access  Public
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Orders API is working',
+    timestamp: new Date().toISOString(),
+    availableEndpoints: [
+      'GET /api/restaurants/:restaurantId/orders',
+      'POST /api/restaurants/:restaurantId/orders',
+      'GET /api/orders/:id',
+      'PUT /api/orders/:id'
+    ]
+  });
+});
+
 // @route   GET /api/restaurants/:restaurantId/orders
 // @desc    Get orders for a specific restaurant
 // @access  Private (Restaurant owner or Admin)
@@ -182,7 +199,29 @@ router.post('/restaurants/:restaurantId/orders', asyncHandler(async (req, res) =
   const orderData = req.body;
   
   console.log('🔧 Creating new order for restaurant:', restaurantId);
-  console.log('📝 Order data:', orderData);
+  console.log('📝 Order data:', JSON.stringify(orderData, null, 2));
+  
+  // Validate required fields
+  if (!restaurantId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Restaurant ID is required'
+    });
+  }
+  
+  if (!orderData.customer || !orderData.customer.name) {
+    return res.status(400).json({
+      success: false,
+      message: 'Customer information is required'
+    });
+  }
+  
+  if (!orderData.items || orderData.items.length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'Order must contain at least one item'
+    });
+  }
   
   try {
     // Generate order number

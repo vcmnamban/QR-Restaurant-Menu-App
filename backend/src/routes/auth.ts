@@ -511,6 +511,6 @@ router.post('/test-login', asyncHandler(async (req, res) => {
       token
     }
   });
-});
+}));
 
 export default router;

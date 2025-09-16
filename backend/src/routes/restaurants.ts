@@ -961,104 +961,104 @@ router.get('/:id/menu-items', asyncHandler(async (req, res) => {
       console.log('🔍 Restaurant isActive:', restaurant.isActive);
     }
   
-  if (!restaurant) {
-    console.log('❌ Restaurant not found in database');
-    
-    // Try to find any restaurant in the database to use as fallback
-    const anyRestaurant = await Restaurant.findOne({ isActive: { $ne: false } });
-    
-    if (anyRestaurant) {
-      console.log('🔄 Using existing restaurant for menu items fallback:', anyRestaurant.name);
-      // Return empty menu items for now - in a real app, you'd fetch menu items for this restaurant
+    if (!restaurant) {
+      console.log('❌ Restaurant not found in database');
+      
+      // Try to find any restaurant in the database to use as fallback
+      const anyRestaurant = await Restaurant.findOne({ isActive: { $ne: false } });
+      
+      if (anyRestaurant) {
+        console.log('🔄 Using existing restaurant for menu items fallback:', anyRestaurant.name);
+        // Return empty menu items for now - in a real app, you'd fetch menu items for this restaurant
+        return res.json({
+          success: true,
+          data: {
+            menuItems: []
+          }
+        });
+      }
+      
+      // Provide fallback menu items if no restaurant exists
+      console.log('🔄 Providing fallback menu items');
+      const fallbackItems = [
+        {
+          _id: 'item_001',
+          name: 'Chicken Biryani',
+          description: 'Fragrant basmati rice with tender chicken and aromatic spices',
+          price: 25.00,
+          categoryId: 'cat_001',
+          isAvailable: true,
+          spiceLevel: 2,
+          preparationTime: 20,
+          image: '',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'item_002',
+          name: 'Mutton Curry',
+          description: 'Rich and flavorful mutton curry with traditional spices',
+          price: 30.00,
+          categoryId: 'cat_001',
+          isAvailable: true,
+          spiceLevel: 3,
+          preparationTime: 25,
+          image: '',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          _id: 'item_003',
+          name: 'Vegetable Samosa',
+          description: 'Crispy pastry filled with spiced vegetables',
+          price: 8.00,
+          categoryId: 'cat_002',
+          isAvailable: true,
+          spiceLevel: 1,
+          preparationTime: 10,
+          image: '',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ];
+      
+      console.log('✅ Returning fallback menu items:', fallbackItems.length);
       return res.json({
         success: true,
         data: {
-          menuItems: []
+          menuItems: fallbackItems
         }
       });
     }
     
-    // Provide fallback menu items if no restaurant exists
-    console.log('🔄 Providing fallback menu items');
-    const fallbackItems = [
-      {
-        _id: 'item_001',
-        name: 'Chicken Biryani',
-        description: 'Fragrant basmati rice with tender chicken and aromatic spices',
-        price: 25.00,
-        categoryId: 'cat_001',
-        isAvailable: true,
-        spiceLevel: 2,
-        preparationTime: 20,
-        image: '',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        _id: 'item_002',
-        name: 'Mutton Curry',
-        description: 'Rich and flavorful mutton curry with traditional spices',
-        price: 30.00,
-        categoryId: 'cat_001',
-        isAvailable: true,
-        spiceLevel: 3,
-        preparationTime: 25,
-        image: '',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        _id: 'item_003',
-        name: 'Vegetable Samosa',
-        description: 'Crispy pastry filled with spiced vegetables',
-        price: 8.00,
-        categoryId: 'cat_002',
-        isAvailable: true,
-        spiceLevel: 1,
-        preparationTime: 10,
-        image: '',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ];
+    // Make isActive check more lenient - only block if explicitly false
+    if (restaurant.isActive === false) {
+      console.log('❌ Restaurant is explicitly inactive');
+      throw createError('Restaurant is not active', 400);
+    }
+
+    // Get stored menu items for this restaurant
+    let storedItems = menuItemsStorage.get(req.params.id) || [];
+    console.log('🔍 Current stored items for restaurant', req.params.id, ':', storedItems.length);
     
-    console.log('✅ Returning fallback menu items:', fallbackItems.length);
-    return res.json({
+    // If no stored items, copy from default sample data
+    if (storedItems.length === 0) {
+      const defaultItems = menuItemsStorage.get('default') || [];
+      storedItems = [...defaultItems]; // Create a copy
+      menuItemsStorage.set(req.params.id, storedItems);
+      console.log('✅ Initialized restaurant with sample data:', storedItems.length, 'items');
+    }
+    
+    const allItems = menuItemsStorage.get(req.params.id) || [];
+    console.log('✅ Returning menu items array:', allItems.length, 'items');
+    console.log('✅ Items:', allItems.map(item => ({ id: item._id, name: item.name })));
+    
+    res.json({
       success: true,
       data: {
-        menuItems: fallbackItems
+        menuItems: allItems
       }
     });
-  }
-  
-  // Make isActive check more lenient - only block if explicitly false
-  if (restaurant.isActive === false) {
-    console.log('❌ Restaurant is explicitly inactive');
-    throw createError('Restaurant is not active', 400);
-  }
-
-  // Get stored menu items for this restaurant
-  let storedItems = menuItemsStorage.get(req.params.id) || [];
-  console.log('🔍 Current stored items for restaurant', req.params.id, ':', storedItems.length);
-  
-  // If no stored items, copy from default sample data
-  if (storedItems.length === 0) {
-    const defaultItems = menuItemsStorage.get('default') || [];
-    storedItems = [...defaultItems]; // Create a copy
-    menuItemsStorage.set(req.params.id, storedItems);
-    console.log('✅ Initialized restaurant with sample data:', storedItems.length, 'items');
-  }
-  
-  const allItems = menuItemsStorage.get(req.params.id) || [];
-  console.log('✅ Returning menu items array:', allItems.length, 'items');
-  console.log('✅ Items:', allItems.map(item => ({ id: item._id, name: item.name })));
-  
-  res.json({
-    success: true,
-    data: {
-      menuItems: allItems
-    }
-  });
   } catch (error: any) {
     console.log('❌ Error in menu items endpoint:', error);
     

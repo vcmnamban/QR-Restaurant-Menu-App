@@ -182,15 +182,10 @@ const OrdersPage: React.FC = () => {
 
   // Handle order status update
   const handleStatusUpdate = (orderId: string, newStatus: Order['status']) => {
-    console.log('Updating order status:', { orderId, newStatus, restaurantId });
-    
     const success = mockOrderService.updateOrderStatus(orderId, newStatus, restaurantId);
-    console.log('Update result:', success);
     
     if (success) {
       const mockOrders = mockOrderService.getOrders(restaurantId);
-      console.log('Retrieved orders after update:', mockOrders);
-      
       const convertedOrders = mockOrders.map(convertMockOrderToOrder);
       setOrders(convertedOrders);
       setFilteredOrders(convertedOrders);
@@ -199,8 +194,6 @@ const OrdersPage: React.FC = () => {
       if (selectedOrder && selectedOrder._id === orderId) {
         setSelectedOrder({ ...selectedOrder, status: newStatus });
       }
-    } else {
-      console.error('Failed to update order status');
     }
   };
 

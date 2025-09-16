@@ -126,6 +126,14 @@ const OrdersPage: React.FC = () => {
       filtered = filtered.filter(order => order.status === statusFilter);
     }
 
+    // Debug logging to track data consistency
+    const totalAmount = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+    console.log('Orders page data:', {
+      totalOrders: orders.length,
+      totalAmount,
+      orders: orders.map(o => ({ id: o._id, number: o.orderNumber, amount: o.totalAmount, status: o.status }))
+    });
+
     setFilteredOrders(filtered);
   }, [orders, searchQuery, statusFilter]);
 

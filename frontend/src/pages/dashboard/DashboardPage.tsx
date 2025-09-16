@@ -56,37 +56,16 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get user's restaurants
-        const restaurants = await RestaurantService.getMyRestaurants();
-        if (restaurants && restaurants.length > 0) {
-          const firstRestaurant = restaurants[0];
-          setRestaurantId(firstRestaurant._id);
-          
-          // Initialize mock order service with sample data
-          mockOrderService.initializeSampleData(firstRestaurant._id);
-          
-          // Try to fetch real orders first
-          try {
-            const ordersData = await OrderService.getOrders(firstRestaurant._id, {
-              limit: '5',
-              page: '1'
-            });
-            setRecentOrders(ordersData.orders);
-          } catch (error) {
-            console.warn('Real orders unavailable, using mock orders:', error);
-            // Use mock orders as fallback
-            const mockOrders = mockOrderService.getOrders(firstRestaurant._id);
-            setRecentOrders(mockOrders);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        // Set fallback data with mock orders for testing
+        // Always use mock orders for consistency with orders page
         const testRestaurantId = '68c06ccb91f62a12fa494813';
         mockOrderService.initializeSampleData(testRestaurantId);
         const mockOrders = mockOrderService.getOrders(testRestaurantId);
         setRecentOrders(mockOrders);
         setRestaurantId(testRestaurantId);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        // Set empty state on error
+        setRecentOrders([]);
       } finally {
         setIsLoading(false);
       }
@@ -109,17 +88,8 @@ const DashboardPage: React.FC = () => {
     setIsRefreshing(true);
     try {
       if (restaurantId) {
-        try {
-          const ordersData = await OrderService.getOrders(restaurantId, {
-            limit: '5',
-            page: '1'
-          });
-          setRecentOrders(ordersData.orders);
-        } catch (error) {
-          console.warn('Real orders unavailable, refreshing mock orders:', error);
-          const mockOrders = mockOrderService.getOrders(restaurantId);
-          setRecentOrders(mockOrders);
-        }
+        const mockOrders = mockOrderService.getOrders(restaurantId);
+        setRecentOrders(mockOrders);
       }
     } catch (error) {
       console.error('Error refreshing orders:', error);
@@ -133,6 +103,15 @@ const DashboardPage: React.FC = () => {
   const totalRevenue = recentOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
   const pendingOrders = recentOrders.filter(order => order.status === 'pending').length;
   const preparingOrders = recentOrders.filter(order => order.status === 'preparing').length;
+  
+  // Debug logging to track data consistency
+  console.log('Dashboard orders data:', {
+    totalOrders,
+    totalRevenue,
+    pendingOrders,
+    preparingOrders,
+    orders: recentOrders.map(o => ({ id: o._id, number: o.orderNumber, amount: o.totalAmount, status: o.status }))
+  });
 
   // Stats data - now using real data
   const stats = [

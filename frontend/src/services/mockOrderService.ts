@@ -1,29 +1,12 @@
 // Mock Order Service for when backend is unavailable
 // This provides a complete order management system using localStorage
 
-export interface MockOrder {
-  _id: string;
-  orderNumber: string;
+import { Order } from '@/types';
+
+export interface MockOrder extends Order {
+  // Additional fields for mock data
   restaurantId: string;
-  customer: {
-    name: string;
-    phone: string;
-    email?: string;
-  };
-  items: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-  }>;
-  totalAmount: number;
-  status: 'pending' | 'preparing' | 'ready' | 'delivered' | 'cancelled';
-  paymentMethod: 'cash' | 'card' | 'online';
-  deliveryMethod: 'pickup' | 'delivery' | 'dine-in';
   tableNumber?: string;
-  deliveryAddress?: string;
-  specialInstructions?: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 class MockOrderService {

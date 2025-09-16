@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/store/auth';
 import { mockOrderService } from '@/services/mockOrderService';
 import RestaurantService from '@/services/restaurant';
 import OrderService from '@/services/order';
+import { Order } from '@/types';
 import {
   ArrowLeft,
   Search,
@@ -31,27 +32,6 @@ interface OrderItem {
   price: number;
 }
 
-interface Order {
-  _id: string;
-  orderNumber: string;
-  restaurantId: string;
-  customer: {
-    name: string;
-    phone: string;
-    email?: string;
-  };
-  items: OrderItem[];
-  totalAmount: number;
-  status: 'pending' | 'preparing' | 'ready' | 'delivered' | 'cancelled';
-  paymentMethod: 'cash' | 'card' | 'online';
-  deliveryMethod: 'pickup' | 'delivery' | 'dine-in';
-  tableNumber?: string;
-  deliveryAddress?: string;
-  specialInstructions?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 const OrdersPage: React.FC = () => {
   const user = useUser();
   const navigate = useNavigate();
@@ -65,6 +45,59 @@ const OrdersPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
+
+  // Convert MockOrder to Order type
+  const convertMockOrderToOrder = useCallback((mockOrder: any): Order => {
+    return {
+      _id: mockOrder._id,
+      orderNumber: mockOrder.orderNumber,
+      customer: mockOrder.customer,
+      restaurant: mockOrder.restaurantId,
+      items: mockOrder.items.map((item: any) => ({
+        menuItem: '',
+        menuItemId: item.name,
+        menuItemName: item.name,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        totalPrice: item.price * item.quantity,
+        price: item.price,
+        notes: '',
+        customizations: [],
+        customizationOptions: []
+      })),
+      totalAmount: mockOrder.totalAmount,
+      taxAmount: 0,
+      serviceCharge: 0,
+      deliveryFee: 0,
+      status: mockOrder.status,
+      paymentStatus: 'pending',
+      paymentMethod: mockOrder.paymentMethod,
+      deliveryMethod: mockOrder.deliveryMethod,
+      deliveryAddress: mockOrder.deliveryAddress ? {
+        street: mockOrder.deliveryAddress,
+        city: '',
+        state: '',
+        zipCode: '',
+        country: ''
+      } : undefined,
+      deliveryInstructions: mockOrder.specialInstructions,
+      specialInstructions: mockOrder.specialInstructions,
+      estimatedDeliveryTime: undefined,
+      actualDeliveryTime: undefined,
+      createdAt: new Date(mockOrder.createdAt),
+      updatedAt: new Date(mockOrder.updatedAt),
+    };
+  }, []);
+
+  // Optimized event handler for new orders
+  const handleNewOrder = useCallback(() => {
+    // Get current restaurant ID from state or use fallback
+    const currentRestaurantId = restaurantId || '68c06ccb91f62a12fa494813';
+    const mockOrders = mockOrderService.getOrders(currentRestaurantId);
+    const convertedOrders = mockOrders.map(convertMockOrderToOrder);
+    setOrders(convertedOrders);
+    setFilteredOrders(convertedOrders);
+  }, [restaurantId, convertMockOrderToOrder]);
 
   // Fetch orders on component mount
   useEffect(() => {
@@ -95,8 +128,9 @@ const OrdersPage: React.FC = () => {
           console.warn('Real orders unavailable, using mock orders:', error);
           // Use mock orders as fallback
           const mockOrders = mockOrderService.getOrders(currentRestaurantId);
-          setOrders(mockOrders);
-          setFilteredOrders(mockOrders);
+          const convertedOrders = mockOrders.map(convertMockOrderToOrder);
+          setOrders(convertedOrders);
+          setFilteredOrders(convertedOrders);
         }
       } catch (error) {
         console.error('Error fetching orders:', error);
@@ -104,8 +138,9 @@ const OrdersPage: React.FC = () => {
         const testRestaurantId = '68c06ccb91f62a12fa494813';
         mockOrderService.initializeSampleData(testRestaurantId);
         const mockOrders = mockOrderService.getOrders(testRestaurantId);
-        setOrders(mockOrders);
-        setFilteredOrders(mockOrders);
+        const convertedOrders = mockOrders.map(convertMockOrderToOrder);
+        setOrders(convertedOrders);
+        setFilteredOrders(convertedOrders);
         setRestaurantId(testRestaurantId);
       } finally {
         setIsLoading(false);
@@ -115,14 +150,6 @@ const OrdersPage: React.FC = () => {
     fetchOrders();
 
     // Listen for new orders
-    const handleNewOrder = () => {
-      // Get current restaurant ID from state or use fallback
-      const currentRestaurantId = restaurantId || '68c06ccb91f62a12fa494813';
-      const updatedOrders = mockOrderService.getOrders(currentRestaurantId);
-      setOrders(updatedOrders);
-      setFilteredOrders(updatedOrders);
-    };
-
     window.addEventListener('mockOrderCreated', handleNewOrder);
     window.addEventListener('mockOrderUpdated', handleNewOrder);
 
@@ -130,7 +157,7 @@ const OrdersPage: React.FC = () => {
       window.removeEventListener('mockOrderCreated', handleNewOrder);
       window.removeEventListener('mockOrderUpdated', handleNewOrder);
     };
-  }, []); // Empty dependency array to run only once on mount
+  }, [handleNewOrder]); // Include handleNewOrder in dependencies
 
   // Filter orders based on search and status
   useEffect(() => {
@@ -157,9 +184,10 @@ const OrdersPage: React.FC = () => {
   const handleStatusUpdate = (orderId: string, newStatus: Order['status']) => {
     const success = mockOrderService.updateOrderStatus(orderId, newStatus);
     if (success) {
-      const updatedOrders = mockOrderService.getOrders(restaurantId);
-      setOrders(updatedOrders);
-      setFilteredOrders(updatedOrders);
+      const mockOrders = mockOrderService.getOrders(restaurantId);
+      const convertedOrders = mockOrders.map(convertMockOrderToOrder);
+      setOrders(convertedOrders);
+      setFilteredOrders(convertedOrders);
       
       // Update selected order if it's the one being updated
       if (selectedOrder && selectedOrder._id === orderId) {
@@ -184,8 +212,9 @@ const OrdersPage: React.FC = () => {
         console.warn('Real orders unavailable, using mock orders:', error);
         // Use mock orders as fallback
         const mockOrders = mockOrderService.getOrders(restaurantId);
-        setOrders(mockOrders);
-        setFilteredOrders(mockOrders);
+        const convertedOrders = mockOrders.map(convertMockOrderToOrder);
+        setOrders(convertedOrders);
+        setFilteredOrders(convertedOrders);
       }
     } catch (error) {
       console.error('Error refreshing orders:', error);

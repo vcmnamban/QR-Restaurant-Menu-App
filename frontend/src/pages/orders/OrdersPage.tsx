@@ -116,11 +116,11 @@ const OrdersPage: React.FC = () => {
 
     // Listen for new orders
     const handleNewOrder = () => {
-      if (restaurantId) {
-        const updatedOrders = mockOrderService.getOrders(restaurantId);
-        setOrders(updatedOrders);
-        setFilteredOrders(updatedOrders);
-      }
+      // Get current restaurant ID from state or use fallback
+      const currentRestaurantId = restaurantId || '68c06ccb91f62a12fa494813';
+      const updatedOrders = mockOrderService.getOrders(currentRestaurantId);
+      setOrders(updatedOrders);
+      setFilteredOrders(updatedOrders);
     };
 
     window.addEventListener('mockOrderCreated', handleNewOrder);
@@ -130,7 +130,7 @@ const OrdersPage: React.FC = () => {
       window.removeEventListener('mockOrderCreated', handleNewOrder);
       window.removeEventListener('mockOrderUpdated', handleNewOrder);
     };
-  }, [restaurantId]);
+  }, []); // Empty dependency array to run only once on mount
 
   // Filter orders based on search and status
   useEffect(() => {

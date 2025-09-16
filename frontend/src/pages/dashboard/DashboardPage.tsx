@@ -74,10 +74,10 @@ const DashboardPage: React.FC = () => {
 
     // Listen for new mock orders
     const handleMockOrderCreated = () => {
-      if (restaurantId) {
-        const mockOrders = mockOrderService.getOrders(restaurantId);
-        setRecentOrders(mockOrders);
-      }
+      // Get current restaurant ID from state or use fallback
+      const currentRestaurantId = restaurantId || '68c06ccb91f62a12fa494813';
+      const mockOrders = mockOrderService.getOrders(currentRestaurantId);
+      setRecentOrders(mockOrders);
     };
 
     window.addEventListener('mockOrderCreated', handleMockOrderCreated);
@@ -89,7 +89,7 @@ const DashboardPage: React.FC = () => {
       clearInterval(interval);
       window.removeEventListener('mockOrderCreated', handleMockOrderCreated);
     };
-  }, [restaurantId]);
+  }, []); // Empty dependency array to run only once on mount
 
   // Manual refresh function
   const handleRefresh = async () => {

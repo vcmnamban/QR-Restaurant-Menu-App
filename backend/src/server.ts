@@ -67,10 +67,10 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting - More lenient for development
+// Rate limiting - Very lenient for development and production
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'), // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '1000'), // limit each IP to 1000 requests per windowMs
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10000, // Very high limit - 10,000 requests per 15 minutes
   message: {
     error: 'Too many requests from this IP, please try again later.'
   },
@@ -81,15 +81,20 @@ const limiter = rateLimit({
     return req.path === '/health' || process.env.NODE_ENV === 'development';
   }
 });
-// More lenient rate limiting for auth endpoints
+
+// Very lenient rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 50, // limit each IP to 50 auth requests per windowMs
+  max: 1000, // Very high limit - 1000 auth requests per 15 minutes
   message: {
     error: 'Too many authentication attempts, please try again later.'
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting in development
+    return process.env.NODE_ENV === 'development';
+  }
 });
 
 // Apply different rate limits to different routes

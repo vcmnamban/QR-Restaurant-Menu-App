@@ -64,6 +64,48 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleTestLogin = async () => {
+    setIsSubmitting(true);
+    clearError();
+
+    try {
+      // Use test login endpoint that bypasses rate limiting
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://qr-restaurant-menu-app-production.up.railway.app/api'}/auth/test-login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        const { user, token } = result.data;
+        
+        // Store authentication data
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        
+        // Update auth store
+        login(user.email, 'test');
+        
+        toast.success('Test login successful!');
+        navigate(from, { replace: true });
+      } else {
+        throw new Error(result.message || 'Test login failed');
+      }
+    } catch (error: any) {
+      console.error('Test login error:', error);
+      toast.error(error.message || 'Test login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -184,6 +226,16 @@ const LoginPage: React.FC = () => {
                 ) : (
                   'Sign in'
                 )}
+              </button>
+
+              {/* Test Login Button */}
+              <button
+                type="button"
+                onClick={handleTestLogin}
+                disabled={isSubmitting}
+                className="mt-3 w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              >
+                Test Login (Bypass Rate Limiting)
               </button>
             </form>
 

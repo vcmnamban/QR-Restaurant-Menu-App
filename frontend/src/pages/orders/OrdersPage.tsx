@@ -444,7 +444,8 @@ const OrdersPage: React.FC = () => {
                       <MapPin className="w-4 h-4 mr-2 text-gray-400" />
                       <span className="text-sm text-gray-600">
                         {selectedOrder.deliveryMethod === 'pickup' ? 'Pickup' : 
-                         selectedOrder.deliveryMethod === 'delivery' ? 'Delivery' : 'Dine-in'}
+                         selectedOrder.deliveryMethod === 'delivery' ? 'Delivery' : 
+                         selectedOrder.deliveryMethod === 'dine-in' ? 'Dine-in' : 'Unknown'}
                       </span>
                     </div>
                     {selectedOrder.tableNumber && (

@@ -49,6 +49,7 @@ const CheckoutPage: React.FC = () => {
   });
 
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash');
+  const [deliveryMethod, setDeliveryMethod] = useState<'dine-in' | 'pickup' | 'delivery'>('dine-in');
 
   useEffect(() => {
     // Load cart items from localStorage
@@ -161,9 +162,9 @@ const CheckoutPage: React.FC = () => {
         })),
         totalAmount: calculateTotal(),
         paymentMethod: paymentMethod,
-        deliveryMethod: tableId ? 'dine_in' : 'pickup',
-        tableNumber: tableId || '',
-        deliveryAddress: paymentMethod === 'cash' && deliveryInfo.address ? {
+        deliveryMethod: deliveryMethod,
+        tableNumber: deliveryMethod === 'dine-in' ? (deliveryInfo.address || tableId || '') : '',
+        deliveryAddress: deliveryMethod === 'delivery' && deliveryInfo.address ? {
           street: deliveryInfo.address,
           city: deliveryInfo.city,
           zipCode: deliveryInfo.zipCode
@@ -330,12 +331,91 @@ const CheckoutPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Delivery Information */}
+            {/* Delivery Method Selection */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
-                <MapPin className="h-5 w-5 mr-2" />
-                Delivery Information
+                <Clock className="h-5 w-5 mr-2" />
+                Order Type
               </h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setDeliveryMethod('dine-in')}
+                  className={cn(
+                    "p-4 border-2 rounded-lg text-center transition-colors",
+                    deliveryMethod === 'dine-in'
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-200 hover:border-gray-300"
+                  )}
+                >
+                  <div className="text-2xl mb-2">🍽️</div>
+                  <div className="font-medium">Dine In</div>
+                  <div className="text-sm text-gray-500">Eat at the restaurant</div>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setDeliveryMethod('pickup')}
+                  className={cn(
+                    "p-4 border-2 rounded-lg text-center transition-colors",
+                    deliveryMethod === 'pickup'
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-200 hover:border-gray-300"
+                  )}
+                >
+                  <div className="text-2xl mb-2">📦</div>
+                  <div className="font-medium">Pickup</div>
+                  <div className="text-sm text-gray-500">Pick up your order</div>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => setDeliveryMethod('delivery')}
+                  className={cn(
+                    "p-4 border-2 rounded-lg text-center transition-colors",
+                    deliveryMethod === 'delivery'
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-200 hover:border-gray-300"
+                  )}
+                >
+                  <div className="text-2xl mb-2">🚚</div>
+                  <div className="font-medium">Delivery</div>
+                  <div className="text-sm text-gray-500">Deliver to your address</div>
+                </button>
+              </div>
+            </div>
+
+            {/* Table Number - Only show for dine-in */}
+            {deliveryMethod === 'dine-in' && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                  <MapPin className="h-5 w-5 mr-2" />
+                  Table Information
+                </h2>
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Table Number
+                    </label>
+                    <input
+                      type="text"
+                      value={deliveryInfo.address} // Reusing address field for table number
+                      onChange={(e) => setDeliveryInfo({ ...deliveryInfo, address: e.target.value })}
+                      className="w-full input"
+                      placeholder="Enter your table number"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Delivery Information - Only show for delivery method */}
+            {deliveryMethod === 'delivery' && (
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                  <MapPin className="h-5 w-5 mr-2" />
+                  Delivery Information
+                </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -387,6 +467,7 @@ const CheckoutPage: React.FC = () => {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Payment Method */}
             <div className="bg-white rounded-lg shadow-sm p-6">

@@ -134,7 +134,8 @@ class MockOrderService {
           totalAmount: 24,
           status: 'pending',
           paymentMethod: 'cash',
-          deliveryMethod: 'pickup',
+          deliveryMethod: 'dine-in',
+          tableNumber: '5',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         },
@@ -148,7 +149,7 @@ class MockOrderService {
           status: 'preparing',
           paymentMethod: 'card',
           deliveryMethod: 'delivery',
-          deliveryAddress: '123 Main Street',
+          deliveryAddress: '123 Main Street, Riyadh, Saudi Arabia',
           createdAt: new Date(Date.now() - 300000).toISOString(),
           updatedAt: new Date(Date.now() - 300000).toISOString()
         },
@@ -161,8 +162,7 @@ class MockOrderService {
           totalAmount: 55,
           status: 'delivered',
           paymentMethod: 'cash',
-          deliveryMethod: 'dine-in',
-          tableNumber: '5',
+          deliveryMethod: 'pickup',
           createdAt: new Date(Date.now() - 120000).toISOString(), // 2 minutes ago
           updatedAt: new Date(Date.now() - 120000).toISOString()
         },
@@ -175,7 +175,8 @@ class MockOrderService {
           totalAmount: 34,
           status: 'ready',
           paymentMethod: 'card',
-          deliveryMethod: 'pickup',
+          deliveryMethod: 'dine-in',
+          tableNumber: '3',
           createdAt: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
           updatedAt: new Date(Date.now() - 7200000).toISOString()
         }

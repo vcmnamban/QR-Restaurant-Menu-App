@@ -64,15 +64,24 @@ class MockOrderService {
   }
 
   // Update order status
-  updateOrderStatus(orderId: string, status: MockOrder['status']): boolean {
+  updateOrderStatus(orderId: string, status: MockOrder['status'], restaurantId?: string): boolean {
     try {
       const orders = JSON.parse(localStorage.getItem(this.storageKey) || '[]');
-      const orderIndex = orders.findIndex((order: MockOrder) => order._id === orderId);
+      console.log('All orders in storage:', orders);
+      console.log('Looking for orderId:', orderId, 'restaurantId:', restaurantId);
+      
+      const orderIndex = orders.findIndex((order: MockOrder) => 
+        order._id === orderId && (!restaurantId || order.restaurantId === restaurantId)
+      );
+      
+      console.log('Found order at index:', orderIndex);
       
       if (orderIndex !== -1) {
         orders[orderIndex].status = status;
         orders[orderIndex].updatedAt = new Date().toISOString();
         localStorage.setItem(this.storageKey, JSON.stringify(orders));
+        
+        console.log('Updated order:', orders[orderIndex]);
         
         // Trigger custom event for real-time updates
         window.dispatchEvent(new CustomEvent('mockOrderUpdated', { detail: orders[orderIndex] }));

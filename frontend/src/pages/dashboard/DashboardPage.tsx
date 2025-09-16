@@ -35,21 +35,7 @@ const DashboardPage: React.FC = () => {
     // Get current restaurant ID from state or use fallback
     const currentRestaurantId = restaurantId || '68c06ccb91f62a12fa494813';
     const mockOrders = mockOrderService.getOrders(currentRestaurantId);
-    
-    // Only update if the orders have actually changed
-    setRecentOrders(prevOrders => {
-      if (prevOrders.length !== mockOrders.length) {
-        return mockOrders;
-      }
-      
-      // Check if any order has changed
-      const hasChanged = prevOrders.some((prevOrder, index) => {
-        const newOrder = mockOrders[index];
-        return !newOrder || prevOrder._id !== newOrder._id || prevOrder.status !== newOrder.status;
-      });
-      
-      return hasChanged ? mockOrders : prevOrders;
-    });
+    setRecentOrders(mockOrders);
   }, [restaurantId]);
 
   // Fetch data on component mount
@@ -75,9 +61,20 @@ const DashboardPage: React.FC = () => {
 
     // Listen for new mock orders
     window.addEventListener('mockOrderCreated', handleMockOrderCreated);
+    window.addEventListener('mockOrderUpdated', handleMockOrderCreated);
+
+    // Set up periodic refresh to ensure data consistency
+    const refreshInterval = setInterval(() => {
+      if (restaurantId) {
+        const mockOrders = mockOrderService.getOrders(restaurantId);
+        setRecentOrders(mockOrders);
+      }
+    }, 5000); // Refresh every 5 seconds
 
     return () => {
       window.removeEventListener('mockOrderCreated', handleMockOrderCreated);
+      window.removeEventListener('mockOrderUpdated', handleMockOrderCreated);
+      clearInterval(refreshInterval);
     };
   }, [handleMockOrderCreated]); // Include handleMockOrderCreated in dependencies
 
@@ -103,15 +100,6 @@ const DashboardPage: React.FC = () => {
   const totalRevenue = recentOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
   const pendingOrders = recentOrders.filter(order => order.status === 'pending').length;
   const preparingOrders = recentOrders.filter(order => order.status === 'preparing').length;
-  
-  // Debug logging to track data consistency
-  console.log('Dashboard orders data:', {
-    totalOrders,
-    totalRevenue,
-    pendingOrders,
-    preparingOrders,
-    orders: recentOrders.map(o => ({ id: o._id, number: o.orderNumber, amount: o.totalAmount, status: o.status }))
-  });
 
   // Stats data - now using real data
   const stats = [

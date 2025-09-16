@@ -102,9 +102,19 @@ const OrdersPage: React.FC = () => {
     window.addEventListener('mockOrderCreated', handleNewOrder);
     window.addEventListener('mockOrderUpdated', handleNewOrder);
 
+    // Set up periodic refresh to ensure data consistency
+    const refreshInterval = setInterval(() => {
+      if (restaurantId) {
+        const mockOrders = mockOrderService.getOrders(restaurantId);
+        setOrders(mockOrders);
+        setFilteredOrders(mockOrders);
+      }
+    }, 5000); // Refresh every 5 seconds
+
     return () => {
       window.removeEventListener('mockOrderCreated', handleNewOrder);
       window.removeEventListener('mockOrderUpdated', handleNewOrder);
+      clearInterval(refreshInterval);
     };
   }, [handleNewOrder]); // Include handleNewOrder in dependencies
 
@@ -125,14 +135,6 @@ const OrdersPage: React.FC = () => {
     if (statusFilter !== 'all') {
       filtered = filtered.filter(order => order.status === statusFilter);
     }
-
-    // Debug logging to track data consistency
-    const totalAmount = orders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
-    console.log('Orders page data:', {
-      totalOrders: orders.length,
-      totalAmount,
-      orders: orders.map(o => ({ id: o._id, number: o.orderNumber, amount: o.totalAmount, status: o.status }))
-    });
 
     setFilteredOrders(filtered);
   }, [orders, searchQuery, statusFilter]);

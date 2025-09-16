@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/store/auth';
 import { mockOrderService } from '@/services/mockOrderService';
+import RestaurantService from '@/services/restaurant';
+import OrderService from '@/services/order';
 import {
   ArrowLeft,
   Search,
@@ -68,19 +70,43 @@ const OrdersPage: React.FC = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        // For now, use the test restaurant ID
-        const testRestaurantId = '68c06ccb91f62a12fa494813';
-        setRestaurantId(testRestaurantId);
+        // Get user's restaurants first (same as dashboard)
+        const restaurants = await RestaurantService.getMyRestaurants();
+        let currentRestaurantId = '68c06ccb91f62a12fa494813'; // fallback
+        
+        if (restaurants && restaurants.length > 0) {
+          currentRestaurantId = restaurants[0]._id;
+        }
+        
+        setRestaurantId(currentRestaurantId);
         
         // Initialize mock order service with sample data
-        mockOrderService.initializeSampleData(testRestaurantId);
+        mockOrderService.initializeSampleData(currentRestaurantId);
         
-        // Get orders from mock service
+        // Try to fetch real orders first (same as dashboard)
+        try {
+          const ordersData = await OrderService.getOrders(currentRestaurantId, {
+            limit: '50',
+            page: '1'
+          });
+          setOrders(ordersData.orders);
+          setFilteredOrders(ordersData.orders);
+        } catch (error) {
+          console.warn('Real orders unavailable, using mock orders:', error);
+          // Use mock orders as fallback
+          const mockOrders = mockOrderService.getOrders(currentRestaurantId);
+          setOrders(mockOrders);
+          setFilteredOrders(mockOrders);
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        // Set fallback data with mock orders for testing
+        const testRestaurantId = '68c06ccb91f62a12fa494813';
+        mockOrderService.initializeSampleData(testRestaurantId);
         const mockOrders = mockOrderService.getOrders(testRestaurantId);
         setOrders(mockOrders);
         setFilteredOrders(mockOrders);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
+        setRestaurantId(testRestaurantId);
       } finally {
         setIsLoading(false);
       }
@@ -146,9 +172,21 @@ const OrdersPage: React.FC = () => {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      const updatedOrders = mockOrderService.getOrders(restaurantId);
-      setOrders(updatedOrders);
-      setFilteredOrders(updatedOrders);
+      // Try to fetch real orders first (same as dashboard)
+      try {
+        const ordersData = await OrderService.getOrders(restaurantId, {
+          limit: '50',
+          page: '1'
+        });
+        setOrders(ordersData.orders);
+        setFilteredOrders(ordersData.orders);
+      } catch (error) {
+        console.warn('Real orders unavailable, using mock orders:', error);
+        // Use mock orders as fallback
+        const mockOrders = mockOrderService.getOrders(restaurantId);
+        setOrders(mockOrders);
+        setFilteredOrders(mockOrders);
+      }
     } catch (error) {
       console.error('Error refreshing orders:', error);
     } finally {

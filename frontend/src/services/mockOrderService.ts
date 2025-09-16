@@ -151,6 +151,33 @@ class MockOrderService {
           deliveryAddress: '123 Main Street',
           createdAt: new Date(Date.now() - 300000).toISOString(),
           updatedAt: new Date(Date.now() - 300000).toISOString()
+        },
+        {
+          _id: 'mock_sample_3',
+          orderNumber: 'ORD-284167',
+          restaurantId,
+          customer: { name: 'Vasu', phone: '+966501234568' },
+          items: [{ name: 'Chicken Biryani', quantity: 1, price: 25 }, { name: 'Mutton Curry', quantity: 1, price: 30 }],
+          totalAmount: 55,
+          status: 'delivered',
+          paymentMethod: 'cash',
+          deliveryMethod: 'dine-in',
+          tableNumber: '5',
+          createdAt: new Date(Date.now() - 120000).toISOString(), // 2 minutes ago
+          updatedAt: new Date(Date.now() - 120000).toISOString()
+        },
+        {
+          _id: 'mock_sample_4',
+          orderNumber: 'ORD-001',
+          restaurantId,
+          customer: { name: 'Ahmed Al-Rashid', phone: '+966509876544' },
+          items: [{ name: 'Vegetable Samosa', quantity: 3, price: 8 }, { name: 'Tea', quantity: 2, price: 5 }],
+          totalAmount: 34,
+          status: 'ready',
+          paymentMethod: 'card',
+          deliveryMethod: 'pickup',
+          createdAt: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+          updatedAt: new Date(Date.now() - 7200000).toISOString()
         }
       ];
 

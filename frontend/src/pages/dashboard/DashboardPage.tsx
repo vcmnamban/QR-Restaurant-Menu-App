@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/store/auth';
 import { mockOrderService } from '@/services/mockOrderService';
@@ -29,6 +29,28 @@ const DashboardPage: React.FC = () => {
   const [restaurantId, setRestaurantId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Optimized event listener for mock orders
+  const handleMockOrderCreated = useCallback(() => {
+    // Get current restaurant ID from state or use fallback
+    const currentRestaurantId = restaurantId || '68c06ccb91f62a12fa494813';
+    const mockOrders = mockOrderService.getOrders(currentRestaurantId);
+    
+    // Only update if the orders have actually changed
+    setRecentOrders(prevOrders => {
+      if (prevOrders.length !== mockOrders.length) {
+        return mockOrders;
+      }
+      
+      // Check if any order has changed
+      const hasChanged = prevOrders.some((prevOrder, index) => {
+        const newOrder = mockOrders[index];
+        return !newOrder || prevOrder._id !== newOrder._id || prevOrder.status !== newOrder.status;
+      });
+      
+      return hasChanged ? mockOrders : prevOrders;
+    });
+  }, [restaurantId]);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -73,26 +95,15 @@ const DashboardPage: React.FC = () => {
     fetchData();
 
     // Listen for new mock orders
-    const handleMockOrderCreated = () => {
-      // Get current restaurant ID from state or use fallback
-      const currentRestaurantId = restaurantId || '68c06ccb91f62a12fa494813';
-      const mockOrders = mockOrderService.getOrders(currentRestaurantId);
-      setRecentOrders(mockOrders);
-    };
-
     window.addEventListener('mockOrderCreated', handleMockOrderCreated);
 
-    // Refresh data every 30 seconds to catch new orders
-    const interval = setInterval(fetchData, 30000);
-
     return () => {
-      clearInterval(interval);
       window.removeEventListener('mockOrderCreated', handleMockOrderCreated);
     };
-  }, []); // Empty dependency array to run only once on mount
+  }, [handleMockOrderCreated]); // Include handleMockOrderCreated in dependencies
 
-  // Manual refresh function
-  const handleRefresh = async () => {
+  // Manual refresh function - optimized to prevent unnecessary re-renders
+  const handleRefresh = useCallback(async () => {
     if (isRefreshing) return;
     
     setIsRefreshing(true);
@@ -115,7 +126,7 @@ const DashboardPage: React.FC = () => {
     } finally {
       setIsRefreshing(false);
     }
-  };
+  }, [restaurantId, isRefreshing]);
 
   // Calculate stats from real data
   const totalOrders = recentOrders.length;
@@ -216,6 +227,18 @@ const DashboardPage: React.FC = () => {
         console.log('Unknown action:', action);
     }
   };
+
+  // Early return for loading state to prevent flickering
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

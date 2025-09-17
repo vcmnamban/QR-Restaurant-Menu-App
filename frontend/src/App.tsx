@@ -24,6 +24,13 @@ import SettingsPage from '@/pages/settings/SettingsPage';
 import PaymentTestingPage from '@/pages/testing/PaymentTestingPage';
 import OrdersPage from '@/pages/orders/OrdersPage';
 
+// Import marketing pages
+import HomePage from '@/pages/marketing/HomePage';
+import FeaturesPage from '@/pages/marketing/FeaturesPage';
+import PricingPage from '@/pages/marketing/PricingPage';
+import AboutPage from '@/pages/marketing/AboutPage';
+import ContactPage from '@/pages/marketing/ContactPage';
+
 // Import components (we'll create these next)
 import Layout from '@/components/layout/Layout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -106,25 +113,32 @@ function App() {
 
           {/* Routes */}
           <Routes>
-            {/* Public routes */}
+            {/* Marketing routes (public) */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/features" element={<FeaturesPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            
+            {/* Auth routes */}
             <Route path="/login" element={
-              isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
+              isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <LoginPage />
             } />
             <Route path="/register" element={
-              isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />
+              isAuthenticated ? <Navigate to="/admin/dashboard" replace /> : <RegisterPage />
             } />
             
             {/* Customer-facing routes (public) */}
             <Route path="/menu/:restaurantId" element={<CustomerMenuPage />} />
             <Route path="/checkout/:restaurantId" element={<CheckoutPage />} />
 
-            {/* Protected routes */}
-            <Route path="/" element={
+            {/* Protected admin routes */}
+            <Route path="/admin" element={
               <ProtectedRoute>
                 <Layout />
               </ProtectedRoute>
             }>
-              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="restaurant" element={<RestaurantPage />} />
               <Route path="restaurants/new" element={<NewRestaurantPage />} />
